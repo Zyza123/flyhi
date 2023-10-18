@@ -19,9 +19,6 @@ class _HomePageState extends State<HomePage> {
     styles.setColors(themeChange.darkTheme);
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
-      appBar: AppBar(
-        title: Text('Home Page'),
-      ),
     );
   }
 }

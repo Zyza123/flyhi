@@ -49,7 +49,7 @@ class _MainAppRouteState extends State<MainAppRoute> {
       return ChangeNotifierProvider(
         create: (_) {
           print('notified');
-          return DarkThemeProvider();
+          return themeChangeProvider;
         },
         child: Consumer<DarkThemeProvider>(
           builder: (context, value,child){

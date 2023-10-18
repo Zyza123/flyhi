@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'Theme/DarkThemeProvider.dart';
+import 'Theme/Styles.dart';
 
 class AchievementsPage extends StatefulWidget {
   const AchievementsPage({super.key});
@@ -10,6 +13,11 @@ class AchievementsPage extends StatefulWidget {
 class _AchievementsPageState extends State<AchievementsPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    final themeChange = Provider.of<DarkThemeProvider>(context);
+    Styles styles = Styles();
+    styles.setColors(themeChange.darkTheme);
+    return Scaffold(
+      backgroundColor: styles.mainBackgroundColor,
+    );
   }
 }
