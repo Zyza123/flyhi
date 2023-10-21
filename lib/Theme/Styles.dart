@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class Styles with ChangeNotifier{
+class Styles{
  bool darkMode = true;
  late Color mainBackgroundColor;
  late Color elementsInBg;

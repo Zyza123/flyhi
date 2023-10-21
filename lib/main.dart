@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flyhi/Language/LanguageProvider.dart';
 import 'package:flyhi/MenuPages/accountPage.dart';
 import 'package:flyhi/MenuPages/achievementsPage.dart';
 import 'package:flyhi/MenuPages/habitPage.dart';
 import 'package:flyhi/MenuPages/homePage.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:flyhi/MenuPages/Theme/Styles.dart';
+import 'package:flyhi/Theme/Styles.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
-
-import 'MenuPages/Theme/DarkThemeProvider.dart';
+import '/Theme/DarkThemeProvider.dart';
+import 'Language/Texts.dart';
 
 void main() {
   runApp(MainAppRoute());
@@ -23,7 +24,8 @@ class MainAppRoute extends StatefulWidget {
 
 class _MainAppRouteState extends State<MainAppRoute> {
 
-  DarkThemeProvider themeChangeProvider =DarkThemeProvider();
+  DarkThemeProvider themeChangeProvider = DarkThemeProvider();
+  LanguageProvider languageProvider = LanguageProvider();
   int currentIndex = 0;
 
   final List<Widget> _screens = [
@@ -38,25 +40,33 @@ class _MainAppRouteState extends State<MainAppRoute> {
     await themeChangeProvider.darkThemePreference.getTheme();
   }
 
+  void getCurrentAppLanguage() async {
+    languageProvider.language =
+        await languageProvider.languagePreference.getLang();
+  }
+
   @override
   void initState() {
     super.initState();
     getCurrentAppTheme();
+    getCurrentAppLanguage();
   }
 
   @override
   Widget build(BuildContext context) {
-      return ChangeNotifierProvider(
-        create: (_) {
-          print('notified');
-          return themeChangeProvider;
-        },
-        child: Consumer<DarkThemeProvider>(
-          builder: (context, value,child){
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => themeChangeProvider),
+          ChangeNotifierProvider(create: (_) => languageProvider),
+        ],
+        child: Consumer2<DarkThemeProvider, LanguageProvider>(
+          builder: (context, themeValue,langValue,child){
             Styles styles = Styles();
-            styles.setColors(value.darkTheme);
+            styles.setColors(themeValue.darkTheme);
+            Texts texts = Texts();
+            texts.setTextLang(langValue.language);
             print('wartosc pod:');
-            print(value.darkTheme);
+            print(themeValue.darkTheme);
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               home: Scaffold(
@@ -87,25 +97,25 @@ class _MainAppRouteState extends State<MainAppRoute> {
                       tabs: [
                         GButton(
                           icon: Ionicons.home_outline,
-                          text: 'Home',
+                          text: texts.menu[0],
                           border: currentIndex == 0?
                           Border.all(color: styles.fontMenuActive): Border(),
                         ),
                         GButton(
                           icon: Icons.event_available_outlined,
-                          text: 'Habits',
+                          text: texts.menu[1],
                           border: currentIndex == 1?
                           Border.all(color: styles.fontMenuActive): Border(),
                         ),
                         GButton(
                           icon: Ionicons.sparkles_outline,
-                          text: 'Rewards',
+                          text: texts.menu[2],
                           border: currentIndex == 2?
                           Border.all(color:  styles.fontMenuActive): Border(),
                         ),
                         GButton(
                           icon: Ionicons.settings_outline,
-                          text: 'Settings',
+                          text: texts.menu[3],
                           border: currentIndex == 3?
                           Border.all(color:  styles.fontMenuActive): Border(),
                         ),

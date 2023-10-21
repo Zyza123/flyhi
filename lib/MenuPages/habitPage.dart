@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'Theme/DarkThemeProvider.dart';
-import 'Theme/Styles.dart';
+import '../Theme/DarkThemeProvider.dart';
+import '../Theme/Styles.dart';
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});

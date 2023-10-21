@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flyhi/Language/LanguageProvider.dart';
 import 'package:provider/provider.dart';
-
-import 'Theme/DarkThemeProvider.dart';
-import 'Theme/Styles.dart';
+import '../Language/Texts.dart';
+import '../Theme/DarkThemeProvider.dart';
+import '../Theme/Styles.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -16,8 +17,11 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
+    final langChange = Provider.of<LanguageProvider>(context);
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
+    Texts texts = Texts();
+    texts.setTextLang(langChange.language);
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
       body: Padding(
@@ -31,18 +35,18 @@ class _AccountPageState extends State<AccountPage> {
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  child: Text("Settings",style: TextStyle(
+                  child: Text(texts.menu[3],style: TextStyle(
                     color: styles.classicFont,fontSize: 24,),),
                 ),
               ),
-              SizedBox(height: 20,),
+              SizedBox(height: 30,),
               Container(
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      child: Text("Dark mode:",style: TextStyle(
+                      child: Text(texts.settingsDarkMode,style: TextStyle(
                         color: styles.classicFont,fontSize: 18,),),
                     ),
                     Switch(
@@ -57,7 +61,45 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ],
                 ),
-              )
+              ),
+              SizedBox(height: 5),
+              Container(
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Text(
+                        texts.settingsLang,
+                        style: TextStyle(
+                          color: styles.classicFont,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    DropdownButton<String>(
+                      value: langChange.language == "ENG" ? "english": "polski",
+                      dropdownColor: styles.menuBg,
+                      items: texts.langList.map((String language) {
+                        return DropdownMenuItem<String>(
+                          value: language,
+                          child: Text(language,style: TextStyle(color: styles.classicFont),),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                            if(newValue == "english" || newValue == "angielski"){
+                              langChange.language = "ENG";
+                            }
+                            else{
+                              langChange.language = "PL";
+                            }
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
