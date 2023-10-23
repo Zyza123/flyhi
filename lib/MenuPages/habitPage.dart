@@ -129,12 +129,14 @@ class _HabitPageState extends State<HabitPage> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Align(
                       alignment: Alignment.topLeft,
-                      child: Text("${texts.todosPlannedText} :",
+                      child: todo_mode == 0 ? Text("${texts.todosPlannedText} :",
+                        style: TextStyle(fontSize: 20,color: styles.classicFont),):
+                      Text("${texts.todosHabits} :",
                         style: TextStyle(fontSize: 20,color: styles.classicFont),),
                     ),
                   ),
                   SizedBox(height: 25,),
-                  Expanded( // Dodaj Expanded, aby rozciągnąć listę na dostępne miejsce
+                  todo_mode == 0 ? Expanded( // Dodaj Expanded, aby rozciągnąć listę na dostępne miejsce
                     child: ListView.builder(
                     itemCount: dailyList.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -183,10 +185,17 @@ class _HabitPageState extends State<HabitPage> {
                                   ],
                                 ),
                                 SizedBox(height: 10),
-                                LinearProgressIndicator(
-                                  value: 0.6, // Tu określ procent postępu (0.6 oznacza 60%)
-                                  valueColor: AlwaysStoppedAnimation<Color>(styles.todosPickerOn), // Tutaj możesz wybrać kolor
-                                  backgroundColor: Colors.grey, // Kolor tła paska postępu
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi
+                                    color: Colors.grey, // Kolor tła kontenera
+                                  ),
+                                  child: LinearProgressIndicator(
+                                    value: 0.6, // Tu określ procent postępu (0.6 oznacza 60%)
+                                    valueColor: AlwaysStoppedAnimation<Color>(styles.todosPickerOn), // Tutaj możesz wybrać kolor
+                                    backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
+                                    minHeight: 6, // Ustaw wysokość paska postępu (grubość)
+                                  ),
                                 )
                               ],
                             ),
@@ -196,7 +205,9 @@ class _HabitPageState extends State<HabitPage> {
                       );
                     },
                   ),
-                  ),
+                  ) 
+                      :
+                  Expanded(child: Container(),),
                 ],
               ),
               Positioned(
