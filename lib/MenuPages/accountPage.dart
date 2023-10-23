@@ -77,25 +77,27 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                       ),
                     ),
-                    DropdownButton<String>(
-                      value: langChange.language == "ENG" ? "english": "polski",
-                      dropdownColor: styles.menuBg,
-                      items: texts.langList.map((String language) {
-                        return DropdownMenuItem<String>(
-                          value: language,
-                          child: Text(language,style: TextStyle(color: styles.classicFont),),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                            if(newValue == "english" || newValue == "angielski"){
-                              langChange.language = "ENG";
-                            }
-                            else{
-                              langChange.language = "PL";
-                            }
-                        }
-                      },
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: langChange.language == "ENG" ? "english": "polski",
+                        dropdownColor: styles.menuBg,
+                        items: texts.langList.map((String language) {
+                          return DropdownMenuItem<String>(
+                            value: language,
+                            child: Text(language,style: TextStyle(color: styles.classicFont),),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                              if(newValue == "english" || newValue == "angielski"){
+                                langChange.language = "ENG";
+                              }
+                              else{
+                                langChange.language = "PL";
+                              }
+                          }
+                        },
+                      ),
                     ),
                   ],
                 ),
