@@ -12,6 +12,7 @@ class Texts{
   late String todosPickerHabits;
   late String todosPlannedText;
   late String todosHabits;
+  late String addDailyAppBar;
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -27,6 +28,7 @@ class Texts{
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";
     todosPlannedText = language == "ENG" ? "Planned for today" : "Zaplanowane na dzisiaj";
     todosHabits = language == "ENG" ? "My habits" : "Moje nawyki";
+    addDailyAppBar = language == "ENG" ? "Add or modify Daily" : "Dodaj lub zmodyfikuj obowiązek";
 
   }
 }

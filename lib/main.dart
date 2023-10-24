@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flyhi/HiveClasses/DailyTodos.dart';
 import 'package:flyhi/Language/LanguageProvider.dart';
 import 'package:flyhi/MenuPages/accountPage.dart';
 import 'package:flyhi/MenuPages/achievementsPage.dart';
-import 'package:flyhi/MenuPages/habitPage.dart';
+import 'package:flyhi/MenuPages/habit/habitPage.dart';
 import 'package:flyhi/MenuPages/homePage.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:flyhi/Theme/Styles.dart';
+import 'package:hive/hive.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '/Theme/DarkThemeProvider.dart';
 import 'Language/Texts.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
+  Hive.registerAdapter(DailyTodosAdapter());
+  await Hive.openBox('daily');
   runApp(MainAppRoute());
 }
 
