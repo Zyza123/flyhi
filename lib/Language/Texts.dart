@@ -13,6 +13,12 @@ class Texts{
   late String todosPlannedText;
   late String todosHabits;
   late String addDailyAppBar;
+  late String modifyDailyAppBar;
+  late String addDailyName;
+  late String addDailyImportance;
+  late List<String> addDailyImpList = ["","",""];
+  late String addDailyIcon;
+  late String addDailyTheme;
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -28,7 +34,14 @@ class Texts{
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";
     todosPlannedText = language == "ENG" ? "Planned for today" : "Zaplanowane na dzisiaj";
     todosHabits = language == "ENG" ? "My habits" : "Moje nawyki";
-    addDailyAppBar = language == "ENG" ? "Add or modify Daily" : "Dodaj lub zmodyfikuj obowiązek";
-
+    addDailyAppBar = language == "ENG" ? "Add Daily" : "Dodaj obowiązek";
+    modifyDailyAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj obowiązek";
+    addDailyName = language == "ENG" ? "Name" : "Nazwa";
+    addDailyImportance = language == "ENG" ? "Importance" : "Waga";
+    addDailyImpList[0] = language == "ENG" ? "high" : "wysoka";
+    addDailyImpList[1] = language == "ENG" ? "medium" : "średnia";
+    addDailyImpList[2] = language == "ENG" ? "low" : "niska";
+    addDailyIcon = language == "ENG" ? "Icon" : "Ikona";
+    addDailyTheme = language == "ENG" ? "Theme" : "Motyw";
   }
 }

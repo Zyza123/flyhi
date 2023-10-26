@@ -42,7 +42,8 @@ class _HabitPageState extends State<HabitPage> {
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
-    dailyTodos.add(DailyTodos("obowiazek3","sciezka.png","not done",DateTime(2022,3,21),50,0xFFAEEA00));
+    //dailyTodos.clear();
+    //dailyTodos.add(DailyTodos("obowiazek4","assets/images/ikona1/64x64.png","not done",DateTime(2022,3,21),50,0xFFAEEA00));
     print(dailyTodos.length);
     todo_mode = 0;
   }
@@ -164,6 +165,7 @@ class _HabitPageState extends State<HabitPage> {
                     child: ListView.builder(
                     itemCount: dailyTodos.length,
                     itemBuilder: (BuildContext context, int index) {
+                      final item = dailyTodos.getAt(index);
                       return Column(
                         children: <Widget>[
                           Container(
@@ -177,7 +179,7 @@ class _HabitPageState extends State<HabitPage> {
                               children: [
                                 Row(
                                   children: [
-                                    Icon(Icons.accessibility_outlined, size: 60, color: styles.classicFont,),
+                                    Image.asset(item.icon),
                                     SizedBox(width: 10,),
                                     Expanded(
                                       child: Column(
@@ -186,7 +188,7 @@ class _HabitPageState extends State<HabitPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                dailyTodos.getAt(index).name,
+                                                item.name,
                                                 style: TextStyle(fontSize: 18, color: styles.classicFont),
                                               ),
                                               Icon(Icons.check, size: 25, color: styles.classicFont,)
@@ -197,7 +199,7 @@ class _HabitPageState extends State<HabitPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                "important",
+                                                item.importance.toString(),
                                                 style: TextStyle(fontSize: 15, color: styles.classicFont),
                                               ),
                                               Icon(Icons.more_horiz, size: 25, color: styles.classicFont,)
