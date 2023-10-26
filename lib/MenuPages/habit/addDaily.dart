@@ -30,8 +30,6 @@ class _AddDailyState extends State<AddDaily> {
   ];
   int selectedColor = 0xFFFFF8B8;
 
-
-
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -59,7 +57,7 @@ class _AddDailyState extends State<AddDaily> {
               },
               child: Row(
                 children: [
-                  Text('Zapisz  ', style: TextStyle(color: styles.classicFont,fontSize: 16)),
+                  Text(texts.addDailySave, style: TextStyle(color: styles.classicFont,fontSize: 16)),
                   Icon(Icons.check, color: styles.classicFont,size: 18,),
                 ],
               ),

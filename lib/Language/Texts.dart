@@ -19,6 +19,7 @@ class Texts{
   late List<String> addDailyImpList = ["","",""];
   late String addDailyIcon;
   late String addDailyTheme;
+  late String addDailySave;
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -43,5 +44,6 @@ class Texts{
     addDailyImpList[2] = language == "ENG" ? "low" : "niska";
     addDailyIcon = language == "ENG" ? "Icon" : "Ikona";
     addDailyTheme = language == "ENG" ? "Theme" : "Motyw";
+    addDailySave = language == "ENG" ? "Save  " : "Zapisz  ";
   }
 }
