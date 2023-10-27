@@ -23,7 +23,7 @@ class _AddDailyState extends State<AddDaily> {
   late Box dailyTodos;
   String _weightValue = 'wysoka';
   int _iconValue = 0;
-  List<String> customImagePaths = List.generate(50, (index) => 'assets/images/ikona${index + 1}/16x16.png');
+  List<String> customImagePaths = List.generate(50, (index) => 'assets/images/ikona${index + 1}/32x32.png');
   List<int> availableColors = [
     0xFFD0312D,
     0xFFFF8700,
@@ -44,7 +44,7 @@ class _AddDailyState extends State<AddDaily> {
       weightValue = 1;}
     else if (_weightValue == 'niska' || _weightValue == 'low') {
       weightValue = 2;}
-    DailyTodos dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/64x64.png', "not done", DateTime.now(), weightValue, selectedColor);
+    DailyTodos dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", DateTime.now(), weightValue, selectedColor);
     dailyTodos.add(dt);
   }
 
@@ -104,7 +104,7 @@ class _AddDailyState extends State<AddDaily> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.35,
-                child: Image.asset('assets/images/addTodo.png',fit: BoxFit.contain,),
+                child: Image.asset('assets/images/addTodo.png',fit: BoxFit.fitHeight,),
               ),
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -217,13 +217,13 @@ class _AddDailyState extends State<AddDaily> {
                       ),
                       SizedBox(height: 10,),
                       Container(
-                        height: 100,
+                        height: 130,
                         child: Scrollbar(
                           controller: _scrollController,
                           thumbVisibility: true,
                           child: GridView.builder(
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 10,
+                              crossAxisCount: 8,
                               childAspectRatio: 1, // Stosunek szerokości do wysokości
                             ),
                             itemCount: customImagePaths.length,
