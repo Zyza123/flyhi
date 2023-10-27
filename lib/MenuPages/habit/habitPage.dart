@@ -148,11 +148,15 @@ class _HabitPageState extends State<HabitPage> {
                             padding: const EdgeInsets.all(9),
 
                           ),
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            String received_value = await Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => AddDaily(editMode: false)
                               ),);
+                            if(received_value == "true"){
+                              setState(() {
+                              });
+                            }
                           },
                           child: Icon(Icons.add, color: styles.classicFont,),
                         ),
@@ -179,7 +183,11 @@ class _HabitPageState extends State<HabitPage> {
                               children: [
                                 Row(
                                   children: [
-                                    Image.asset(item.icon),
+                                    FadeInImage(
+                                      height: 64,
+                                      width: 64,
+                                      placeholder: const AssetImage('assets/spinner.gif'),
+                                      image: AssetImage(item.icon),),
                                     SizedBox(width: 10,),
                                     Expanded(
                                       child: Column(
@@ -199,8 +207,8 @@ class _HabitPageState extends State<HabitPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                item.importance.toString(),
-                                                style: TextStyle(fontSize: 15, color: styles.classicFont),
+                                                texts.addDailyImpList[item.importance],
+                                                style: TextStyle(fontSize: 15, color: Color(item.dailyTheme)),
                                               ),
                                               Icon(Icons.more_horiz, size: 25, color: styles.classicFont,)
                                             ],
@@ -218,7 +226,7 @@ class _HabitPageState extends State<HabitPage> {
                                   ),
                                   child: LinearProgressIndicator(
                                     value: 0.6, // Tu określ procent postępu (0.6 oznacza 60%)
-                                    valueColor: AlwaysStoppedAnimation<Color>(styles.todosPickerOn), // Tutaj możesz wybrać kolor
+                                    valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
                                     backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
                                     minHeight: 4, // Ustaw wysokość paska postępu (grubość)
                                   ),

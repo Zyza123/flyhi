@@ -44,6 +44,6 @@ class Texts{
     addDailyImpList[2] = language == "ENG" ? "low" : "niska";
     addDailyIcon = language == "ENG" ? "Icon" : "Ikona";
     addDailyTheme = language == "ENG" ? "Theme" : "Motyw";
-    addDailySave = language == "ENG" ? "Save  " : "Zapisz  ";
+    addDailySave = language == "ENG" ? "Save   " : "Zapisz   ";
   }
 }

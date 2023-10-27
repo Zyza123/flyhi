@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flyhi/HiveClasses/DailyTodos.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
@@ -17,18 +20,39 @@ class AddDaily extends StatefulWidget {
 
 class _AddDailyState extends State<AddDaily> {
 
+  late Box dailyTodos;
   String _weightValue = 'wysoka';
   int _iconValue = 0;
   List<String> customImagePaths = List.generate(50, (index) => 'assets/images/ikona${index + 1}/16x16.png');
   List<int> availableColors = [
-    0xFFFFF8B8,
-    0xFFFDE9EA,
-    0xFFF9E6FF,
-    0xFFE4F7FF,
-    0xFFEBFFE5,
-    0xFFE0FFFF,
+    0xFFD0312D,
+    0xFFFF8700,
+    0xFF01FF07,
+    0xFF147DF5,
+    0xFF580AFF,
+    0xFFBE0AFF,
   ];
   int selectedColor = 0xFFFFF8B8;
+  TextEditingController tec = TextEditingController();
+  ScrollController _scrollController = ScrollController();
+
+  void addDuty(){
+    int weightValue = 0;
+    if (_weightValue == 'wysoka' || _weightValue == 'high') {
+      weightValue = 0;}
+    else if (_weightValue == 'srednia' || _weightValue == 'medium') {
+      weightValue = 1;}
+    else if (_weightValue == 'niska' || _weightValue == 'low') {
+      weightValue = 2;}
+    DailyTodos dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/64x64.png', "not done", DateTime.now(), weightValue, selectedColor);
+    dailyTodos.add(dt);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dailyTodos = Hive.box('daily');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +66,10 @@ class _AddDailyState extends State<AddDaily> {
       backgroundColor: styles.mainBackgroundColor,
       appBar: AppBar(
         iconTheme: IconThemeData(color: styles.classicFont),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: (){Navigator.pop(context,"false");}
+        ),
         backgroundColor: styles.elementsInBg,
         title: Row(
           children: [
@@ -52,8 +80,10 @@ class _AddDailyState extends State<AddDaily> {
             Spacer(), // Dodaj przerwę, aby przesunąć "Zapisz" na prawą stronę
             GestureDetector(
               onTap: () {
-                // Obsługa zdarzenia naciśnięcia przycisku "Zapisz"
-                // Tutaj możesz dodać odpowiednią logikę
+                setState(() {
+                  addDuty();
+                });
+                Navigator.pop(context,"true");
               },
               child: Row(
                 children: [
@@ -93,7 +123,7 @@ class _AddDailyState extends State<AddDaily> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
                           width: MediaQuery.of(context).size.width,
                           height: 45,
                           decoration: BoxDecoration(
@@ -101,6 +131,8 @@ class _AddDailyState extends State<AddDaily> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
+                            controller: tec,
+                            style: TextStyle(color: styles.classicFont),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                             ),
@@ -187,6 +219,7 @@ class _AddDailyState extends State<AddDaily> {
                       Container(
                         height: 100,
                         child: Scrollbar(
+                          controller: _scrollController,
                           thumbVisibility: true,
                           child: GridView.builder(
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -194,6 +227,7 @@ class _AddDailyState extends State<AddDaily> {
                               childAspectRatio: 1, // Stosunek szerokości do wysokości
                             ),
                             itemCount: customImagePaths.length,
+                            controller: _scrollController,
                             itemBuilder: (BuildContext context, int index) {
                               return GestureDetector(
                                 onTap: () {
