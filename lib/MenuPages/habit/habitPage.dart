@@ -48,7 +48,7 @@ class _HabitPageState extends State<HabitPage> {
     for(int i = 0; i < dailyTodos.length; i++){
       if(today == dailyTodos.getAt(i).date.day){
         todosCopy.add(dailyTodos.getAt(i));
-        print("dzien: "+dailyTodos.getAt(i).date.day.toString());
+       // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
         indexListMirror.add(i);
       }
     }
@@ -57,22 +57,27 @@ class _HabitPageState extends State<HabitPage> {
   void removeOldDates(){
     int today = DateTime.now().day;
     int tomorrow = DateTime.now().add(Duration(days: 1)).day;
+    //print("dzisiaj 1: "+today.toString());
+    //print("jutro 1: "+tomorrow.toString());
+    List<dynamic> toRemove = [];
     for(int i = 0; i < dailyTodos.length; i++){
-      if(today != dailyTodos.getAt(i).date.day && tomorrow != dailyTodos.getAt(i).date.day){
-        dailyTodos.deleteAt(i);
+      if(today != dailyTodos.getAt(i).date.day || tomorrow != dailyTodos.getAt(i).date.day){
+        toRemove.add(dailyTodos.keyAt(i));
+        //dailyTodos.deleteAt(i);
       }
     }
+    dailyTodos.deleteAll(toRemove);
+    toRemove.clear();
   }
 
   @override
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
-    //dailyTodos.add(DailyTodos("name",'assets/images/ikona5/128x128.png', "not done", DateTime.now().add(Duration(days: 1)), 0, 0xFFD0312D,));
+    //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)), 0, 0xFFD0312D,));
     //dailyTodos.clear();
     removeOldDates();
     addElementsToTodos();
-    //dailyTodos.clear();
     todo_mode = 0;
   }
 
