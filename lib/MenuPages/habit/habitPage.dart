@@ -10,6 +10,8 @@ import 'dart:math';
 
 import 'addDaily.dart';
 
+enum SampleItem { edit, remove, postpone }
+
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
 
@@ -23,6 +25,8 @@ class _HabitPageState extends State<HabitPage> {
   final mywidgetkey = GlobalKey();
   //List<String> dailyList = ["item1","item2","item3","item4","item5","item6","item7","item8","item9","item1","item2"];
   late Box dailyTodos;
+  List<DailyTodos> todosCopy = [];
+  List<int> indexListMirror = [];
   //void updateProgressAndColor() {
   //  setState(() {
   //    progressValue = 1.0; // Ustaw na full (100%)
@@ -37,17 +41,42 @@ class _HabitPageState extends State<HabitPage> {
   //  });
   //}
 
+  void addElementsToTodos(){
+    todosCopy.clear();
+    indexListMirror.clear();
+    int today = DateTime.now().day;
+    for(int i = 0; i < dailyTodos.length; i++){
+      if(today == dailyTodos.getAt(i).date.day){
+        todosCopy.add(dailyTodos.getAt(i));
+        print("dzien: "+dailyTodos.getAt(i).date.day.toString());
+        indexListMirror.add(i);
+      }
+    }
+  }
+
+  void removeOldDates(){
+    int today = DateTime.now().day;
+    int tomorrow = DateTime.now().add(Duration(days: 1)).day;
+    for(int i = 0; i < dailyTodos.length; i++){
+      if(today != dailyTodos.getAt(i).date.day && tomorrow != dailyTodos.getAt(i).date.day){
+        dailyTodos.deleteAt(i);
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
+    //dailyTodos.add(DailyTodos("name",'assets/images/ikona5/128x128.png', "not done", DateTime.now().add(Duration(days: 1)), 0, 0xFFD0312D,));
     //dailyTodos.clear();
-    //dailyTodos.add(DailyTodos("obowiazek4","assets/images/ikona1/64x64.png","not done",DateTime(2022,3,21),50,0xFFAEEA00));
-    print(dailyTodos.length);
+    removeOldDates();
+    addElementsToTodos();
+    //dailyTodos.clear();
     todo_mode = 0;
   }
 
+  @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     Styles styles = Styles();
@@ -151,10 +180,11 @@ class _HabitPageState extends State<HabitPage> {
                           onPressed: () async {
                             String received_value = await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AddDaily(editMode: false)
+                              MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1,)
                               ),);
                             if(received_value == "true"){
                               setState(() {
+                                addElementsToTodos();
                               });
                             }
                           },
@@ -167,9 +197,10 @@ class _HabitPageState extends State<HabitPage> {
                   SizedBox(height: 25,),
                   todo_mode == 0 ? Expanded( // Dodaj Expanded, aby rozciągnąć listę na dostępne miejsce
                     child: ListView.builder(
-                    itemCount: dailyTodos.length,
+                    itemCount: todosCopy.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final item = dailyTodos.getAt(index);
+                      final item = todosCopy[index];
+                      SampleItem? selectedMenu;
                       return Column(
                         children: <Widget>[
                           Container(
@@ -183,11 +214,23 @@ class _HabitPageState extends State<HabitPage> {
                               children: [
                                 Row(
                                   children: [
-                                    FadeInImage(
-                                      height: 64,
-                                      width: 64,
-                                      placeholder: const AssetImage('assets/spinner.gif'),
-                                      image: AssetImage(item.icon),),
+                                    FutureBuilder<void>(
+                                      future: Future.delayed(Duration(milliseconds: 300), () => null),
+                                      builder: (context,snapshot) {
+                                        if(snapshot.connectionState == ConnectionState.waiting){
+                                          return Image(
+                                            height: 64,
+                                            width: 64,
+                                            image: const AssetImage('assets/spinner.gif'));
+                                        }
+                                        else{
+                                          return Image(
+                                            height: 64,
+                                            width: 64,
+                                            image: AssetImage(item.icon),);
+                                        }
+                                      },
+                                    ),
                                     SizedBox(width: 10,),
                                     Expanded(
                                       child: Column(
@@ -202,7 +245,7 @@ class _HabitPageState extends State<HabitPage> {
                                               Icon(Icons.check, size: 25, color: styles.classicFont,)
                                             ],
                                           ),
-                                          SizedBox(height: 5,),
+                                          SizedBox(height: 15,),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
@@ -210,7 +253,60 @@ class _HabitPageState extends State<HabitPage> {
                                                 texts.addDailyImpList[item.importance],
                                                 style: TextStyle(fontSize: 15, color: Color(item.dailyTheme)),
                                               ),
-                                              Icon(Icons.more_horiz, size: 25, color: styles.classicFont,)
+                                              PopupMenuButton<SampleItem>(
+                                                tooltip: "Show menu",
+                                                color: styles.mainBackgroundColor,
+                                                child: Container(
+                                                  width: 25,
+                                                  height: 25,
+                                                  alignment: Alignment.bottomRight,
+                                                  child: Icon(Icons.more_horiz, size: 25, color: styles.classicFont,),
+                                                ),
+                                                initialValue: selectedMenu,
+                                                onSelected: (SampleItem item) async {
+                                                  if(item.index == 0){
+                                                    String received_value = await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],)
+                                                      ),);
+                                                    if(received_value == "true"){
+                                                      setState(() {
+                                                        addElementsToTodos();
+                                                      });
+                                                    }
+                                                  }
+                                                  else if(item.index == 1){
+                                                    setState(() {
+                                                      dailyTodos.deleteAt(
+                                                        indexListMirror[index]
+                                                      );
+                                                      addElementsToTodos();
+                                                    });
+                                                  }
+                                                  else if(item.index == 2){
+                                                    var existingTodo = dailyTodos.getAt(indexListMirror[index]) as DailyTodos;
+                                                    existingTodo.date = existingTodo.date.add(Duration(days: 1));
+                                                    setState(() {
+                                                      dailyTodos.putAt(indexListMirror[index], existingTodo);
+                                                      addElementsToTodos();
+                                                    });
+                                                  }
+                                                },
+                                                itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
+                                                  PopupMenuItem<SampleItem>(
+                                                    value: SampleItem.edit,
+                                                    child: Text('Edit',style: TextStyle(color: styles.classicFont),),
+                                                  ),
+                                                  PopupMenuItem<SampleItem>(
+                                                    value: SampleItem.remove,
+                                                    child: Text('Remove',style: TextStyle(color: styles.classicFont),),
+                                                  ),
+                                                  PopupMenuItem<SampleItem>(
+                                                    value: SampleItem.postpone,
+                                                    child: Text('Postpone',style: TextStyle(color: styles.classicFont),),
+                                                  ),
+                                                ],
+                                              ),
                                             ],
                                           )
                                         ],

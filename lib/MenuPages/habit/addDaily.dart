@@ -10,18 +10,22 @@ import '../../Theme/DarkThemeProvider.dart';
 import '../../Theme/Styles.dart';
 
 class AddDaily extends StatefulWidget {
-  const AddDaily({super.key, required this.editMode});
+  const AddDaily({super.key, required this.editMode, required this.editIndex});
 
   final bool editMode;
+  final int editIndex;
 
   @override
   State<AddDaily> createState() => _AddDailyState();
 }
 
+
 class _AddDailyState extends State<AddDaily> {
 
   late Box dailyTodos;
-  String _weightValue = 'wysoka';
+  String _weightValue = "wysoka";
+  int imp = 0;
+  bool do_once = true;
   int _iconValue = 0;
   List<String> customImagePaths = List.generate(50, (index) => 'assets/images/ikona${index + 1}/32x32.png');
   List<int> availableColors = [
@@ -32,26 +36,52 @@ class _AddDailyState extends State<AddDaily> {
     0xFF580AFF,
     0xFFBE0AFF,
   ];
-  int selectedColor = 0xFFFFF8B8;
+  int selectedColor = 0xFFD0312D;
   TextEditingController tec = TextEditingController();
   ScrollController _scrollController = ScrollController();
+  bool showValidationMessage = false;
 
-  void addDuty(){
-    int weightValue = 0;
+  void getHiveFromIndex(){
+    tec.text = dailyTodos.getAt(widget.editIndex).name;
+    String modified = dailyTodos.getAt(widget.editIndex).icon;
+    modified = modified.substring(0,modified.length - 11);
+    modified += '32x32.png';
+    _iconValue = customImagePaths.indexOf(modified);
+    selectedColor = dailyTodos.getAt(widget.editIndex).dailyTheme;
+    imp = dailyTodos.getAt(widget.editIndex).importance;
+  }
+
+  int getWeightValue(){
     if (_weightValue == 'wysoka' || _weightValue == 'high') {
-      weightValue = 0;}
+      return 0;}
     else if (_weightValue == 'srednia' || _weightValue == 'medium') {
-      weightValue = 1;}
+      return 1;}
     else if (_weightValue == 'niska' || _weightValue == 'low') {
-      weightValue = 2;}
+      return 2;}
+    return 0;
+  }
+  void addDuty(){
+    int weightValue = getWeightValue();
     DailyTodos dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", DateTime.now(), weightValue, selectedColor);
     dailyTodos.add(dt);
+  }
+
+  void modifyDuty(){
+    var existingTodo = dailyTodos.getAt(widget.editIndex) as DailyTodos;
+    existingTodo.name = tec.text;
+    existingTodo.importance = getWeightValue();
+    existingTodo.icon = 'assets/images/ikona${_iconValue + 1}/128x128.png';
+    existingTodo.dailyTheme = selectedColor;
+    dailyTodos.putAt(widget.editIndex, existingTodo);
   }
 
   @override
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
+    if(widget.editMode == true){
+      getHiveFromIndex();
+    }
   }
 
   @override
@@ -62,6 +92,10 @@ class _AddDailyState extends State<AddDaily> {
     final langChange = Provider.of<LanguageProvider>(context);
     Texts texts = Texts();
     texts.setTextLang(langChange.language);
+    if(do_once){
+      _weightValue = texts.addDailyImpList[imp];
+      do_once = false;
+    }
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
       appBar: AppBar(
@@ -80,10 +114,24 @@ class _AddDailyState extends State<AddDaily> {
             Spacer(), // Dodaj przerwę, aby przesunąć "Zapisz" na prawą stronę
             GestureDetector(
               onTap: () {
-                setState(() {
-                  addDuty();
-                });
-                Navigator.pop(context,"true");
+                if(tec.text != ""){
+                  if(widget.editMode){
+                    setState(() {
+                      modifyDuty();
+                    });
+                  }
+                  else{
+                    setState(() {
+                      addDuty();
+                    });
+                  }
+                  Navigator.pop(context,"true");
+                }
+                else {
+                  setState(() {
+                    showValidationMessage = true;
+                  });
+                }
               },
               child: Row(
                 children: [
@@ -132,6 +180,11 @@ class _AddDailyState extends State<AddDaily> {
                           ),
                           child: TextField(
                             controller: tec,
+                            onChanged: (text) {
+                              setState(() {
+                                showValidationMessage = false;
+                              });
+                            },
                             style: TextStyle(color: styles.classicFont),
                             decoration: InputDecoration(
                               border: InputBorder.none,
@@ -140,6 +193,9 @@ class _AddDailyState extends State<AddDaily> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 10,),
+                      showValidationMessage == true ?Align(
+                          alignment: Alignment.topLeft,child: Text("* This field is required",style: TextStyle(color: Colors.red,fontSize: 14),)) : Container(),
                       SizedBox(height: 20,),
                       Align(
                         alignment: Alignment.topLeft,
