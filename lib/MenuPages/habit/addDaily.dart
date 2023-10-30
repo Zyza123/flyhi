@@ -24,6 +24,7 @@ class _AddDailyState extends State<AddDaily> {
 
   late Box dailyTodos;
   String _weightValue = "wysoka";
+  String _dayValue = "dzisiaj";
   int imp = 0;
   bool do_once = true;
   int _iconValue = 0;
@@ -62,7 +63,13 @@ class _AddDailyState extends State<AddDaily> {
   }
   void addDuty(){
     int weightValue = getWeightValue();
-    DailyTodos dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", DateTime.now(), weightValue, selectedColor);
+    DailyTodos dt;
+    if(_dayValue == "Jutro" || _dayValue == "Tomorrow"){
+      dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", DateTime.now().add(Duration(days: 1)), weightValue, selectedColor);
+    }
+    else{
+      dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", DateTime.now(), weightValue, selectedColor);
+    }
     dailyTodos.add(dt);
   }
 
@@ -72,7 +79,10 @@ class _AddDailyState extends State<AddDaily> {
     existingTodo.importance = getWeightValue();
     existingTodo.icon = 'assets/images/ikona${_iconValue + 1}/128x128.png';
     existingTodo.dailyTheme = selectedColor;
-    dailyTodos.putAt(widget.editIndex, existingTodo);
+    if(_dayValue == "Jutro" || _dayValue == "Tomorrow"){
+      existingTodo.date = existingTodo.date.add(Duration(days: 1));
+    }
+      dailyTodos.putAt(widget.editIndex, existingTodo);
   }
 
   @override
@@ -94,6 +104,7 @@ class _AddDailyState extends State<AddDaily> {
     texts.setTextLang(langChange.language);
     if(do_once){
       _weightValue = texts.addDailyImpList[imp];
+      _dayValue = texts.addDailyAppearToday;
       do_once = false;
     }
     return Scaffold(
@@ -102,7 +113,7 @@ class _AddDailyState extends State<AddDaily> {
         iconTheme: IconThemeData(color: styles.classicFont),
         leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: (){Navigator.pop(context,"false");}
+            onPressed: (){Navigator.pop(context,false);}
         ),
         backgroundColor: styles.elementsInBg,
         title: Row(
@@ -113,7 +124,7 @@ class _AddDailyState extends State<AddDaily> {
             ),
             Spacer(), // Dodaj przerwę, aby przesunąć "Zapisz" na prawą stronę
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 if(tec.text != ""){
                   if(widget.editMode){
                     setState(() {
@@ -125,7 +136,7 @@ class _AddDailyState extends State<AddDaily> {
                       addDuty();
                     });
                   }
-                  Navigator.pop(context,"true");
+                  Navigator.pop(context,true);
                 }
                 else {
                   setState(() {
@@ -267,6 +278,55 @@ class _AddDailyState extends State<AddDaily> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
+                          texts.addDailyAppearDay, // Lub 'Name' w zależności od języka
+                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Row(
+                              children: [
+                                Radio<String>(
+                                  value: texts.addDailyAppearToday,
+                                  groupValue: _dayValue, // Ustaw stan wyboru
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _dayValue = value!;
+                                    });
+                                  },
+                                  activeColor: styles.classicFont,
+                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                                ),
+                                Text(texts.addDailyAppearToday, style: TextStyle(fontSize: 14,
+                                    color: styles.classicFont)),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Radio<String>(
+                                  value: texts.addDailyAppearTomorrow,
+                                  groupValue: _dayValue, // Ustaw stan wyboru
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _dayValue = value!;
+                                    });
+                                  },
+                                  activeColor: styles.classicFont,
+                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                                ),
+                                Text(texts.addDailyAppearTomorrow, style: TextStyle(fontSize: 14,
+                                    color: styles.classicFont)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
                           texts.addDailyIcon, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
@@ -348,6 +408,7 @@ class _AddDailyState extends State<AddDaily> {
                             ),
                         ],
                       ),
+                      SizedBox(height: 10,),
                     ],
                   ),
                 ),

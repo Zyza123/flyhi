@@ -11,6 +11,9 @@ class Texts{
   late String todosPickerDaily;
   late String todosPickerHabits;
   late String todosPlannedText;
+  late String todosPopupEdit;
+  late String todosPopupRemove;
+  late String todosPopupPostpone;
   late String todosHabits;
   late String addDailyAppBar;
   late String modifyDailyAppBar;
@@ -20,6 +23,9 @@ class Texts{
   late String addDailyIcon;
   late String addDailyTheme;
   late String addDailySave;
+  late String addDailyAppearDay;
+  late String addDailyAppearToday;
+  late String addDailyAppearTomorrow;
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -34,6 +40,9 @@ class Texts{
     todosPickerDaily = language == "ENG" ? "Daily" : "Dzienne";
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";
     todosPlannedText = language == "ENG" ? "Planned for today" : "Zaplanowane na dzisiaj";
+    todosPopupEdit = language == "ENG" ? "Edit" : "Edytuj";
+    todosPopupRemove = language == "ENG" ? "Remove" : "Usuń";
+    todosPopupPostpone = language == "ENG" ? "Postpone" : "Przełóż";
     todosHabits = language == "ENG" ? "My habits" : "Moje nawyki";
     addDailyAppBar = language == "ENG" ? "Add Daily" : "Dodaj obowiązek";
     modifyDailyAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj obowiązek";
@@ -45,5 +54,9 @@ class Texts{
     addDailyIcon = language == "ENG" ? "Icon" : "Ikona";
     addDailyTheme = language == "ENG" ? "Theme" : "Motyw";
     addDailySave = language == "ENG" ? "Save   " : "Zapisz   ";
+    addDailyAppearDay = language == "ENG" ? "Appearance day" : "Data pojawienia";
+    addDailyAppearToday = language == "ENG" ? "Today" : "Dzisiaj";
+    addDailyAppearTomorrow = language == "ENG" ? "Tomorrow" : "Jutro";
+
   }
 }

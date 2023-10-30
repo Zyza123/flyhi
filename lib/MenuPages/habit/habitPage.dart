@@ -41,6 +41,10 @@ class _HabitPageState extends State<HabitPage> {
   //  });
   //}
 
+  refresh() {
+    setState(() {});
+  }
+
   void addElementsToTodos(){
     todosCopy.clear();
     indexListMirror.clear();
@@ -61,7 +65,7 @@ class _HabitPageState extends State<HabitPage> {
     //print("jutro 1: "+tomorrow.toString());
     List<dynamic> toRemove = [];
     for(int i = 0; i < dailyTodos.length; i++){
-      if(today != dailyTodos.getAt(i).date.day || tomorrow != dailyTodos.getAt(i).date.day){
+      if(today != dailyTodos.getAt(i).date.day && tomorrow != dailyTodos.getAt(i).date.day){
         toRemove.add(dailyTodos.keyAt(i));
         //dailyTodos.deleteAt(i);
       }
@@ -182,16 +186,18 @@ class _HabitPageState extends State<HabitPage> {
                             padding: const EdgeInsets.all(9),
 
                           ),
-                          onPressed: () async {
-                            String received_value = await Navigator.push(
+                          onPressed: ()  {
+                            Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1,)
-                              ),);
-                            if(received_value == "true"){
-                              setState(() {
-                                addElementsToTodos();
-                              });
-                            }
+                              )).then((value){
+                                if(value == true) {
+                                    setState(() {
+                                      dailyTodos = Hive.box('daily');
+                                      addElementsToTodos();
+                                    });
+                                  }
+                            });
                           },
                           child: Icon(Icons.add, color: styles.classicFont,),
                         ),
@@ -219,23 +225,10 @@ class _HabitPageState extends State<HabitPage> {
                               children: [
                                 Row(
                                   children: [
-                                    FutureBuilder<void>(
-                                      future: Future.delayed(Duration(milliseconds: 300), () => null),
-                                      builder: (context,snapshot) {
-                                        if(snapshot.connectionState == ConnectionState.waiting){
-                                          return Image(
-                                            height: 64,
-                                            width: 64,
-                                            image: const AssetImage('assets/spinner.gif'));
-                                        }
-                                        else{
-                                          return Image(
-                                            height: 64,
-                                            width: 64,
-                                            image: AssetImage(item.icon),);
-                                        }
-                                      },
-                                    ),
+                                    Image(
+                                      height: 64,
+                                      width: 64,
+                                      image: AssetImage(item.icon),fit: BoxFit.contain,),
                                     SizedBox(width: 10,),
                                     Expanded(
                                       child: Column(
@@ -247,7 +240,23 @@ class _HabitPageState extends State<HabitPage> {
                                                 item.name,
                                                 style: TextStyle(fontSize: 18, color: styles.classicFont),
                                               ),
-                                              Icon(Icons.check, size: 25, color: styles.classicFont,)
+                                              GestureDetector(
+                                                 onTap: (){
+                                                   var existingTodo = dailyTodos.getAt(indexListMirror[index]) as DailyTodos;
+                                                   if(existingTodo.status == "not done"){
+                                                     existingTodo.status = "done";
+                                                   }
+                                                   else{
+                                                     existingTodo.status = "not done";
+                                                   }
+                                                   setState(() {
+                                                     dailyTodos.putAt(indexListMirror[index], existingTodo);
+                                                     todosCopy[index].status = existingTodo.status;
+                                                   });
+                                                 },
+                                                 child: Icon(Icons.check, size: 25,
+                                                   color: item.status == "done" ? Color(item.dailyTheme) : styles.classicFont,)
+                                              )
                                             ],
                                           ),
                                           SizedBox(height: 15,),
@@ -256,7 +265,7 @@ class _HabitPageState extends State<HabitPage> {
                                             children: [
                                               Text(
                                                 texts.addDailyImpList[item.importance],
-                                                style: TextStyle(fontSize: 15, color: Color(item.dailyTheme)),
+                                                style: TextStyle(fontSize: 15, color: styles.classicFont),
                                               ),
                                               PopupMenuButton<SampleItem>(
                                                 tooltip: "Show menu",
@@ -268,17 +277,19 @@ class _HabitPageState extends State<HabitPage> {
                                                   child: Icon(Icons.more_horiz, size: 25, color: styles.classicFont,),
                                                 ),
                                                 initialValue: selectedMenu,
-                                                onSelected: (SampleItem item) async {
+                                                onSelected: (SampleItem item) {
                                                   if(item.index == 0){
-                                                    String received_value = await Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],)
-                                                      ),);
-                                                    if(received_value == "true"){
-                                                      setState(() {
-                                                        addElementsToTodos();
-                                                      });
-                                                    }
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],)
+                                                        )).then((value){
+                                                      if(value == true) {
+                                                        setState(() {
+                                                          dailyTodos = Hive.box('daily');
+                                                          addElementsToTodos();
+                                                        });
+                                                      }
+                                                    });
                                                   }
                                                   else if(item.index == 1){
                                                     setState(() {
@@ -300,15 +311,15 @@ class _HabitPageState extends State<HabitPage> {
                                                 itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
                                                   PopupMenuItem<SampleItem>(
                                                     value: SampleItem.edit,
-                                                    child: Text('Edit',style: TextStyle(color: styles.classicFont),),
+                                                    child: Text(texts.todosPopupEdit,style: TextStyle(color: styles.classicFont),),
                                                   ),
                                                   PopupMenuItem<SampleItem>(
                                                     value: SampleItem.remove,
-                                                    child: Text('Remove',style: TextStyle(color: styles.classicFont),),
+                                                    child: Text(texts.todosPopupRemove,style: TextStyle(color: styles.classicFont),),
                                                   ),
                                                   PopupMenuItem<SampleItem>(
                                                     value: SampleItem.postpone,
-                                                    child: Text('Postpone',style: TextStyle(color: styles.classicFont),),
+                                                    child: Text(texts.todosPopupPostpone,style: TextStyle(color: styles.classicFont),),
                                                   ),
                                                 ],
                                               ),
@@ -326,7 +337,7 @@ class _HabitPageState extends State<HabitPage> {
                                     color: Colors.grey, // Kolor tła kontenera
                                   ),
                                   child: LinearProgressIndicator(
-                                    value: 0.6, // Tu określ procent postępu (0.6 oznacza 60%)
+                                    value: item.status == "not done" ? 0 : 1, // Tu określ procent postępu (0.6 oznacza 60%)
                                     valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
                                     backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
                                     minHeight: 4, // Ustaw wysokość paska postępu (grubość)
