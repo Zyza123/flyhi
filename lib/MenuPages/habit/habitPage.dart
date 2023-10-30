@@ -41,9 +41,6 @@ class _HabitPageState extends State<HabitPage> {
   //  });
   //}
 
-  refresh() {
-    setState(() {});
-  }
 
   void addElementsToTodos(){
     todosCopy.clear();
@@ -286,7 +283,7 @@ class _HabitPageState extends State<HabitPage> {
                                                       if(value == true) {
                                                         setState(() {
                                                           dailyTodos = Hive.box('daily');
-                                                          addElementsToTodos();
+                                                          todosCopy[index] = dailyTodos.getAt(indexListMirror[index]);
                                                         });
                                                       }
                                                     });
@@ -336,11 +333,21 @@ class _HabitPageState extends State<HabitPage> {
                                     borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi
                                     color: Colors.grey, // Kolor tła kontenera
                                   ),
-                                  child: LinearProgressIndicator(
-                                    value: item.status == "not done" ? 0 : 1, // Tu określ procent postępu (0.6 oznacza 60%)
-                                    valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
-                                    backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
-                                    minHeight: 4, // Ustaw wysokość paska postępu (grubość)
+                                  child: TweenAnimationBuilder<double>(
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeInOut,
+                                  tween: Tween<double>(
+                                    begin: 0,
+                                    end: item.status == "done" ? 1 : 0,
+                                  ),
+                                    builder: (context,value, _) =>
+                                        LinearProgressIndicator(
+                                          // Tu określ procent postępu (0.6 oznacza 60%)
+                                          value: value,
+                                          valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
+                                          backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
+                                          minHeight: 4, // Ustaw wysokość paska postępu (grubość)
+                                        ),
                                   ),
                                 )
                               ],
@@ -351,7 +358,7 @@ class _HabitPageState extends State<HabitPage> {
                       );
                     },
                   ),
-                  ) 
+                  )
                       :
                   Expanded(child: Container(),),
                 ],
