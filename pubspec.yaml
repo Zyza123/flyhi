@@ -45,6 +45,7 @@ dependencies:
   hive_generator: ^2.0.1
   path_provider: ^2.1.1
   intl: ^0.18.1
+  transparent_image: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -70,7 +71,57 @@ flutter:
   assets:
     #- assets/icons/habits_icon.png
     - assets/spinner.gif
-    - assets/images/
+    - assets/images/addTodo.png
+    - assets/images/ikona1/
+    - assets/images/ikona2/
+    - assets/images/ikona3/
+    - assets/images/ikona4/
+    - assets/images/ikona5/
+    - assets/images/ikona6/
+    - assets/images/ikona7/
+    - assets/images/ikona8/
+    - assets/images/ikona9/
+    - assets/images/ikona10/
+    - assets/images/ikona11/
+    - assets/images/ikona12/
+    - assets/images/ikona13/
+    - assets/images/ikona14/
+    - assets/images/ikona15/
+    - assets/images/ikona16/
+    - assets/images/ikona17/
+    - assets/images/ikona18/
+    - assets/images/ikona19/
+    - assets/images/ikona20/
+    - assets/images/ikona21/
+    - assets/images/ikona22/
+    - assets/images/ikona23/
+    - assets/images/ikona24/
+    - assets/images/ikona25/
+    - assets/images/ikona26/
+    - assets/images/ikona27/
+    - assets/images/ikona28/
+    - assets/images/ikona29/
+    - assets/images/ikona30/
+    - assets/images/ikona31/
+    - assets/images/ikona32/
+    - assets/images/ikona33/
+    - assets/images/ikona34/
+    - assets/images/ikona35/
+    - assets/images/ikona36/
+    - assets/images/ikona37/
+    - assets/images/ikona38/
+    - assets/images/ikona39/
+    - assets/images/ikona40/
+    - assets/images/ikona41/
+    - assets/images/ikona42/
+    - assets/images/ikona43/
+    - assets/images/ikona44/
+    - assets/images/ikona45/
+    - assets/images/ikona46/
+    - assets/images/ikona47/
+    - assets/images/ikona48/
+    - assets/images/ikona49/
+    - assets/images/ikona50/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

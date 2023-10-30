@@ -27,6 +27,7 @@ class _HabitPageState extends State<HabitPage> {
   late Box dailyTodos;
   List<DailyTodos> todosCopy = [];
   List<int> indexListMirror = [];
+  List<String> customImagePaths = List.generate(50, (index) => 'assets/images/ikona${index + 1}/128x128.png');
   //void updateProgressAndColor() {
   //  setState(() {
   //    progressValue = 1.0; // Ustaw na full (100%)
@@ -208,6 +209,7 @@ class _HabitPageState extends State<HabitPage> {
                     itemCount: todosCopy.length,
                     itemBuilder: (BuildContext context, int index) {
                       final item = todosCopy[index];
+                      String defaultPlaceholderPath = 'assets/spinner.gif';
                       SampleItem? selectedMenu;
                       return Column(
                         children: <Widget>[
@@ -222,10 +224,17 @@ class _HabitPageState extends State<HabitPage> {
                               children: [
                                 Row(
                                   children: [
-                                    Image(
-                                      height: 64,
-                                      width: 64,
-                                      image: AssetImage(item.icon),fit: BoxFit.contain,),
+                                    AnimatedSwitcher(
+                                      duration: const Duration(milliseconds: 0),
+                                      child: FadeInImage(
+                                        height: 64,
+                                        width: 64,
+                                        key: ValueKey<String>(item.icon), // Generuj losowy klucz za każdym razem
+                                        placeholder: AssetImage(item.icon),
+                                        image: AssetImage(item.icon),
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
                                     SizedBox(width: 10,),
                                     Expanded(
                                       child: Column(
@@ -334,8 +343,8 @@ class _HabitPageState extends State<HabitPage> {
                                     color: Colors.grey, // Kolor tła kontenera
                                   ),
                                   child: TweenAnimationBuilder<double>(
-                                  duration: const Duration(milliseconds: 250),
-                                  curve: Curves.easeInOut,
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.decelerate,
                                   tween: Tween<double>(
                                     begin: 0,
                                     end: item.status == "done" ? 1 : 0,
