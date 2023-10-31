@@ -40,9 +40,9 @@ class Texts{
     todosPickerDaily = language == "ENG" ? "Daily" : "Dzienne";
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";
     todosPlannedText = language == "ENG" ? "Planned for today" : "Zaplanowane na dzisiaj";
-    todosPopupEdit = language == "ENG" ? "Edit" : "Edytuj";
-    todosPopupRemove = language == "ENG" ? "Remove" : "Usuń";
-    todosPopupPostpone = language == "ENG" ? "Postpone" : "Przełóż";
+    todosPopupEdit = language == "ENG" ? "Edit " : "Edytuj ";
+    todosPopupRemove = language == "ENG" ? "Remove " : "Usuń ";
+    todosPopupPostpone = language == "ENG" ? "Postpone " : "Przełóż ";
     todosHabits = language == "ENG" ? "My habits" : "Moje nawyki";
     addDailyAppBar = language == "ENG" ? "Add Daily" : "Dodaj obowiązek";
     modifyDailyAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj obowiązek";

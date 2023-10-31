@@ -240,12 +240,15 @@ class _HabitPageState extends State<HabitPage> {
                                       child: Column(
                                         children: [
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                item.name,
-                                                style: TextStyle(fontSize: 18, color: styles.classicFont),
+                                              Expanded(
+                                                child: Text(
+                                                  item.name,
+                                                  style: TextStyle(fontSize: 17, color: styles.classicFont),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
                                               ),
+                                              SizedBox(width: 5,),
                                               GestureDetector(
                                                  onTap: (){
                                                    var existingTodo = dailyTodos.getAt(indexListMirror[index]) as DailyTodos;
@@ -276,6 +279,9 @@ class _HabitPageState extends State<HabitPage> {
                                               PopupMenuButton<SampleItem>(
                                                 tooltip: "Show menu",
                                                 color: styles.mainBackgroundColor,
+                                                constraints: BoxConstraints(
+                                                  maxWidth: 135,
+                                                ),
                                                 child: Container(
                                                   width: 25,
                                                   height: 25,
@@ -317,15 +323,42 @@ class _HabitPageState extends State<HabitPage> {
                                                 itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
                                                   PopupMenuItem<SampleItem>(
                                                     value: SampleItem.edit,
-                                                    child: Text(texts.todosPopupEdit,style: TextStyle(color: styles.classicFont),),
+                                                    child: Container(
+                                                      height: 40,
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text(texts.todosPopupEdit, style: TextStyle(color: styles.classicFont)),
+                                                          Icon(Icons.edit_outlined, color: styles.classicFont),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                   PopupMenuItem<SampleItem>(
                                                     value: SampleItem.remove,
-                                                    child: Text(texts.todosPopupRemove,style: TextStyle(color: styles.classicFont),),
+                                                    child: Container(
+                                                      height: 40,
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text(texts.todosPopupRemove, style: TextStyle(color: styles.classicFont)),
+                                                          Icon(Icons.delete_outlined, color: styles.classicFont),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                   PopupMenuItem<SampleItem>(
                                                     value: SampleItem.postpone,
-                                                    child: Text(texts.todosPopupPostpone,style: TextStyle(color: styles.classicFont),),
+                                                    child: Container(
+                                                      height: 40,
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text(texts.todosPopupPostpone, style: TextStyle(color: styles.classicFont)),
+                                                          Icon(Icons.access_alarm, color: styles.classicFont),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
                                               ),

@@ -41,6 +41,7 @@ class _AddDailyState extends State<AddDaily> {
   TextEditingController tec = TextEditingController();
   ScrollController _scrollController = ScrollController();
   bool showValidationMessage = false;
+  late Image mainDailyImage;
 
   void getHiveFromIndex(){
     tec.text = dailyTodos.getAt(widget.editIndex).name;
@@ -86,8 +87,15 @@ class _AddDailyState extends State<AddDaily> {
   }
 
   @override
+  void didChangeDependencies() {
+    precacheImage(mainDailyImage.image, context);
+    super.didChangeDependencies();
+  }
+
+  @override
   void initState() {
     super.initState();
+    mainDailyImage = Image.asset('assets/images/addTodo.png',fit: BoxFit.fitHeight,);
     dailyTodos = Hive.box('daily');
     if(widget.editMode == true){
       getHiveFromIndex();
@@ -163,7 +171,7 @@ class _AddDailyState extends State<AddDaily> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.35,
-                child: Image.asset('assets/images/addTodo.png',fit: BoxFit.fitHeight,),
+                child: mainDailyImage,
               ),
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -196,9 +204,11 @@ class _AddDailyState extends State<AddDaily> {
                                 showValidationMessage = false;
                               });
                             },
-                            style: TextStyle(color: styles.classicFont),
+                            style: TextStyle(color: styles.classicFont,
+                            letterSpacing: 1.5),
                             decoration: InputDecoration(
                               border: InputBorder.none,
+                              counterText: "",
                             ),
                             textAlignVertical: TextAlignVertical.top, // Wyśrodkowanie tekstu tylko w pionie
                           ),
