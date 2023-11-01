@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flyhi/HiveClasses/DailyTodos.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
 import '../../Theme/DarkThemeProvider.dart';
@@ -28,6 +29,7 @@ class _HabitPageState extends State<HabitPage> {
   List<DailyTodos> todosCopy = [];
   List<int> indexListMirror = [];
   List<String> customImagePaths = List.generate(50, (index) => 'assets/images/ikona${index + 1}/128x128.png');
+  int selectedFilter = 0;
   //void updateProgressAndColor() {
   //  setState(() {
   //    progressValue = 1.0; // Ustaw na full (100%)
@@ -42,6 +44,37 @@ class _HabitPageState extends State<HabitPage> {
   //  });
   //}
 
+  void addElementsToTodosAsc(){
+    todosCopy.clear();
+    indexListMirror.clear();
+    int today = DateTime.now().day;
+    for(int i = 0; i < 3; i++){
+      for(int j = 0; j < dailyTodos.length; j++){
+        if(today == dailyTodos.getAt(j).date.day){
+          if(dailyTodos.getAt(j).importance == i)
+          todosCopy.add(dailyTodos.getAt(j));
+          // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
+          indexListMirror.add(j);
+        }
+      }
+    }
+  }
+
+  void addElementsToTodosDesc(){
+    todosCopy.clear();
+    indexListMirror.clear();
+    int today = DateTime.now().day;
+    for(int i = 2; i >= 0; i--){
+      for(int j = 0; j < dailyTodos.length; j++){
+        if(today == dailyTodos.getAt(j).date.day){
+          if(dailyTodos.getAt(j).importance == i)
+            todosCopy.add(dailyTodos.getAt(j));
+          // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
+          indexListMirror.add(j);
+        }
+      }
+    }
+  }
 
   void addElementsToTodos(){
     todosCopy.clear();
@@ -72,14 +105,42 @@ class _HabitPageState extends State<HabitPage> {
     toRemove.clear();
   }
 
+  void saveFilter(int filterIndex) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('filter', filterIndex);
+    // Możesz użyć innych metod, takich jak setInt(), setDouble(), itp., w zależności od rodzaju danych.
+  }
+
+  Future<void> readData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = "filter";
+    if(prefs.containsKey("filter")){
+      setState(() {
+        selectedFilter = prefs.getInt('filter')!;
+        if(selectedFilter == 0){
+          addElementsToTodos();
+        }
+        else if(selectedFilter == 1){
+          addElementsToTodosAsc();
+        }
+        else{
+          addElementsToTodosDesc();
+        }
+      });
+
+    }
+
+    // Możesz użyć innych metod, takich jak getInt(), getDouble(), itp., w zależności od rodzaju danych.
+  }
+
   @override
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
+    removeOldDates();
+    readData();
     //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)), 0, 0xFFD0312D,));
     //dailyTodos.clear();
-    removeOldDates();
-    addElementsToTodos();
     todo_mode = 0;
   }
 
@@ -203,7 +264,51 @@ class _HabitPageState extends State<HabitPage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 25,),
+                  SizedBox(height: 15,),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    decoration: BoxDecoration(
+                      color: styles.elementsInBg,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: DropdownButton<String>(
+                        dropdownColor: styles.elementsInBg,
+                        isExpanded: true,
+                        value: texts.todosFilterList[selectedFilter],
+                        underline: Container(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            print("filtr: $selectedFilter");
+                            if(newValue == texts.todosFilterList[0]){
+                              saveFilter(0);
+                              selectedFilter = 0;
+                              addElementsToTodos();
+                            }
+                            else if(newValue == texts.todosFilterList[1]){
+                              saveFilter(1);
+                              selectedFilter = 1;
+                              addElementsToTodosAsc();
+                            }
+                            else if(newValue == texts.todosFilterList[2]){
+                              saveFilter(2);
+                              selectedFilter = 2;
+                              addElementsToTodosDesc();
+                            }
+                          });
+                        },
+                        items: texts.todosFilterList
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value,style: TextStyle(color: styles.classicFont,fontSize: 17),),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15,),
                   todo_mode == 0 ? Expanded( // Dodaj Expanded, aby rozciągnąć listę na dostępne miejsce
                     child: ListView.builder(
                     itemCount: todosCopy.length,

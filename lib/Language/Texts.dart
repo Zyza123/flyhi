@@ -15,6 +15,7 @@ class Texts{
   late String todosPopupRemove;
   late String todosPopupPostpone;
   late String todosHabits;
+  late List<String> todosFilterList = ["","",""];
   late String addDailyAppBar;
   late String modifyDailyAppBar;
   late String addDailyName;
@@ -44,6 +45,9 @@ class Texts{
     todosPopupRemove = language == "ENG" ? "Remove " : "Usuń ";
     todosPopupPostpone = language == "ENG" ? "Postpone " : "Przełóż ";
     todosHabits = language == "ENG" ? "My habits" : "Moje nawyki";
+    todosFilterList[0] = language == "ENG" ? "In the order added" : "W kolejności dodania";
+    todosFilterList[1] = language == "ENG" ? "Importance descending" : "Waga malejąco";
+    todosFilterList[2] = language == "ENG" ? "Importance ascending" : "Waga rosnąco";
     addDailyAppBar = language == "ENG" ? "Add Daily" : "Dodaj obowiązek";
     modifyDailyAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj obowiązek";
     addDailyName = language == "ENG" ? "Name" : "Nazwa";

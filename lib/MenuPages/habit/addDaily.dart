@@ -56,7 +56,7 @@ class _AddDailyState extends State<AddDaily> {
   int getWeightValue(){
     if (_weightValue == 'wysoka' || _weightValue == 'high') {
       return 0;}
-    else if (_weightValue == 'srednia' || _weightValue == 'medium') {
+    else if (_weightValue == 'średnia' || _weightValue == 'medium') {
       return 1;}
     else if (_weightValue == 'niska' || _weightValue == 'low') {
       return 2;}
