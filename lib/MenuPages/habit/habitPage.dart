@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flyhi/HiveClasses/DailyTodos.dart';
+import 'package:flyhi/MenuPages/habit/addHabit.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -243,10 +244,9 @@ class _HabitPageState extends State<HabitPage> {
                             backgroundColor: styles.todosPickerOn,
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(9),
-
                           ),
                           onPressed: ()  {
-                            Navigator.push(
+                            todo_mode == 0 ? Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1,)
                               )).then((value){
@@ -256,7 +256,12 @@ class _HabitPageState extends State<HabitPage> {
                                       addElementsToTodos();
                                     });
                                   }
-                            });
+                            })
+                            :
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => AddHabit(editMode: false))
+                            );
                           },
                           child: Icon(Icons.add, color: styles.classicFont,),
                         ),
@@ -265,7 +270,7 @@ class _HabitPageState extends State<HabitPage> {
                     ),
                   ),
                   SizedBox(height: 15,),
-                  Container(
+                  todo_mode == 0 ? Container(
                     width: MediaQuery.of(context).size.width * 0.6,
                     decoration: BoxDecoration(
                       color: styles.elementsInBg,
@@ -307,9 +312,9 @@ class _HabitPageState extends State<HabitPage> {
                         }).toList(),
                       ),
                     ),
-                  ),
+                  ): Container(),
                   SizedBox(height: 15,),
-                  todo_mode == 0 ? Expanded( // Dodaj Expanded, aby rozciągnąć listę na dostępne miejsce
+                  todo_mode == 0 ? Expanded(
                     child: ListView.builder(
                     itemCount: todosCopy.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -329,16 +334,13 @@ class _HabitPageState extends State<HabitPage> {
                               children: [
                                 Row(
                                   children: [
-                                    AnimatedSwitcher(
-                                      duration: const Duration(milliseconds: 0),
-                                      child: FadeInImage(
-                                        height: 64,
-                                        width: 64,
-                                        key: ValueKey<String>(item.icon), // Generuj losowy klucz za każdym razem
-                                        placeholder: AssetImage(item.icon),
-                                        image: AssetImage(item.icon),
-                                        fit: BoxFit.contain,
-                                      ),
+                                    FadeInImage(
+                                      height: 64,
+                                      width: 64,
+                                      key: ValueKey<AssetImage>(AssetImage(item.icon)), // Generuj losowy klucz za każdym razem
+                                      placeholder: const AssetImage('assets/empty.png'),
+                                      image: AssetImage(item.icon),
+                                      fit: BoxFit.contain,
                                     ),
                                     SizedBox(width: 10,),
                                     Expanded(
@@ -378,7 +380,7 @@ class _HabitPageState extends State<HabitPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                texts.addDailyImpList[item.importance],
+                                                "${texts.addDailyImportance.toLowerCase()}: ${texts.addDailyImpList[item.importance]}",
                                                 style: TextStyle(fontSize: 15, color: styles.classicFont),
                                               ),
                                               PopupMenuButton<SampleItem>(

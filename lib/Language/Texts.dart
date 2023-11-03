@@ -23,10 +23,12 @@ class Texts{
   late List<String> addDailyImpList = ["","",""];
   late String addDailyIcon;
   late String addDailyTheme;
-  late String addDailySave;
+  late String addSave;
   late String addDailyAppearDay;
   late String addDailyAppearToday;
   late String addDailyAppearTomorrow;
+  late String addHabitAppBar;
+  late String modifyHabitAppBar;
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -57,10 +59,11 @@ class Texts{
     addDailyImpList[2] = language == "ENG" ? "low" : "niska";
     addDailyIcon = language == "ENG" ? "Icon" : "Ikona";
     addDailyTheme = language == "ENG" ? "Theme" : "Motyw";
-    addDailySave = language == "ENG" ? "Save   " : "Zapisz   ";
+    addSave = language == "ENG" ? "Save   " : "Zapisz   ";
     addDailyAppearDay = language == "ENG" ? "Appearance day" : "Data pojawienia";
     addDailyAppearToday = language == "ENG" ? "Today" : "Dzisiaj";
     addDailyAppearTomorrow = language == "ENG" ? "Tomorrow" : "Jutro";
-
+    addHabitAppBar = language == "ENG" ? "Add Daily" : "Dodaj nawyk";
+    modifyHabitAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj nawyk";
   }
 }

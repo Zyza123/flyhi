@@ -154,7 +154,7 @@ class _AddDailyState extends State<AddDaily> {
               },
               child: Row(
                 children: [
-                  Text(texts.addDailySave, style: TextStyle(color: styles.classicFont,fontSize: 16)),
+                  Text(texts.addSave, style: TextStyle(color: styles.classicFont,fontSize: 16)),
                   Icon(Icons.check, color: styles.classicFont,size: 18,),
                 ],
               ),

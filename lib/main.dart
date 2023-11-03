@@ -12,6 +12,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '/Theme/DarkThemeProvider.dart';
+import 'HiveClasses/HabitTodos.dart';
 import 'Language/Texts.dart';
 
 void main() async{
@@ -19,7 +20,9 @@ void main() async{
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
   Hive.registerAdapter(DailyTodosAdapter());
+  Hive.registerAdapter(HabitTodosAdapter());
   await Hive.openBox('daily');
+  await Hive.openBox('habits');
   runApp(MainAppRoute());
 }
 

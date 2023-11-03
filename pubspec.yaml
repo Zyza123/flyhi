@@ -71,6 +71,7 @@ flutter:
   assets:
     #- assets/icons/habits_icon.png
     - assets/spinner.gif
+    - assets/empty.png
     - assets/images/addTodo.png
     - assets/images/ikona1/
     - assets/images/ikona2/
