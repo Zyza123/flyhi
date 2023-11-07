@@ -216,7 +216,7 @@ class _AddDailyState extends State<AddDaily> {
                       ),
                       SizedBox(height: 10,),
                       showValidationMessage == true ?Align(
-                          alignment: Alignment.topLeft,child: Text("* This field is required",style: TextStyle(color: Colors.red,fontSize: 14),)) : Container(),
+                          alignment: Alignment.topLeft,child: Text(texts.addThingWrongName,style: TextStyle(color: Colors.red,fontSize: 14),)) : Container(),
                       SizedBox(height: 20,),
                       Align(
                         alignment: Alignment.topLeft,

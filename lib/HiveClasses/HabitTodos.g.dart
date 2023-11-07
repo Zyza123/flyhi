@@ -16,22 +16,22 @@ class HabitTodosAdapter extends TypeAdapter<HabitTodos> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return HabitTodos()
-      ..name = fields[0] as String
-      ..icon = fields[1] as String
-      ..date = fields[2] as DateTime
-      ..frequency = fields[3] as int
-      ..fullTime = fields[4] as int
-      ..dayNumber = fields[5] as int
-      ..efficiency = (fields[6] as List).cast<double>()
-      ..exp = fields[7] as int
-      ..dailyTheme = fields[8] as int;
+    return HabitTodos(
+      fields[0] as String,
+      fields[1] as String,
+      fields[2] as DateTime,
+      fields[3] as int,
+      fields[4] as int,
+      fields[5] as int,
+      (fields[6] as Map).cast<DateTime, double>(),
+      fields[7] as int,
+    );
   }
 
   @override
   void write(BinaryWriter writer, HabitTodos obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -47,8 +47,6 @@ class HabitTodosAdapter extends TypeAdapter<HabitTodos> {
       ..writeByte(6)
       ..write(obj.efficiency)
       ..writeByte(7)
-      ..write(obj.exp)
-      ..writeByte(8)
       ..write(obj.dailyTheme);
   }
 

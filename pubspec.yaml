@@ -73,6 +73,7 @@ flutter:
     - assets/spinner.gif
     - assets/empty.png
     - assets/images/addTodo.png
+    - assets/images/addHabit.png
     - assets/images/ikona1/
     - assets/images/ikona2/
     - assets/images/ikona3/

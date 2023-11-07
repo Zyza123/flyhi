@@ -23,12 +23,11 @@ class HabitTodos extends HiveObject {
   late int dayNumber;
 
   @HiveField(6)
-  late List<double> efficiency;
+  Map<DateTime, double> efficiency = {};
 
   @HiveField(7)
-  late int exp;
-
-  @HiveField(8)
   late int dailyTheme;
 
+  HabitTodos(this.name, this.icon, this.date, this.frequency, this.fullTime,
+      this.dayNumber, this.efficiency, this.dailyTheme);
 }

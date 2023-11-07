@@ -14,6 +14,9 @@ class Texts{
   late String todosPopupEdit;
   late String todosPopupRemove;
   late String todosPopupPostpone;
+  late String habitsPopupEdit;
+  late String habitsPopupRemove;
+  late String habitsPopupMinus;
   late String todosHabits;
   late List<String> todosFilterList = ["","",""];
   late String addDailyAppBar;
@@ -28,7 +31,24 @@ class Texts{
   late String addDailyAppearToday;
   late String addDailyAppearTomorrow;
   late String addHabitAppBar;
+  late String addHabitName;
+  late String addHabitDateOfAppearance;
+  late String addHabitToday;
+  late String addHabitTomorrow;
+  late String addHabitFrequency;
+  late String addHabitFrequencyWeek;
+  late String addHabitLength;
+  late String addHabitDays;
+  late String addHabitUndefined;
+  late String addHabitIcon;
+  late String addHabitTheme;
   late String modifyHabitAppBar;
+  late String habitsFrequency;
+  late String habitsConn;
+  late String habitsProgress;
+  late String habitsProgressDays;
+  late String addThingWrongName;
+
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -46,6 +66,9 @@ class Texts{
     todosPopupEdit = language == "ENG" ? "Edit " : "Edytuj ";
     todosPopupRemove = language == "ENG" ? "Remove " : "Usuń ";
     todosPopupPostpone = language == "ENG" ? "Postpone " : "Przełóż ";
+    habitsPopupEdit = language == "ENG" ? "Edit " : "Edytuj ";
+    habitsPopupRemove = language == "ENG" ? "Remove " : "Usuń ";
+    habitsPopupMinus = language == "ENG" ? "Minus " : "Cofnij ";
     todosHabits = language == "ENG" ? "My habits" : "Moje nawyki";
     todosFilterList[0] = language == "ENG" ? "In the order added" : "W kolejności dodania";
     todosFilterList[1] = language == "ENG" ? "Importance descending" : "Waga malejąco";
@@ -65,5 +88,21 @@ class Texts{
     addDailyAppearTomorrow = language == "ENG" ? "Tomorrow" : "Jutro";
     addHabitAppBar = language == "ENG" ? "Add Daily" : "Dodaj nawyk";
     modifyHabitAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj nawyk";
+    addHabitName = language == "ENG" ? "Name" : "Nazwa";
+    addHabitDateOfAppearance = language == "ENG" ? "Date of appearance" : "Data pojawienia";
+    addHabitToday = language == "ENG" ? "Today" : "Dzisiaj";
+    addHabitTomorrow = language == "ENG" ? "Tomorrow" : "Jutro";
+    addHabitFrequency = language == "ENG" ? "Frequency" : "Częstotliwość";
+    addHabitFrequencyWeek = language == "ENG" ? "In a week" : "W tygodniu";
+    addHabitLength = language == "ENG" ? "Period" : "Okres czasu";
+    addHabitDays = language == "ENG" ? "Days" : "Dni";
+    addHabitUndefined = language == "ENG" ? "Undefined" : "Nieokreślony";
+    addHabitIcon = language == "ENG" ? "Icon" : "Ikona";
+    addHabitTheme = language == "ENG" ? "Theme" : "Motyw";
+    habitsFrequency = language == "ENG" ? "Frequency" : "Częstotliwość";
+    habitsConn = language == "ENG" ? "of" : "na";
+    habitsProgress = language == "ENG" ? "Progress" : "Postęp";
+    habitsProgressDays = language == "ENG" ? "days" : "dni";
+    addThingWrongName = language == "ENG" ? "* This field is required" : "* To pole jest wymagane";
   }
 }

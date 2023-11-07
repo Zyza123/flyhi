@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import '../../HiveClasses/HabitTodos.dart';
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
 import '../../Theme/DarkThemeProvider.dart';
@@ -14,6 +16,72 @@ class AddHabit extends StatefulWidget {
 }
 
 class _AddHabitState extends State<AddHabit> {
+
+  late Box dailyHabits;
+  String _dayValue = "Dzisiaj";
+  String _lengthValue = "Dni";
+  bool do_once = true;
+  int _iconValue = 0;
+  int frequency_value = 1;
+  double days_counter = 7;
+  List<String> customImagePaths = List.generate(50, (index) => 'assets/images/ikona${index + 1}/32x32.png');
+  List<int> availableColors = [
+    0xFFD0312D,
+    0xFFFF8700,
+    0xFF01FF07,
+    0xFF147DF5,
+    0xFF580AFF,
+    0xFFBE0AFF,
+  ];
+  int selectedColor = 0xFFD0312D;
+  TextEditingController tec = TextEditingController();
+  ScrollController _scrollController = ScrollController();
+  bool showValidationMessage = false;
+  late Image mainHabitImage;
+
+  void addHabit(){
+    HabitTodos ht;
+    if(_dayValue == "Jutro" || _dayValue == "Tomorrow"){
+      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      today = today.add(Duration(days: 1));
+      ht = HabitTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png',
+          today, frequency_value, days_counter.toInt(), 1,
+          {today : 0}, selectedColor);
+    }
+    else{
+      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      ht = HabitTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png',
+          today, frequency_value, days_counter.toInt(), 1,
+          {today : 0}, selectedColor);
+    }
+    dailyHabits.add(ht);
+  }
+
+  void modifyHabit(){
+    //var existingTodo = dailyTodos.getAt(widget.editIndex) as DailyTodos;
+    //existingTodo.name = tec.text;
+    //existingTodo.importance = getWeightValue();
+    //existingTodo.icon = 'assets/images/ikona${_iconValue + 1}/128x128.png';
+    //existingTodo.dailyTheme = selectedColor;
+    //if(_dayValue == "Jutro" || _dayValue == "Tomorrow"){
+    //  existingTodo.date = existingTodo.date.add(Duration(days: 1));
+    //}
+    //dailyTodos.putAt(widget.editIndex, existingTodo);
+  }
+
+  @override
+  void didChangeDependencies() {
+    precacheImage(mainHabitImage.image, context);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    mainHabitImage = Image.asset('assets/images/addHabit.png',fit: BoxFit.fitHeight,);
+    dailyHabits = Hive.box('habits');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -22,6 +90,11 @@ class _AddHabitState extends State<AddHabit> {
     final langChange = Provider.of<LanguageProvider>(context);
     Texts texts = Texts();
     texts.setTextLang(langChange.language);
+    if(do_once){
+      _dayValue = texts.addHabitToday;
+      _lengthValue = texts.addHabitDays;
+      do_once = false;
+    }
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
       appBar: AppBar(
@@ -40,7 +113,24 @@ class _AddHabitState extends State<AddHabit> {
             Spacer(), // Dodaj przerwę, aby przesunąć "Zapisz" na prawą stronę
             GestureDetector(
               onTap: () async {
-                  Navigator.pop(context);
+                if(tec.text != ""){
+                  if(widget.editMode){
+                    setState(() {
+                      modifyHabit();
+                    });
+                  }
+                  else{
+                    setState(() {
+                      addHabit();
+                    });
+                  }
+                  Navigator.pop(context,true);
+                }
+                else {
+                  setState(() {
+                    showValidationMessage = true;
+                  });
+                }
               },
               child: Row(
                 children: [
@@ -50,6 +140,355 @@ class _AddHabitState extends State<AddHabit> {
               ),
             ),
           ],
+        ),
+      ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.35,
+                child: mainHabitImage,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.addHabitName, // Lub 'Name' w zależności od języka
+                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          width: MediaQuery.of(context).size.width,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            color: styles.elementsInBg,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextField(
+                            controller: tec,
+                            onChanged: (text) {
+                              setState(() {
+                                showValidationMessage = false;
+                              });
+                            },
+                            style: TextStyle(color: styles.classicFont,
+                                letterSpacing: 1.5),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              counterText: "",
+                            ),
+                            textAlignVertical: TextAlignVertical.top, // Wyśrodkowanie tekstu tylko w pionie
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      showValidationMessage == true ?Align(
+                          alignment: Alignment.topLeft,child: Text(texts.addThingWrongName,style: TextStyle(color: Colors.red,fontSize: 14),)) : Container(),
+                      SizedBox(height: 20,),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.addHabitDateOfAppearance, // Lub 'Name' w zależności od języka
+                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Row(
+                              children: [
+                                Radio<String>(
+                                  value: texts.addHabitToday,
+                                  groupValue: _dayValue, // Ustaw stan wyboru
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _dayValue = value!;
+                                    });
+                                  },
+                                  activeColor: styles.classicFont,
+                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                                ),
+                                Text(texts.addHabitToday, style: TextStyle(fontSize: 14,
+                                    color: styles.classicFont)),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Radio<String>(
+                                  value: texts.addHabitTomorrow,
+                                  groupValue: _dayValue, // Ustaw stan wyboru
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _dayValue = value!;
+                                    });
+                                  },
+                                  activeColor: styles.classicFont,
+                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                                ),
+                                Text(texts.addHabitTomorrow, style: TextStyle(fontSize: 14,
+                                    color: styles.classicFont)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.addHabitFrequency, // Lub 'Name' w zależności od języka
+                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        ),
+                      ),
+                      SizedBox(height: 15,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            width: 60,
+                            height: 40,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
+                                padding: MaterialStateProperty.all(EdgeInsets.zero),
+                              ),
+                              onPressed: () {
+                                if(frequency_value > 1){
+                                  setState(() {
+                                    frequency_value -= 1;
+                                  });
+                                }
+                              },
+                              child: Text(
+                                '-',
+                                style: TextStyle(color: styles.classicFont,fontSize: 18),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 50,
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: styles.elementsInBg,
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Text(
+                              frequency_value.toString(),
+                              style: TextStyle(color: styles.classicFont,fontSize: 18),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 60,
+                            height: 40,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
+                              ),
+                              onPressed: () {
+                                if(frequency_value < 7){
+                                  setState(() {
+                                    frequency_value += 1;
+                                  });
+                                }
+                              },
+                              child: Text(
+                                '+',
+                                style: TextStyle(color: styles.classicFont,fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                      Text(texts.addHabitFrequencyWeek, style: TextStyle(fontSize: 14,
+                          color: styles.classicFont)),
+                      SizedBox(height: 10,),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.addHabitLength, // Lub 'Name' w zależności od języka
+                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Row(
+                              children: [
+                                Radio<String>(
+                                  value: texts.addHabitDays,
+                                  groupValue: _lengthValue, // Ustaw stan wyboru
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _lengthValue = value!;
+                                    });
+                                  },
+                                  activeColor: styles.classicFont,
+                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                                ),
+                                Text("Dni", style: TextStyle(fontSize: 14,
+                                    color: styles.classicFont)),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Radio<String>(
+                                  value: texts.addHabitUndefined,
+                                  groupValue: _lengthValue, // Ustaw stan wyboru
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _lengthValue = value!;
+                                    });
+                                  },
+                                  activeColor: styles.classicFont,
+                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                                ),
+                                Text("Nieokreślony", style: TextStyle(fontSize: 14,
+                                    color: styles.classicFont)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_lengthValue == "Dni")
+                        Container(
+                          width: 80,
+                          height: 40,
+                          padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: styles.elementsInBg,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          child: Text(
+                            days_counter.toInt().toString(),
+                            style: TextStyle(color: styles.classicFont,fontSize: 18),
+                          ),
+                        ),
+                      if (_lengthValue == "Dni")
+                        Slider(
+                          activeColor: styles.sliderColorsAct,
+                          inactiveColor: styles.sliderColorsInact,
+                          value: days_counter,
+                          onChanged: (double value) {
+                            setState(() {
+                              days_counter = value;
+                              days_counter.floor();
+                            });
+                          },
+                          min: 7,
+                          max: 365,
+                        ),
+                      SizedBox(height: 10,),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.addHabitIcon, // Lub 'Name' w zależności od języka
+                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Container(
+                        height: 130,
+                        child: Scrollbar(
+                          controller: _scrollController,
+                          thumbVisibility: true,
+                          child: GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 8,
+                              childAspectRatio: 1, // Stosunek szerokości do wysokości
+                            ),
+                            itemCount: customImagePaths.length,
+                            controller: _scrollController,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _iconValue = index;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: _iconValue == index ?
+                                      styles.elementsInBg : styles.mainBackgroundColor
+                                  ),
+                                  child: Image.asset(customImagePaths[index]),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20,),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.addHabitTheme, // Lub 'Name' w zależności od języka
+                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          for (int color in availableColors)
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: selectedColor == color ? styles.elementsInBg : styles.mainBackgroundColor,
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedColor = color; // Aktualizacja wybranego koloru
+                                  });
+                                },
+                                child: Center(
+                                  child: Container(
+                                    height: 25, // Dostosuj wysokość wewnętrznego kształtu
+                                    width: 25,  // Dostosuj szerokość wewnętrznego kształtu
+                                    decoration: BoxDecoration(
+                                      color: Color(color),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: styles.classicFont,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                    ],
+                  ),
+                ),
+              ),
+            ],),
         ),
       ),
     );
