@@ -41,7 +41,7 @@ class _AddDailyState extends State<AddDaily> {
   TextEditingController tec = TextEditingController();
   ScrollController _scrollController = ScrollController();
   bool showValidationMessage = false;
-  late Image mainDailyImage;
+  String mainDailyImage = 'assets/images/addTodo.png';
 
   void getHiveFromIndex(){
     tec.text = dailyTodos.getAt(widget.editIndex).name;
@@ -87,15 +87,8 @@ class _AddDailyState extends State<AddDaily> {
   }
 
   @override
-  void didChangeDependencies() {
-    precacheImage(mainDailyImage.image, context);
-    super.didChangeDependencies();
-  }
-
-  @override
   void initState() {
     super.initState();
-    mainDailyImage = Image.asset('assets/images/addTodo.png',fit: BoxFit.fitHeight,);
     dailyTodos = Hive.box('daily');
     if(widget.editMode == true){
       getHiveFromIndex();
@@ -168,10 +161,16 @@ class _AddDailyState extends State<AddDaily> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.35,
-                child: mainDailyImage,
+                child: FadeInImage(
+                  fadeInDuration: Duration(milliseconds: 200),
+                  key: ValueKey<String>(mainDailyImage), // Klucz jako ciąg znaków
+                  placeholder: AssetImage('assets/empty.png'),
+                  image: AssetImage(mainDailyImage), // Ścieżka do obrazu jako ciąg znaków
+                  fit: BoxFit.fitHeight,
+                ),
               ),
               Container(
                 width: MediaQuery.of(context).size.width,

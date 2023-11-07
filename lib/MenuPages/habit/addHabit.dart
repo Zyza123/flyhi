@@ -41,7 +41,7 @@ class _AddHabitState extends State<AddHabit> {
   TextEditingController tec = TextEditingController();
   ScrollController _scrollController = ScrollController();
   bool showValidationMessage = false;
-  late Image mainHabitImage;
+  String mainDailyImage = 'assets/images/addHabit.png';
 
   void addHabit(){
     HabitTodos ht;
@@ -106,25 +106,23 @@ class _AddHabitState extends State<AddHabit> {
       ht.efficiency[lastKey] = frequency_value.toDouble();
     }
     ht.frequency = frequency_value;
+    if(_lengthValue == "Nieokreślony" || _lengthValue == "Undefined"){
+      ht.fullTime = 9999;
+    }
+    else{
     ht.fullTime = days_counter.toInt();
+    }
     ht.dailyTheme = selectedColor;
     dailyHabits.putAt(widget.editIndex, ht);
   }
 
   @override
-  void didChangeDependencies() {
-    precacheImage(mainHabitImage.image, context);
-    super.didChangeDependencies();
-  }
-
-  @override
   void initState() {
-    mainHabitImage = Image.asset('assets/images/addHabit.png',fit: BoxFit.fitHeight,);
+    super.initState();
     dailyHabits = Hive.box('habits');
     if(widget.editMode == true){
       getHiveFromIndex();
     }
-    super.initState();
   }
 
   @override
@@ -202,10 +200,16 @@ class _AddHabitState extends State<AddHabit> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.35,
-                child: mainHabitImage,
+                child: FadeInImage(
+                  fadeInDuration: Duration(milliseconds: 200),
+                  key: ValueKey<String>(mainDailyImage), // Klucz jako ciąg znaków
+                  placeholder: AssetImage('assets/empty.png'),
+                  image: AssetImage(mainDailyImage), // Ścieżka do obrazu jako ciąg znaków
+                  fit: BoxFit.fitHeight,
+                ),
               ),
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -390,13 +394,13 @@ class _AddHabitState extends State<AddHabit> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Opacity(
-                              opacity: enabledDateButton == true ? 1.0 : 0.5,
+                              opacity: enabledDaysButton == true ? 1.0 : 0.5,
                               child: Row(
                                 children: [
                                   Radio<String>(
                                     value: texts.addHabitDays,
                                     groupValue: _lengthValue, // Ustaw stan wyboru
-                                    onChanged: enabledDateButton == true ? (value) {
+                                    onChanged: enabledDaysButton == true ? (value) {
                                       setState(() {
                                         _lengthValue = value!;
                                       });

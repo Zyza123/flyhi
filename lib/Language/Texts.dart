@@ -50,6 +50,8 @@ class Texts{
   late String habitsProgress;
   late String habitsProgressDays;
   late String addThingWrongName;
+  late String dayString;
+  late String daysString;
 
 
   void setTextLang(String language){
@@ -108,5 +110,7 @@ class Texts{
     habitsProgress = language == "ENG" ? "Progress" : "Postęp";
     habitsProgressDays = language == "ENG" ? "days" : "dni";
     addThingWrongName = language == "ENG" ? "* This field is required" : "* To pole jest wymagane";
+    dayString = language == "ENG" ? "day" : "dzień";
+    daysString = language == "ENG" ? "days" : "dni";
   }
 }

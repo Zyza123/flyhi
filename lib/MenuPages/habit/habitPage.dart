@@ -724,7 +724,7 @@ class _HabitPageState extends State<HabitPage> {
                                       child: Text(
                                         item.fullTime < 9999 ? "${texts.habitsProgress}: ${item.dayNumber} "
                                             "${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}" :
-                                        "${texts.habitsProgress}: ${texts.addHabitUndefined} ",
+                                        "${texts.habitsProgress}: ${item.dayNumber} ${item.dayNumber > 1 ? texts.daysString : texts.dayString}",
                                         style: TextStyle(fontSize: 15, color: styles.classicFont),
                                       ),
                                     ),
