@@ -98,15 +98,17 @@ class _AddHabitState extends State<AddHabit> {
   }
 
   void modifyHabit(){
-    //var existingTodo = dailyTodos.getAt(widget.editIndex) as DailyTodos;
-    //existingTodo.name = tec.text;
-    //existingTodo.importance = getWeightValue();
-    //existingTodo.icon = 'assets/images/ikona${_iconValue + 1}/128x128.png';
-    //existingTodo.dailyTheme = selectedColor;
-    //if(_dayValue == "Jutro" || _dayValue == "Tomorrow"){
-    //  existingTodo.date = existingTodo.date.add(Duration(days: 1));
-    //}
-    //dailyTodos.putAt(widget.editIndex, existingTodo);
+    HabitTodos ht = dailyHabits.getAt(widget.editIndex);
+    ht.name = tec.text;
+    ht.icon = 'assets/images/ikona${_iconValue + 1}/128x128.png';
+    DateTime lastKey = ht.efficiency.keys.last;
+    if(ht.efficiency[lastKey]! > frequency_value){
+      ht.efficiency[lastKey] = frequency_value.toDouble();
+    }
+    ht.frequency = frequency_value;
+    ht.fullTime = days_counter.toInt();
+    ht.dailyTheme = selectedColor;
+    dailyHabits.putAt(widget.editIndex, ht);
   }
 
   @override
