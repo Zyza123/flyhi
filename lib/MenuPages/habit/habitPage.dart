@@ -88,19 +88,18 @@ class _HabitPageState extends State<HabitPage> {
     {
       var existingHabit = habitsTodos.getAt(i);
       DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
-      DateTime before = existingHabit.efficiency.keys.last;
-      DateTime week_before = today.subtract(Duration(days: 7));
-      if(week_before.isAtSameMomentAs(before) || week_before.isAfter(before)){
-        existingHabit.efficiency[today] = 0.0;
+      if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
+        DateTime before = existingHabit.efficiency.keys.last;
+        DateTime week_before = today.subtract(Duration(days: 7));
+        if(week_before.isAtSameMomentAs(before) || week_before.isAfter(before)){
+          existingHabit.efficiency[today] = 0.0;
+        }
+        int days_dif = (today.difference(before).inHours/24).ceil() + 1;
+        existingHabit.dayNumber = days_dif;
+        habitsTodos.putAt(i, existingHabit);
+        habitsCopy.add(habitsTodos.getAt(i));
+        indexListHabitsMirror.add(i);
       }
-      int days_dif = (today.difference(before).inHours/24).ceil() + 1;
-      print("days dif: $days_dif");
-      print("data: ${before}");
-      print("today: $today");
-      existingHabit.dayNumber = days_dif;
-      habitsTodos.putAt(i, existingHabit);
-      habitsCopy.add(habitsTodos.getAt(i));
-      indexListHabitsMirror.add(i);
     }
   }
 
@@ -274,7 +273,7 @@ class _HabitPageState extends State<HabitPage> {
                             :
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => AddHabit(editMode: false))
+                                MaterialPageRoute(builder: (context) => AddHabit(editMode: false, editIndex: -1,))
                             ).then((value){
                               if(value == true) {
                                 setState(() {
@@ -587,7 +586,17 @@ class _HabitPageState extends State<HabitPage> {
                                                     initialValue: selectedMenu,
                                                     onSelected: (SampleItemHabit item1) {
                                                       if(item1.index == 0){
-
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => AddHabit(editMode: true, editIndex: indexListHabitsMirror[index],)
+                                                            )).then((value){
+                                                          if(value == true) {
+                                                            setState(() {
+                                                              habitsTodos = Hive.box('habits');
+                                                              habitsCopy[index] = habitsTodos.getAt(indexListHabitsMirror[index]);
+                                                            });
+                                                          }
+                                                        });
                                                       }
                                                       else if(item1.index == 1){
                                                         setState(() {
@@ -713,12 +722,15 @@ class _HabitPageState extends State<HabitPage> {
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        "${texts.habitsProgress}: ${item.dayNumber} ${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}",
+                                        item.fullTime < 9999 ? "${texts.habitsProgress}: ${item.dayNumber} "
+                                            "${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}" :
+                                        "${texts.habitsProgress}: ${texts.addHabitUndefined} ",
                                         style: TextStyle(fontSize: 15, color: styles.classicFont),
                                       ),
                                     ),
                                     SizedBox(height: 10,),
-                                    Container(
+                                    if(item.fullTime < 9999)
+                                      Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi
                                         color: Colors.grey, // Kolor tła kontenera

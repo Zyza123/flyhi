@@ -8,8 +8,9 @@ import '../../Theme/DarkThemeProvider.dart';
 import '../../Theme/Styles.dart';
 
 class AddHabit extends StatefulWidget {
-  const AddHabit({super.key,required this.editMode});
+  const AddHabit({super.key,required this.editMode, required this.editIndex});
   final bool editMode;
+  final int editIndex;
 
   @override
   State<AddHabit> createState() => _AddHabitState();
@@ -18,12 +19,15 @@ class AddHabit extends StatefulWidget {
 class _AddHabitState extends State<AddHabit> {
 
   late Box dailyHabits;
-  String _dayValue = "Dzisiaj";
+  DateTime _pickedDate = DateTime.now();
+  bool enabledDateButton = true;
+  bool enabledDaysButton = true;
   String _lengthValue = "Dni";
   bool do_once = true;
   int _iconValue = 0;
   int frequency_value = 1;
   double days_counter = 7;
+  double minimum_days = 7;
   List<String> customImagePaths = List.generate(50, (index) => 'assets/images/ikona${index + 1}/32x32.png');
   List<int> availableColors = [
     0xFFD0312D,
@@ -41,20 +45,56 @@ class _AddHabitState extends State<AddHabit> {
 
   void addHabit(){
     HabitTodos ht;
-    if(_dayValue == "Jutro" || _dayValue == "Tomorrow"){
-      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
-      today = today.add(Duration(days: 1));
-      ht = HabitTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png',
-          today, frequency_value, days_counter.toInt(), 1,
-          {today : 0}, selectedColor);
+    DateTime pickedDateFormat = DateTime(_pickedDate.year,_pickedDate.month, _pickedDate.day);
+    if(_lengthValue == "Nieokreślony" || _lengthValue == "Undefined"){
+      days_counter = 9999;
+    }
+    ht = HabitTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png',
+        pickedDateFormat, frequency_value, days_counter.toInt(), 1,
+        {pickedDateFormat : 0}, selectedColor);
+    dailyHabits.add(ht);
+  }
+
+  Future<void> _selectDate(BuildContext context, bool mode) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _pickedDate,
+      firstDate: DateTime.now(), // Ustala, że nie można wybrać daty wcześniejszej niż dzisiaj
+      lastDate: DateTime.now().add(Duration(days: 30)), // Ustal maksymalną dostępną datę
+      builder: (BuildContext? context, Widget? child){
+        return Theme(
+          data: mode == false ? ThemeData.light() : ThemeData.dark(),
+          child: child!,
+        );
+      }
+    );
+    if (picked != null && picked != _pickedDate) {
+      setState(() {
+        _pickedDate = picked;
+      });
+    }
+  }
+
+  void getHiveFromIndex(){
+    tec.text = dailyHabits.getAt(widget.editIndex).name;
+    _pickedDate= dailyHabits.getAt(widget.editIndex).date;
+    enabledDateButton = false;
+    frequency_value = dailyHabits.getAt(widget.editIndex).frequency;
+    if(dailyHabits.getAt(widget.editIndex).fullTime < 9999){
+      minimum_days = (dailyHabits.getAt(widget.editIndex).dayNumber + 1).toDouble();
+      if(minimum_days < 7){
+        minimum_days = 7;
+      }
+      days_counter = dailyHabits.getAt(widget.editIndex).fullTime.toDouble();
     }
     else{
-      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
-      ht = HabitTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png',
-          today, frequency_value, days_counter.toInt(), 1,
-          {today : 0}, selectedColor);
+      enabledDaysButton = false;
     }
-    dailyHabits.add(ht);
+    String modified = dailyHabits.getAt(widget.editIndex).icon;
+    modified = modified.substring(0,modified.length - 11);
+    modified += '32x32.png';
+    _iconValue = customImagePaths.indexOf(modified);
+    selectedColor = dailyHabits.getAt(widget.editIndex).dailyTheme;
   }
 
   void modifyHabit(){
@@ -79,6 +119,9 @@ class _AddHabitState extends State<AddHabit> {
   void initState() {
     mainHabitImage = Image.asset('assets/images/addHabit.png',fit: BoxFit.fitHeight,);
     dailyHabits = Hive.box('habits');
+    if(widget.editMode == true){
+      getHiveFromIndex();
+    }
     super.initState();
   }
 
@@ -91,8 +134,17 @@ class _AddHabitState extends State<AddHabit> {
     Texts texts = Texts();
     texts.setTextLang(langChange.language);
     if(do_once){
-      _dayValue = texts.addHabitToday;
-      _lengthValue = texts.addHabitDays;
+      if(widget.editMode == true){
+        if(dailyHabits.getAt(widget.editIndex).fullTime < 9999){
+          _lengthValue = texts.addHabitDays;
+        }
+        else{
+          _lengthValue = texts.addHabitUndefined;
+        }
+      }
+      else{
+        _lengthValue = texts.addHabitDays;
+      }
       do_once = false;
     }
     return Scaffold(
@@ -208,41 +260,30 @@ class _AddHabitState extends State<AddHabit> {
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Row(
-                              children: [
-                                Radio<String>(
-                                  value: texts.addHabitToday,
-                                  groupValue: _dayValue, // Ustaw stan wyboru
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _dayValue = value!;
-                                    });
-                                  },
-                                  activeColor: styles.classicFont,
-                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
-                                ),
-                                Text(texts.addHabitToday, style: TextStyle(fontSize: 14,
-                                    color: styles.classicFont)),
-                              ],
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: styles.elementsInBg,
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Text(
+                                "${_pickedDate.toLocal()}".split(' ')[0],
+                                style: TextStyle(fontSize: 16, color: styles.classicFont),
+                              ),
                             ),
-                            Row(
-                              children: [
-                                Radio<String>(
-                                  value: texts.addHabitTomorrow,
-                                  groupValue: _dayValue, // Ustaw stan wyboru
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _dayValue = value!;
-                                    });
-                                  },
-                                  activeColor: styles.classicFont,
-                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                            Opacity(
+                              opacity: enabledDateButton == true ? 1.0 : 0.5,
+                              child: ElevatedButton(
+                                onPressed: enabledDateButton == true?  () => _selectDate(context,themeChange.darkTheme) : null,
+                                child: Text(texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
+                                    fontWeight: FontWeight.w400),),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
                                 ),
-                                Text(texts.addHabitTomorrow, style: TextStyle(fontSize: 14,
-                                    color: styles.classicFont)),
-                              ],
+                              ),
                             ),
                           ],
                         ),
@@ -322,9 +363,23 @@ class _AddHabitState extends State<AddHabit> {
                       SizedBox(height: 10,),
                       Align(
                         alignment: Alignment.topLeft,
-                        child: Text(
-                          texts.addHabitLength, // Lub 'Name' w zależności od języka
-                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        child: Tooltip(
+                          message: texts.addHabitWarning,
+                          showDuration: Duration(seconds: 3),
+                          triggerMode: TooltipTriggerMode.tap,
+                          child: Row(
+                            children: [
+                              Text(
+                                "${texts.addHabitLength} ", // Lub 'Name' w zależności od języka
+                                style: TextStyle(fontSize: 16, color: styles.classicFont),
+                              ),
+                              Icon(
+                                Icons.info_outline, // Ikona informacji
+                                color: styles.classicFont, // Kolor ikony
+                                size: 12, // Rozmiar ikony
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
@@ -332,22 +387,25 @@ class _AddHabitState extends State<AddHabit> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Row(
-                              children: [
-                                Radio<String>(
-                                  value: texts.addHabitDays,
-                                  groupValue: _lengthValue, // Ustaw stan wyboru
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _lengthValue = value!;
-                                    });
-                                  },
-                                  activeColor: styles.classicFont,
-                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
-                                ),
-                                Text("Dni", style: TextStyle(fontSize: 14,
-                                    color: styles.classicFont)),
-                              ],
+                            Opacity(
+                              opacity: enabledDateButton == true ? 1.0 : 0.5,
+                              child: Row(
+                                children: [
+                                  Radio<String>(
+                                    value: texts.addHabitDays,
+                                    groupValue: _lengthValue, // Ustaw stan wyboru
+                                    onChanged: enabledDateButton == true ? (value) {
+                                      setState(() {
+                                        _lengthValue = value!;
+                                      });
+                                    } : null,
+                                    activeColor: styles.classicFont,
+                                    fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                                  ),
+                                  Text(texts.addHabitDays, style: TextStyle(fontSize: 14,
+                                      color: styles.classicFont)),
+                                ],
+                              ),
                             ),
                             Row(
                               children: [
@@ -362,14 +420,16 @@ class _AddHabitState extends State<AddHabit> {
                                   activeColor: styles.classicFont,
                                   fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
                                 ),
-                                Text("Nieokreślony", style: TextStyle(fontSize: 14,
+                                Text(texts.addHabitUndefined, style: TextStyle(fontSize: 14,
                                     color: styles.classicFont)),
                               ],
                             ),
                           ],
                         ),
                       ),
-                      if (_lengthValue == "Dni")
+                      if(_lengthValue == texts.addHabitDays)
+                        SizedBox(height: 5,),
+                      if (_lengthValue == texts.addHabitDays)
                         Container(
                           width: 80,
                           height: 40,
@@ -384,7 +444,7 @@ class _AddHabitState extends State<AddHabit> {
                             style: TextStyle(color: styles.classicFont,fontSize: 18),
                           ),
                         ),
-                      if (_lengthValue == "Dni")
+                      if (_lengthValue == texts.addHabitDays)
                         Slider(
                           activeColor: styles.sliderColorsAct,
                           inactiveColor: styles.sliderColorsInact,
@@ -395,7 +455,7 @@ class _AddHabitState extends State<AddHabit> {
                               days_counter.floor();
                             });
                           },
-                          min: 7,
+                          min: minimum_days,
                           max: 365,
                         ),
                       SizedBox(height: 10,),
