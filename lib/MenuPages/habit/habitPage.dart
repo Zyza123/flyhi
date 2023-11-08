@@ -29,7 +29,8 @@ class _HabitPageState extends State<HabitPage> {
   late Box dailyTodos;
   List<DailyTodos> todosCopy = [];
   List<int> indexListMirror = [];
-  int selectedFilter = 0;
+  int selectedTodoFilter = 0;
+  int selectedHabitFilter = 0;
 
   late Box habitsTodos;
   List<HabitTodos> habitsCopy = [];
@@ -82,9 +83,42 @@ class _HabitPageState extends State<HabitPage> {
   }
 
   void addElementsToHabits(){
+    // co jeszcze brakuje
+    // dodanie usuwania starych nawyków które się już skończyły i dodanie ich danych całych do
+    // klasy z osiągnięciami gdy już będzie stworzona
+
     habitsCopy.clear();
     indexListHabitsMirror.clear();
     for(int i = 0; i < habitsTodos.length; i++)
+    {
+      var existingHabit = habitsTodos.getAt(i);
+      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
+        DateTime before = existingHabit.efficiency.keys.last;
+        DateTime week_before = today.subtract(Duration(days: 7));
+        int days_dif = (today.difference(before).inHours/24).ceil() + 1;
+        if(days_dif > existingHabit.fullTime){
+          continue;
+        }
+        existingHabit.dayNumber = days_dif;
+        if(week_before.isAtSameMomentAs(before) || week_before.isAfter(before)){
+          existingHabit.efficiency[today] = 0.0;
+        }
+        habitsTodos.putAt(i, existingHabit);
+        habitsCopy.add(habitsTodos.getAt(i));
+        indexListHabitsMirror.add(i);
+      }
+    }
+  }
+
+  void addElementsToHabitsByNew(){
+    // co jeszcze brakuje
+    // dodanie usuwania starych nawyków które się już skończyły i dodanie ich danych całych do
+    // klasy z osiągnięciami gdy już będzie stworzona
+
+    habitsCopy.clear();
+    indexListHabitsMirror.clear();
+    for(int i = habitsTodos.length -1; i >= 0; i--)
     {
       var existingHabit = habitsTodos.getAt(i);
       DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
@@ -119,26 +153,47 @@ class _HabitPageState extends State<HabitPage> {
     toRemove.clear();
   }
 
-  void saveFilter(int filterIndex) async {
+  void saveTodoFilter(int filterIndex) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('filter', filterIndex);
     // Możesz użyć innych metod, takich jak setInt(), setDouble(), itp., w zależności od rodzaju danych.
   }
 
-  Future<void> readData() async {
+  Future<void> readTodoData() async {
     final prefs = await SharedPreferences.getInstance();
     final key = "filter";
     if(prefs.containsKey("filter")){
       setState(() {
-        selectedFilter = prefs.getInt('filter')!;
-        if(selectedFilter == 0){
+        selectedTodoFilter = prefs.getInt('filter')!;
+        if(selectedTodoFilter == 0){
           addElementsToTodos();
         }
-        else if(selectedFilter == 1){
+        else if(selectedTodoFilter == 1){
           addElementsToTodosAsc();
         }
         else{
           addElementsToTodosDesc();
+        }
+      });
+    }
+  }
+  void saveHabitFilter(int filterIndex) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('habitFilter', filterIndex);
+    // Możesz użyć innych metod, takich jak setInt(), setDouble(), itp., w zależności od rodzaju danych.
+  }
+
+  Future<void> readHabitData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = "habitFilter";
+    if(prefs.containsKey("habitFilter")){
+      setState(() {
+        selectedHabitFilter = prefs.getInt('habitFilter')!;
+        if(selectedHabitFilter == 0){
+          addElementsToHabits();
+        }
+        else{
+          addElementsToHabitsByNew();
         }
       });
     }
@@ -151,8 +206,8 @@ class _HabitPageState extends State<HabitPage> {
     dailyTodos = Hive.box('daily');
     removeOldDates();
     habitsTodos = Hive.box('habits');
-    addElementsToHabits();
-    readData();
+    readTodoData();
+    readHabitData();
     //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)), 0, 0xFFD0312D,));
     //dailyTodos.clear();
     todo_mode = 0;
@@ -266,7 +321,7 @@ class _HabitPageState extends State<HabitPage> {
                                 if(value == true) {
                                     setState(() {
                                       dailyTodos = Hive.box('daily');
-                                      addElementsToTodos();
+                                      readTodoData();
                                     });
                                   }
                             })
@@ -278,7 +333,7 @@ class _HabitPageState extends State<HabitPage> {
                               if(value == true) {
                                 setState(() {
                                   habitsTodos = Hive.box('habits');
-                                  addElementsToHabits();
+                                  readHabitData();
                                 });
                               }
                             });
@@ -301,24 +356,24 @@ class _HabitPageState extends State<HabitPage> {
                       child: DropdownButton<String>(
                         dropdownColor: styles.elementsInBg,
                         isExpanded: true,
-                        value: texts.todosFilterList[selectedFilter],
+                        value: texts.todosFilterList[selectedTodoFilter],
                         underline: Container(),
                         onChanged: (String? newValue) {
                           setState(() {
-                            print("filtr: $selectedFilter");
+                            print("filtr: $selectedTodoFilter");
                             if(newValue == texts.todosFilterList[0]){
-                              saveFilter(0);
-                              selectedFilter = 0;
+                              saveTodoFilter(0);
+                              selectedTodoFilter = 0;
                               addElementsToTodos();
                             }
                             else if(newValue == texts.todosFilterList[1]){
-                              saveFilter(1);
-                              selectedFilter = 1;
+                              saveTodoFilter(1);
+                              selectedTodoFilter = 1;
                               addElementsToTodosAsc();
                             }
                             else if(newValue == texts.todosFilterList[2]){
-                              saveFilter(2);
-                              selectedFilter = 2;
+                              saveTodoFilter(2);
+                              selectedTodoFilter = 2;
                               addElementsToTodosDesc();
                             }
                           });
@@ -332,7 +387,44 @@ class _HabitPageState extends State<HabitPage> {
                         }).toList(),
                       ),
                     ),
-                  ): Container(),
+                  ):
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    decoration: BoxDecoration(
+                      color: styles.elementsInBg,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: DropdownButton<String>(
+                        dropdownColor: styles.elementsInBg,
+                        isExpanded: true,
+                        value: texts.habitsFilterList[selectedHabitFilter],
+                        underline: Container(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            if(newValue == texts.habitsFilterList[0]){
+                              saveHabitFilter(0);
+                              selectedHabitFilter = 0;
+                              addElementsToHabits();
+                            }
+                            else if(newValue == texts.habitsFilterList[1]){
+                              saveHabitFilter(1);
+                              selectedHabitFilter = 1;
+                              addElementsToHabitsByNew();
+                            }
+                          });
+                        },
+                        items: texts.habitsFilterList
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value,style: TextStyle(color: styles.classicFont,fontSize: 17),),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 15,),
                   todo_mode == 0 ? Expanded(
                     child: ListView.builder(
@@ -408,7 +500,7 @@ class _HabitPageState extends State<HabitPage> {
                                                       dailyTodos.deleteAt(
                                                           indexListMirror[index]
                                                       );
-                                                      addElementsToTodos();
+                                                      readTodoData();
                                                     });
                                                   }
                                                   else if(item.index == 2){
@@ -603,7 +695,7 @@ class _HabitPageState extends State<HabitPage> {
                                                           habitsTodos.deleteAt(
                                                               indexListHabitsMirror[index]
                                                           );
-                                                          addElementsToHabits();
+                                                          readHabitData();
                                                         });
                                                       }
                                                       else if(item1.index == 2){

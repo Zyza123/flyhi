@@ -45,6 +45,7 @@ class Texts{
   late String addHabitTheme;
   late String addHabitWarning;
   late String modifyHabitAppBar;
+  late List<String> habitsFilterList = ["",""];
   late String habitsFrequency;
   late String habitsConn;
   late String habitsProgress;
@@ -104,6 +105,8 @@ class Texts{
     addHabitUndefined = language == "ENG" ? "Undefined" : "Nieokreślony";
     addHabitIcon = language == "ENG" ? "Icon" : "Ikona";
     addHabitTheme = language == "ENG" ? "Theme" : "Motyw";
+    habitsFilterList[0] = language == "ENG" ? "In the order added" : "W kolejności dodania";
+    habitsFilterList[1] = language == "ENG" ? "From the newest" : "Od najnowszych";
     addHabitWarning = language == "ENG" ? "U cannot edit undefined to days later!" : "Nie możesz poźniej zmienić nieokreślonego na dni!";
     habitsFrequency = language == "ENG" ? "Frequency" : "Częstotliwość";
     habitsConn = language == "ENG" ? "of" : "na";
