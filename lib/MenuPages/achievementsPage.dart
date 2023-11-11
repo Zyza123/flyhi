@@ -79,8 +79,8 @@ class _AchievementsPageState extends State<AchievementsPage> {
                     // Tutaj możesz dostosować sposób wyświetlania poszczególnych osiągnięć
                     // Możesz użyć np. ListTile, Container, itp.
                     return Container(
-                      width: 150,
-                      height: 150,
+                      width: 155,
+                      height: 155,
                       margin: EdgeInsets.all(8.0), // Możesz dostosować marginesy według własnych preferencji
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
@@ -106,7 +106,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
                                     child: Text("${achievement.value} / ${achievement.level[achievement.progress]}",
                                       style: TextStyle(fontSize: 14,color: styles.classicFont,fontWeight: FontWeight.bold),),
                                   ),
-                                  SizedBox(height: 8.0),
+                                  SizedBox(height: 10.0),
                                   Row(
                                     children: List.generate(
                                       5,
