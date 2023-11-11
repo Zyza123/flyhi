@@ -344,7 +344,6 @@ class _HabitPageState extends State<HabitPage> {
                       ],
                     ),
                   ),
-                  if(todo_mode == 0) SizedBox(height: 15,),
                   todo_mode == 0 ? Container(
                     width: MediaQuery.of(context).size.width * 0.6,
                     decoration: BoxDecoration(

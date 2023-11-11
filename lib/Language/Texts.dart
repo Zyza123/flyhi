@@ -53,6 +53,9 @@ class Texts{
   late String addThingWrongName;
   late String dayString;
   late String daysString;
+  late String achievementsTitle;
+  late List<String> achievementsTitleText = ["","","","",""];
+  late List<String> achievementsMainText = ["","","","",""];
 
 
   void setTextLang(String language){
@@ -107,7 +110,7 @@ class Texts{
     addHabitTheme = language == "ENG" ? "Theme" : "Motyw";
     habitsFilterList[0] = language == "ENG" ? "In the order added" : "W kolejności dodania";
     habitsFilterList[1] = language == "ENG" ? "From the newest" : "Od najnowszych";
-    addHabitWarning = language == "ENG" ? "U cannot edit undefined to days later!" : "Nie możesz poźniej zmienić nieokreślonego na dni!";
+    addHabitWarning = language == "ENG" ? "U cannot swap between if days greater than a year !" : "Nie możesz poźniej zmienić jeśli dni przekraczają rok!";
     habitsFrequency = language == "ENG" ? "Frequency" : "Częstotliwość";
     habitsConn = language == "ENG" ? "of" : "na";
     habitsProgress = language == "ENG" ? "Progress" : "Postęp";
@@ -115,5 +118,17 @@ class Texts{
     addThingWrongName = language == "ENG" ? "* This field is required" : "* To pole jest wymagane";
     dayString = language == "ENG" ? "day" : "dzień";
     daysString = language == "ENG" ? "days" : "dni";
+    achievementsTitle = language == "ENG" ? "ACHIEVEMENTS" : "OSIĄGNIĘCIA";
+    achievementsTitleText[0] = language == "ENG" ? "Persistent" : "Wytrwały";
+    achievementsTitleText[1] = language == "ENG" ? "Brave" : "Waleczny";
+    achievementsTitleText[2] = language == "ENG" ? "Conscientious" : "Sumienny";
+    achievementsTitleText[3] = language == "ENG" ? "Invincible" : "Niepokonany";
+    achievementsTitleText[4] = language == "ENG" ? "Protective" : "Opiekuńczy";
+    achievementsMainText[0] = language == "ENG" ? "Maintain the habit for a certain number of days." : "Utrzymaj nawyk przez określoną ilość dni.";
+    achievementsMainText[1] = language == "ENG" ? "Fulfill habits for a certain number of days." : "Wypełniaj nawyki przez określoną ilość dni.";
+    achievementsMainText[2] = language == "ENG" ? "Fulfill duties for a certain number of days." : "Wypełniaj obowiązki for a certain number of days.";
+    achievementsMainText[3] = language == "ENG" ? "Achieve the effectiveness of a completed habit (atleast 30 days)." : "Osiągnij skuteczność wykonanego nawyku (minimum 30 dni).";
+    achievementsMainText[4] = language == "ENG" ? "Raise your pet's level." : "Podnieś poziom swojego pupila.";
+
   }
 }

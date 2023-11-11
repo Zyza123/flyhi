@@ -80,14 +80,15 @@ class _AddHabitState extends State<AddHabit> {
     _pickedDate= dailyHabits.getAt(widget.editIndex).date;
     enabledDateButton = false;
     frequency_value = dailyHabits.getAt(widget.editIndex).frequency;
-    if(dailyHabits.getAt(widget.editIndex).fullTime < 9999){
-      minimum_days = (dailyHabits.getAt(widget.editIndex).dayNumber + 1).toDouble();
-      if(minimum_days < 7){
-        minimum_days = 7;
-      }
-      days_counter = dailyHabits.getAt(widget.editIndex).fullTime.toDouble();
+    minimum_days = (dailyHabits.getAt(widget.editIndex).dayNumber + 1).toDouble();
+    if(minimum_days < 7){
+      minimum_days = 7;
     }
-    else{
+    days_counter = dailyHabits.getAt(widget.editIndex).dayNumber.toDouble();
+    if(days_counter < minimum_days){
+      days_counter = minimum_days;
+    }
+    if(dailyHabits.getAt(widget.editIndex).dayNumber > 364){
       enabledDaysButton = false;
     }
     String modified = dailyHabits.getAt(widget.editIndex).icon;

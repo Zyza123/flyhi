@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyhi/HiveClasses/Achievements.dart';
 import 'package:flyhi/HiveClasses/DailyTodos.dart';
 import 'package:flyhi/Language/LanguageProvider.dart';
 import 'package:flyhi/MenuPages/accountPage.dart';
@@ -21,8 +22,10 @@ void main() async{
   Hive.init(appDocumentDirectory.path);
   Hive.registerAdapter(DailyTodosAdapter());
   Hive.registerAdapter(HabitTodosAdapter());
+  Hive.registerAdapter(AchievementsAdapter());
   await Hive.openBox('daily');
   await Hive.openBox('habits');
+  await Hive.openBox('achievements');
   runApp(MainAppRoute());
 }
 
