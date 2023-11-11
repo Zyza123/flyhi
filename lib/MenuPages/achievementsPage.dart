@@ -76,14 +76,15 @@ class _AchievementsPageState extends State<AchievementsPage> {
                   itemCount: achievements.length,
                   itemBuilder: (BuildContext context, int index) {
                     Achievements achievement = achievements.getAt(index) as Achievements;
+                    print(achievement.image);
                     // Tutaj możesz dostosować sposób wyświetlania poszczególnych osiągnięć
                     // Możesz użyć np. ListTile, Container, itp.
                     return Container(
-                      width: 155,
-                      height: 155,
+                      width: 160,
+                      height: 160,
                       margin: EdgeInsets.all(8.0), // Możesz dostosować marginesy według własnych preferencji
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                         color: styles.todosPickerOn
                       ),
                       child: Row(
@@ -101,11 +102,8 @@ class _AchievementsPageState extends State<AchievementsPage> {
                                   Text(texts.achievementsMainText[int.tryParse(achievement.name) ?? 0],
                                     style: TextStyle(fontSize: 14,color: styles.classicFont),),
                                   Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text("${achievement.value} / ${achievement.level[achievement.progress]}",
-                                      style: TextStyle(fontSize: 14,color: styles.classicFont,fontWeight: FontWeight.bold),),
-                                  ),
+                                  Text("${texts.habitsProgress}: ${achievement.value} / ${achievement.level[achievement.progress]}",
+                                    style: TextStyle(fontSize: 14,color: styles.classicFont,fontWeight: FontWeight.bold),),
                                   SizedBox(height: 10.0),
                                   Row(
                                     children: List.generate(
@@ -113,7 +111,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
                                           (index) => Container(
                                         width: 10, // szerokość jednego koła
                                         height: 10, // wysokość jednego koła
-                                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                                        margin: EdgeInsets.only(right: index < 4 ? 10.0 : 0), // Dodaj margines tylko do kołek poza ostatnim
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: index < achievement.progress
