@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flyhi/HiveClasses/HabitTodos.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import '../HiveClasses/Achievements.dart';
+import '../HiveClasses/HabitArchive.dart';
 import '../Language/LanguageProvider.dart';
 import '../Language/Texts.dart';
 import '../Theme/DarkThemeProvider.dart';
@@ -17,11 +19,13 @@ class AchievementsPage extends StatefulWidget {
 class _AchievementsPageState extends State<AchievementsPage> {
 
   late Box achievements;
+  late Box habits;
+  late Box habitsArchive;
   List<String> mainImages = List.generate(5, (index) => 'assets/achievements/ach${index + 1}.png');
 
   void buildAchievements(){
     // dla 1 osiagniecia - wytrwały
-    Achievements achievement1 = Achievements("0", mainImages[0], [7,21,60,180,365]);
+    Achievements achievement1 = Achievements("0", mainImages[0], [7,21,70,210,365]);
     Achievements achievement2 = Achievements("1", mainImages[1], [2,5,10,20,40]);
     Achievements achievement3 = Achievements("2", mainImages[2], [10,25,75,150,300]);
     Achievements achievement4 = Achievements("3", mainImages[3], [70,80,90,95,100]);
@@ -33,14 +37,91 @@ class _AchievementsPageState extends State<AchievementsPage> {
     achievements.add(achievement5);
   }
 
+  int checkHabitEffectiveness(int index){
+    HabitArchive ht = habits.getAt(index);
+    // czyli np dla 10 tygodni * 4 daje nam 40 cwiczen, w ostatnim tygodniu sprawdzamy ile bylo dni i dajemy srednia
+    DateTime end = ht.efficiency.keys.first.add(Duration(days: ht.fullTime-1));
+    int days_diff = (end.difference(ht.efficiency.keys.last).inHours/24).ceil();
+    int weekCorrection = ((days_diff/7) * ht.frequency).toInt();
+    int full = (ht.efficiency.length * ht.frequency) - weekCorrection;
+    int collected = 0;
+    ht.efficiency.forEach((key, value) {
+      collected += value.toInt();
+      index++;
+    });
+    return collected~/full;
+  }
+
+  void readAchievements(){
+    // odczyt danych do progressu
+    // ach1 - pobiera z habits utrzymanie nawyku bez sprawdzania efektywnosci
+    Achievements ach = achievements.getAt(0);
+    for(int i = 0; i < habits.length; i++){
+      HabitTodos ht = habits.getAt(i);
+      while(ht.dayNumber >= ach.level[ach.progress]){
+        ach.progress += 1;
+        achievements.putAt(0, ach);
+      }
+    }
+    // ach2 - pobiera juz z archiwum skończone nawyki i sprawdza ile maja efekt.
+    // jesli > 49 to liczy je
+    ach = achievements.getAt(1);
+    ach.value = 0;
+    for(int i = 0; i < habitsArchive.length; i++){
+      HabitArchive ha = habitsArchive.getAt(i);
+      if(checkHabitEffectiveness(i) > 49){
+        ach.value++;
+      }
+    }
+    while(ach.value > ach.level[ach.progress]){
+      ach.progress += 1;
+      achievements.putAt(1, ach);
+    }
+
+    // ach 3 - pomijam - liczy todosy w HabitPage podczas usuwania po każdym dniu
+    // ach 4 - sprawdzanie najwiekszego effectiveness nawyku który ma min 30 dni
+    ach = achievements.getAt(3);
+    int index = -1;
+    int effectiveness = 0;
+    for(int i = 0; i < habitsArchive.length; i++){
+      HabitArchive ha = habitsArchive.getAt(i);
+      if(ha.dayNumber >= 30){
+        int temp_effectiveness = checkHabitEffectiveness(i);
+          if(index != -1){
+            if(temp_effectiveness > effectiveness){
+              index = i;
+              effectiveness = temp_effectiveness;
+            }
+          }
+          else{
+            index = i;
+            effectiveness = temp_effectiveness;
+          }
+      }
+    }
+    if(index != -1){
+      ach.value = effectiveness;
+      while(checkHabitEffectiveness(index) > ach.level[ach.progress]){
+        ach.progress += 1;
+      }
+      achievements.putAt(3,ach);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     achievements = Hive.box('achievements');
+    habits = Hive.box('habits');
+    habitsArchive = Hive.box('habitsArchive');
     if(achievements.isEmpty){
       buildAchievements();
+      readAchievements();
     }
+    else{
+      readAchievements();
+    }
+
 
   }
 
@@ -102,7 +183,8 @@ class _AchievementsPageState extends State<AchievementsPage> {
                                   Text(texts.achievementsMainText[int.tryParse(achievement.name) ?? 0],
                                     style: TextStyle(fontSize: 14,color: styles.classicFont),),
                                   Spacer(),
-                                  Text("${texts.habitsProgress}: ${achievement.value} / ${achievement.level[achievement.progress]}",
+                                  Text("${texts.habitsProgress}: ${achievement.value}"+(index == 3 ? "%" : "") + "/ ${achievement.level[achievement.progress]}"+
+                                      (index == 3 ? "%" : ""),
                                     style: TextStyle(fontSize: 14,color: styles.classicFont,fontWeight: FontWeight.bold),),
                                   SizedBox(height: 10.0),
                                   Row(

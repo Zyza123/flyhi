@@ -125,7 +125,7 @@ class _AddDailyState extends State<AddDaily> {
             ),
             Spacer(), // Dodaj przerwę, aby przesunąć "Zapisz" na prawą stronę
             GestureDetector(
-              onTap: () async {
+              onTap: () {
                 if(tec.text != ""){
                   if(widget.editMode){
                     setState(() {
@@ -366,7 +366,8 @@ class _AddDailyState extends State<AddDaily> {
                                     color: _iconValue == index ?
                                         styles.elementsInBg : styles.mainBackgroundColor
                                   ),
-                                  child: Image.asset(customImagePaths[index]),
+                                  child: Image.asset(customImagePaths[index],
+                                  width: 64,height: 64,),
                                 ),
                               );
                             },

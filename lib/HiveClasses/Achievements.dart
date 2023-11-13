@@ -19,5 +19,5 @@ class Achievements extends HiveObject {
   @HiveField(4)
   late int value;
 
-  Achievements(this.name, this.image, this.level, {this.progress = 0, this.value = -1} );
+  Achievements(this.name, this.image, this.level, {this.progress = 0, this.value = 0} );
 }

@@ -5,6 +5,7 @@ import 'package:flyhi/MenuPages/habit/addHabit.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../HiveClasses/Achievements.dart';
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
 import '../../Theme/DarkThemeProvider.dart';
@@ -33,6 +34,8 @@ class _HabitPageState extends State<HabitPage> {
   int selectedHabitFilter = 0;
 
   late Box habitsTodos;
+  late Box achievements;
+  late Box habitsArchive;
   List<HabitTodos> habitsCopy = [];
   List<int> indexListHabitsMirror = [];
 
@@ -91,16 +94,15 @@ class _HabitPageState extends State<HabitPage> {
     indexListHabitsMirror.clear();
     for(int i = 0; i < habitsTodos.length; i++)
     {
-      var existingHabit = habitsTodos.getAt(i);
+      HabitTodos existingHabit = habitsTodos.getAt(i);
       DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         DateTime before = existingHabit.efficiency.keys.last;
         DateTime week_before = today.subtract(Duration(days: 7));
         int days_dif = (today.difference(before).inHours/24).ceil() + 1;
-        if(days_dif > existingHabit.fullTime){
-          continue;
+        if(existingHabit.dayNumber <= existingHabit.fullTime){
+          existingHabit.dayNumber = days_dif;
         }
-        existingHabit.dayNumber = days_dif;
         if(week_before.isAtSameMomentAs(before) || week_before.isAfter(before)){
           existingHabit.efficiency[today] = 0.0;
         }
@@ -111,11 +113,30 @@ class _HabitPageState extends State<HabitPage> {
     }
   }
 
+  // remove all old habits and add them to archive
+  void removeOldHabits(){
+    List<dynamic> toRemove = [];
+    for(int i = habitsTodos.length -1; i >= 0; i--)
+    {
+      var existingHabit = habitsTodos.getAt(i);
+      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
+        if(existingHabit.dayNumber > existingHabit.fullTime){
+          HabitTodos ht = habitsTodos.getAt(i);
+          ht.dayNumber -= 1;
+          habitsArchive.add(ht);
+          toRemove.add(habitsTodos.keyAt(i));
+        }
+      }
+    }
+    habitsTodos.deleteAll(toRemove);
+    toRemove.clear();
+  }
+
   void addElementsToHabitsByNew(){
     // co jeszcze brakuje
     // dodanie usuwania starych nawyków które się już skończyły i dodanie ich danych całych do
     // klasy z osiągnięciami gdy już będzie stworzona
-
     habitsCopy.clear();
     indexListHabitsMirror.clear();
     for(int i = habitsTodos.length -1; i >= 0; i--)
@@ -125,11 +146,13 @@ class _HabitPageState extends State<HabitPage> {
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         DateTime before = existingHabit.efficiency.keys.last;
         DateTime week_before = today.subtract(Duration(days: 7));
+        int days_dif = (today.difference(before).inHours/24).ceil() + 1;
+        if(existingHabit.dayNumber <= existingHabit.fullTime){
+          existingHabit.dayNumber = days_dif;
+        }
         if(week_before.isAtSameMomentAs(before) || week_before.isAfter(before)){
           existingHabit.efficiency[today] = 0.0;
         }
-        int days_dif = (today.difference(before).inHours/24).ceil() + 1;
-        existingHabit.dayNumber = days_dif;
         habitsTodos.putAt(i, existingHabit);
         habitsCopy.add(habitsTodos.getAt(i));
         indexListHabitsMirror.add(i);
@@ -143,12 +166,22 @@ class _HabitPageState extends State<HabitPage> {
     //print("dzisiaj 1: "+today.toString());
     //print("jutro 1: "+tomorrow.toString());
     List<dynamic> toRemove = [];
+    int points_counter = 0;
     for(int i = 0; i < dailyTodos.length; i++){
       if(today != dailyTodos.getAt(i).date.day && tomorrow != dailyTodos.getAt(i).date.day){
         toRemove.add(dailyTodos.keyAt(i));
-        //dailyTodos.deleteAt(i);
+        if(dailyTodos.getAt(i).status == "done"){
+          points_counter++;
+        }
       }
     }
+    // dodawanie do osiągnieć punktów ze zdobytych obowiazkow
+    Achievements ach = achievements.getAt(2);
+    ach.value += points_counter;
+    while(ach.value > ach.level[ach.progress]){
+      ach.progress += 1;
+    }
+    achievements.putAt(2, ach);
     dailyTodos.deleteAll(toRemove);
     toRemove.clear();
   }
@@ -204,8 +237,11 @@ class _HabitPageState extends State<HabitPage> {
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
+    achievements = Hive.box('achievements');
     removeOldDates();
     habitsTodos = Hive.box('habits');
+    habitsArchive = Hive.box('habitsArchive');
+    removeOldHabits();
     readTodoData();
     readHabitData();
     //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)), 0, 0xFFD0312D,));
@@ -320,7 +356,6 @@ class _HabitPageState extends State<HabitPage> {
                               )).then((value){
                                 if(value == true) {
                                     setState(() {
-                                      dailyTodos = Hive.box('daily');
                                       readTodoData();
                                     });
                                   }
@@ -332,7 +367,6 @@ class _HabitPageState extends State<HabitPage> {
                             ).then((value){
                               if(value == true) {
                                 setState(() {
-                                  habitsTodos = Hive.box('habits');
                                   readHabitData();
                                 });
                               }

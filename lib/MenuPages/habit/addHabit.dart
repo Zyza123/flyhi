@@ -165,7 +165,7 @@ class _AddHabitState extends State<AddHabit> {
             ),
             Spacer(), // Dodaj przerwę, aby przesunąć "Zapisz" na prawą stronę
             GestureDetector(
-              onTap: () async {
+              onTap: () {
                 if(tec.text != ""){
                   if(widget.editMode){
                     setState(() {

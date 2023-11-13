@@ -94,8 +94,8 @@ class Texts{
     addDailyAppearDay = language == "ENG" ? "Appearance day" : "Data pojawienia";
     addDailyAppearToday = language == "ENG" ? "Today" : "Dzisiaj";
     addDailyAppearTomorrow = language == "ENG" ? "Tomorrow" : "Jutro";
-    addHabitAppBar = language == "ENG" ? "Add Daily" : "Dodaj nawyk";
-    modifyHabitAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj nawyk";
+    addHabitAppBar = language == "ENG" ? "Add Habit" : "Dodaj nawyk";
+    modifyHabitAppBar = language == "ENG" ? "Modify Habit" : "Modyfikuj nawyk";
     addHabitName = language == "ENG" ? "Name" : "Nazwa";
     addHabitDateOfAppearance = language == "ENG" ? "Start day" : "Data rozpoczęcia";
     addHabitToday = language == "ENG" ? "Today" : "Dzisiaj";
@@ -125,8 +125,8 @@ class Texts{
     achievementsTitleText[3] = language == "ENG" ? "Invincible" : "Niepokonany";
     achievementsTitleText[4] = language == "ENG" ? "Protective" : "Opiekuńczy";
     achievementsMainText[0] = language == "ENG" ? "Maintain the habit for a certain number of days." : "Utrzymaj nawyk przez określoną ilość dni.";
-    achievementsMainText[1] = language == "ENG" ? "Fulfill habits for a certain number of days." : "Wypełniaj nawyki przez określoną ilość dni.";
-    achievementsMainText[2] = language == "ENG" ? "Fulfill duties for a certain number of days." : "Wypełniaj obowiązki for a certain number of days.";
+    achievementsMainText[1] = language == "ENG" ? "Fulfill certain number of habits (min 50% effectiveness)." : "Wypełnij określoną ilośc nawyków (min 50% efektywności) .";
+    achievementsMainText[2] = language == "ENG" ? "Fulfill certain number of duties." : "Wypełnij określoną ilość obowiązków.";
     achievementsMainText[3] = language == "ENG" ? "Achieve the effectiveness of a completed habit (atleast 30 days)." : "Osiągnij skuteczność wykonanego nawyku (minimum 30 dni).";
     achievementsMainText[4] = language == "ENG" ? "Raise your pet's level." : "Podnieś poziom swojego pupila.";
 
