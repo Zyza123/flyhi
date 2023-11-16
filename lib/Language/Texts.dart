@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class Texts{
   String languageS = "ENG";
   late List<String> menu = ["","","",""];
+  late List<String> homeDays = ["","","","","","",""];
   late String settingsDarkMode;
   late String settingsLang;
   late List<String> langList = ["",""];
@@ -63,6 +64,13 @@ class Texts{
     menu[1] = language == "ENG" ? "Habits" : "Nawyki";
     menu[2] = language == "ENG" ? "Rewards" : "Nagrody";
     menu[3] = language == "ENG" ? "Settings" : "Ustawienia";
+    homeDays[0] = language == "ENG" ? "MON": "PON";
+    homeDays[1] = language == "ENG" ? "TUE": "WT";
+    homeDays[2] = language == "ENG" ? "WED": "ŚR";
+    homeDays[3] = language == "ENG" ? "THU": "CZW";
+    homeDays[4] = language == "ENG" ? "FRI": "PT";
+    homeDays[5] = language == "ENG" ? "SAT": "SOB";
+    homeDays[6] = language == "ENG" ? "SUN": "ND";
     settingsDarkMode = language == "ENG" ? "Dark mode" : "Tryb nocny";
     settingsLang = language == "ENG" ? "Language" : "Język";
     langList[0] = language == "ENG" ? "english" : "angielski";

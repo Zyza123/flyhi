@@ -35,8 +35,8 @@ class _AccountPageState extends State<AccountPage> {
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  child: Text(texts.menu[3],style: TextStyle(
-                    color: styles.classicFont,fontSize: 24,),),
+                  child: Text(texts.menu[3].toUpperCase(),style: TextStyle(
+                      fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
                 ),
               ),
               SizedBox(height: 30,),
