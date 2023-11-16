@@ -24,7 +24,8 @@ class _AddDailyState extends State<AddDaily> {
 
   late Box dailyTodos;
   String _weightValue = "wysoka";
-  String _dayValue = "dzisiaj";
+  DateTime _pickedDate = DateTime.now();
+  bool enabledDateButton = true;
   int imp = 0;
   bool do_once = true;
   int _iconValue = 0;
@@ -48,6 +49,7 @@ class _AddDailyState extends State<AddDaily> {
     String modified = dailyTodos.getAt(widget.editIndex).icon;
     modified = modified.substring(0,modified.length - 11);
     modified += '32x32.png';
+    enabledDateButton = false;
     _iconValue = customImagePaths.indexOf(modified);
     selectedColor = dailyTodos.getAt(widget.editIndex).dailyTheme;
     imp = dailyTodos.getAt(widget.editIndex).importance;
@@ -62,15 +64,32 @@ class _AddDailyState extends State<AddDaily> {
       return 2;}
     return 0;
   }
+
+  Future<void> _selectDate(BuildContext context, bool mode, String langmode) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: _pickedDate,
+        locale: langmode == "ENG" ?  const Locale('en'): const Locale('pl'),
+        firstDate: DateTime.now(), // Ustala, że nie można wybrać daty wcześniejszej niż dzisiaj
+        lastDate: DateTime.now().add(Duration(days: 6)), // Ustal maksymalną dostępną datę
+        builder: (BuildContext? context, Widget? child){
+          return Theme(
+            data: mode == false ? ThemeData.light() : ThemeData.dark(),
+            child: child!,
+          );
+        }
+    );
+    if (picked != null && picked != _pickedDate) {
+      setState(() {
+        _pickedDate = picked;
+      });
+    }
+  }
+
   void addDuty(){
     int weightValue = getWeightValue();
     DailyTodos dt;
-    if(_dayValue == "Jutro" || _dayValue == "Tomorrow"){
-      dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", DateTime.now().add(Duration(days: 1)), weightValue, selectedColor);
-    }
-    else{
-      dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", DateTime.now(), weightValue, selectedColor);
-    }
+    dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", _pickedDate, weightValue, selectedColor);
     dailyTodos.add(dt);
   }
 
@@ -80,10 +99,8 @@ class _AddDailyState extends State<AddDaily> {
     existingTodo.importance = getWeightValue();
     existingTodo.icon = 'assets/images/ikona${_iconValue + 1}/128x128.png';
     existingTodo.dailyTheme = selectedColor;
-    if(_dayValue == "Jutro" || _dayValue == "Tomorrow"){
-      existingTodo.date = existingTodo.date.add(Duration(days: 1));
-    }
-      dailyTodos.putAt(widget.editIndex, existingTodo);
+    existingTodo.date = _pickedDate;
+    dailyTodos.putAt(widget.editIndex, existingTodo);
   }
 
   @override
@@ -105,7 +122,6 @@ class _AddDailyState extends State<AddDaily> {
     texts.setTextLang(langChange.language);
     if(do_once){
       _weightValue = texts.addDailyImpList[imp];
-      _dayValue = texts.addDailyAppearToday;
       do_once = false;
     }
     return Scaffold(
@@ -294,41 +310,30 @@ class _AddDailyState extends State<AddDaily> {
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Row(
-                              children: [
-                                Radio<String>(
-                                  value: texts.addDailyAppearToday,
-                                  groupValue: _dayValue, // Ustaw stan wyboru
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _dayValue = value!;
-                                    });
-                                  },
-                                  activeColor: styles.classicFont,
-                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
-                                ),
-                                Text(texts.addDailyAppearToday, style: TextStyle(fontSize: 14,
-                                    color: styles.classicFont)),
-                              ],
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: styles.elementsInBg,
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Text(
+                                "${_pickedDate.toLocal()}".split(' ')[0],
+                                style: TextStyle(fontSize: 16, color: styles.classicFont),
+                              ),
                             ),
-                            Row(
-                              children: [
-                                Radio<String>(
-                                  value: texts.addDailyAppearTomorrow,
-                                  groupValue: _dayValue, // Ustaw stan wyboru
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _dayValue = value!;
-                                    });
-                                  },
-                                  activeColor: styles.classicFont,
-                                  fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
+                            Opacity(
+                              opacity: enabledDateButton == true ? 1.0 : 0.5,
+                              child: ElevatedButton(
+                                onPressed: enabledDateButton == true?  () => _selectDate(context,themeChange.darkTheme, langChange.language) : null,
+                                child: Text(texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
+                                    fontWeight: FontWeight.w400),),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
                                 ),
-                                Text(texts.addDailyAppearTomorrow, style: TextStyle(fontSize: 14,
-                                    color: styles.classicFont)),
-                              ],
+                              ),
                             ),
                           ],
                         ),

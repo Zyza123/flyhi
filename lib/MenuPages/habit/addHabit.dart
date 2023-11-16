@@ -55,10 +55,11 @@ class _AddHabitState extends State<AddHabit> {
     dailyHabits.add(ht);
   }
 
-  Future<void> _selectDate(BuildContext context, bool mode) async {
+  Future<void> _selectDate(BuildContext context, bool mode, String langmode) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _pickedDate,
+        locale: langmode == "ENG" ?  const Locale('en'): const Locale('pl'),
       firstDate: DateTime.now(), // Ustala, że nie można wybrać daty wcześniejszej niż dzisiaj
       lastDate: DateTime.now().add(Duration(days: 30)), // Ustal maksymalną dostępną datę
       builder: (BuildContext? context, Widget? child){
@@ -284,7 +285,7 @@ class _AddHabitState extends State<AddHabit> {
                             Opacity(
                               opacity: enabledDateButton == true ? 1.0 : 0.5,
                               child: ElevatedButton(
-                                onPressed: enabledDateButton == true?  () => _selectDate(context,themeChange.darkTheme) : null,
+                                onPressed: enabledDateButton == true?  () => _selectDate(context,themeChange.darkTheme, langChange.language) : null,
                                 child: Text(texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
                                     fontWeight: FontWeight.w400),),
                                 style: ButtonStyle(
