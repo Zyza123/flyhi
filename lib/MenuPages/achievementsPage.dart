@@ -166,7 +166,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
                       margin: EdgeInsets.all(8.0), // Możesz dostosować marginesy według własnych preferencji
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: styles.todosPickerOn
+                        color: styles.achievementsColor
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -15,6 +15,7 @@ class Styles{
  late Color todosPickerOff;
  late Color sliderColorsAct;
  late Color sliderColorsInact;
+ late Color achievementsColor;
 
  void setColors(bool darkMode){
   mainBackgroundColor = !darkMode ?  Color(0xFFF1F1F1) : Color(0xFF161616);
@@ -28,5 +29,6 @@ class Styles{
   todosPickerOff = !darkMode ? Color(0xFFF8F9F9) : Color(0xFF272727);
   sliderColorsAct = !darkMode ? Color(0xFF272727) : Color(0xFFF8F9F9);
   sliderColorsInact = Color(0xFF777777);
+  achievementsColor = !darkMode ? Colors.grey.shade300 : Color(0xFF272727);
  }
 }

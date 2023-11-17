@@ -529,12 +529,37 @@ class _HabitPageState extends State<HabitPage> {
                                                     });
                                                   }
                                                   else if(item.index == 1){
-                                                    setState(() {
-                                                      dailyTodos.deleteAt(
-                                                          indexListMirror[index]
-                                                      );
-                                                      readTodoData();
-                                                    });
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return AlertDialog(
+                                                          title: Text(texts.habitsAlertTitle,style: TextStyle(color: styles.classicFont),),
+                                                          content: Text(texts.habitsAlertContent,style: TextStyle(color: styles.classicFont),),
+                                                          backgroundColor: styles.elementsInBg,
+                                                          actionsAlignment: MainAxisAlignment.spaceAround,
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(context); // Zamknij AlertDialog
+                                                              },
+                                                              child: Text(texts.habitsAlertCancel,style: TextStyle(color: styles.classicFont),),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                // Usuń element i zamknij AlertDialog
+                                                                setState(() {
+                                                                  dailyTodos.deleteAt(
+                                                                      indexListMirror[index]);
+                                                                  readTodoData();
+                                                                });
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text(texts.habitsAlertConfirm,style: TextStyle(color: styles.classicFont),),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
                                                   }
                                                   else if(item.index == 2){
                                                     var existingTodo = dailyTodos.getAt(indexListMirror[index]) as DailyTodos;
@@ -724,12 +749,38 @@ class _HabitPageState extends State<HabitPage> {
                                                         });
                                                       }
                                                       else if(item1.index == 1){
-                                                        setState(() {
-                                                          habitsTodos.deleteAt(
-                                                              indexListHabitsMirror[index]
-                                                          );
-                                                          readHabitData();
-                                                        });
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                            return AlertDialog(
+                                                              title: Text(texts.habitsAlertTitle,style: TextStyle(color: styles.classicFont),),
+                                                              content: Text(texts.habitsAlertContentH,style: TextStyle(color: styles.classicFont),),
+                                                              backgroundColor: styles.elementsInBg,
+                                                              actionsAlignment: MainAxisAlignment.spaceAround,
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context); // Zamknij AlertDialog
+                                                                  },
+                                                                  child: Text(texts.habitsAlertCancel,style: TextStyle(color: styles.classicFont),),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed: () {
+                                                                    // Usuń element i zamknij AlertDialog
+                                                                    setState(() {
+                                                                      habitsTodos.deleteAt(
+                                                                          indexListHabitsMirror[index]
+                                                                      );
+                                                                      readHabitData();
+                                                                    });
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  child: Text(texts.habitsAlertConfirm,style: TextStyle(color: styles.classicFont),),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
                                                       }
                                                       else if(item1.index == 2){
                                                         var existingHabit = habitsTodos.getAt(indexListHabitsMirror[index]) as HabitTodos;

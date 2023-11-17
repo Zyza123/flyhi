@@ -18,6 +18,11 @@ class Texts{
   late String habitsPopupEdit;
   late String habitsPopupRemove;
   late String habitsPopupMinus;
+  late String habitsAlertTitle;
+  late String habitsAlertContent;
+  late String habitsAlertContentH;
+  late String habitsAlertCancel;
+  late String habitsAlertConfirm;
   late String todosHabits;
   late List<String> todosFilterList = ["","",""];
   late String addDailyAppBar;
@@ -85,6 +90,11 @@ class Texts{
     habitsPopupEdit = language == "ENG" ? "Edit " : "Edytuj ";
     habitsPopupRemove = language == "ENG" ? "Remove " : "Usuń ";
     habitsPopupMinus = language == "ENG" ? "Minus " : "Cofnij ";
+    habitsAlertTitle = language == "ENG" ? "Remove" : "Usuń";
+    habitsAlertContent = language == "ENG" ? "Are u sure u want to remove daily?" : "Na pewno chcesz usunąć obowiązek?";
+    habitsAlertContentH = language == "ENG" ? "Are u sure u want to remove habit?" : "Na pewno chcesz usunąć nawyk?";
+    habitsAlertCancel = language == "ENG" ? "Cancel" : "Anuluj";
+    habitsAlertConfirm = language == "ENG" ? "Confirm" : "Zatwierdź";
     todosHabits = language == "ENG" ? "My habits" : "Moje nawyki";
     todosFilterList[0] = language == "ENG" ? "In the order added" : "W kolejności dodania";
     todosFilterList[1] = language == "ENG" ? "Importance descending" : "Waga malejąco";
