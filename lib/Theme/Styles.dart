@@ -16,6 +16,7 @@ class Styles{
  late Color sliderColorsAct;
  late Color sliderColorsInact;
  late Color achievementsColor;
+ late Color dateColor;
 
  void setColors(bool darkMode){
   mainBackgroundColor = !darkMode ?  Color(0xFFF1F1F1) : Color(0xFF161616);
@@ -30,5 +31,6 @@ class Styles{
   sliderColorsAct = !darkMode ? Color(0xFF272727) : Color(0xFFF8F9F9);
   sliderColorsInact = Color(0xFF777777);
   achievementsColor = !darkMode ? Colors.grey.shade300 : Color(0xFF272727);
+  dateColor = !darkMode ? Color(0xFF8FD3FE) : Color(0xFF4361EE);
  }
 }

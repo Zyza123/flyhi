@@ -375,7 +375,8 @@ class _HabitPageState extends State<HabitPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 25,),
+                  SizedBox(height: 10,),
+                  SizedBox(height: 10,),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0,right: 20),
                     child: Row(
