@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 part 'DailyTodos.g.dart';
 
@@ -18,11 +19,14 @@ class DailyTodos extends HiveObject {
   late DateTime date;
 
   @HiveField(4)
-  late int importance;
+  List<String> time = ["",""];
 
   @HiveField(5)
+  late int importance;
+
+  @HiveField(6)
   late int dailyTheme;
 
-  DailyTodos(this.name, this.icon, this.status, this.date, this.importance,
+  DailyTodos(this.name, this.icon, this.status, this.date, this.time, this.importance,
       this.dailyTheme);
 }

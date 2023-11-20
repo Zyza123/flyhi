@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     texts.setTextLang(langChange.language);
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                         Text(
                           '${texts.homeDays[filldays[index]]}', // Wyświetlanie numeru dnia jako tekstu
                           style: TextStyle(fontSize: 20.0,
-                              color: Color(0xFF4682B4),
+                              color: index == 2 ? Color(0xFF4682B4): styles.classicFont,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(

@@ -24,7 +24,7 @@ class _AddDailyState extends State<AddDaily> {
 
   late Box dailyTodos;
   String _weightValue = "wysoka";
-  DateTime _pickedDate = DateTime.now();
+  late DateTime _pickedDate;
   bool enabledDateButton = true;
   int imp = 0;
   bool do_once = true;
@@ -44,11 +44,50 @@ class _AddDailyState extends State<AddDaily> {
   bool showValidationMessage = false;
   String mainDailyImage = 'assets/images/addTodo.png';
 
+  TimeOfDay _selectedTime = TimeOfDay.now();
+
+  Future<void> _selectTime(BuildContext context, bool mode, String langmode) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+        builder: (BuildContext? context, Widget? child){
+          return Theme(
+            data: mode == false ? ThemeData.light() : ThemeData.dark(),
+            child: Builder(
+              builder: (BuildContext context) {
+                return Localizations.override(
+                  context: context,
+                  locale: langmode == "ENG" ?  const Locale('en'): const Locale('pl'),
+                  child: Builder(
+                      builder: (BuildContext context){
+                        return MediaQuery(
+                          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      }
+                  ),
+                );
+              },
+            ),
+          );
+        }
+    );
+
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
+
   void getHiveFromIndex(){
     tec.text = dailyTodos.getAt(widget.editIndex).name;
     String modified = dailyTodos.getAt(widget.editIndex).icon;
     modified = modified.substring(0,modified.length - 11);
     modified += '32x32.png';
+    _pickedDate= dailyTodos.getAt(widget.editIndex).date;
+    _selectedTime = TimeOfDay(hour: int.parse(dailyTodos.getAt(widget.editIndex).time[0]),
+        minute: int.parse(dailyTodos.getAt(widget.editIndex).time[1]));
     enabledDateButton = false;
     _iconValue = customImagePaths.indexOf(modified);
     selectedColor = dailyTodos.getAt(widget.editIndex).dailyTheme;
@@ -82,6 +121,12 @@ class _AddDailyState extends State<AddDaily> {
     if (picked != null && picked != _pickedDate) {
       setState(() {
         _pickedDate = picked;
+        if(_pickedDate.isAfter(DateTime.now())){
+          _selectedTime = TimeOfDay(hour: 7, minute: 0);
+        }
+        else{
+          _selectedTime = TimeOfDay.now();
+        }
       });
     }
   }
@@ -89,7 +134,7 @@ class _AddDailyState extends State<AddDaily> {
   void addDuty(){
     int weightValue = getWeightValue();
     DailyTodos dt;
-    dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", _pickedDate, weightValue, selectedColor);
+    dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", _pickedDate,[_selectedTime.hour.toString(),_selectedTime.minute.toString()],weightValue, selectedColor);
     dailyTodos.add(dt);
   }
 
@@ -100,6 +145,7 @@ class _AddDailyState extends State<AddDaily> {
     existingTodo.icon = 'assets/images/ikona${_iconValue + 1}/128x128.png';
     existingTodo.dailyTheme = selectedColor;
     existingTodo.date = _pickedDate;
+    existingTodo.time = [_selectedTime.hour.toString(),_selectedTime.minute.toString()];
     dailyTodos.putAt(widget.editIndex, existingTodo);
   }
 
@@ -107,6 +153,7 @@ class _AddDailyState extends State<AddDaily> {
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
+    _pickedDate = DateTime.now();
     if(widget.editMode == true){
       getHiveFromIndex();
     }
@@ -338,6 +385,42 @@ class _AddDailyState extends State<AddDaily> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 10,),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.addDailyHour, // Lub 'Name' w zależności od języka
+                          style: TextStyle(fontSize: 16, color: styles.classicFont),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: styles.elementsInBg,
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Text(
+                              '${_selectedTime.hour > 9 ? _selectedTime.hour : ('0'+_selectedTime.hour.toString())}:'
+                                  '${_selectedTime.minute > 9 ? _selectedTime.minute : ('0'+_selectedTime.minute.toString())}',
+                              style: TextStyle(fontSize: 16, color: styles.classicFont),
+                            ),
+                          ),
+                          SizedBox(height: 20.0),
+                          ElevatedButton(
+                            onPressed: () => _selectTime(context,themeChange.darkTheme,langChange.language),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
+                            ),
+                            child: Text(texts.addDailyHourPickOther,style: TextStyle(color: styles.classicFont,fontSize: 16,
+                                fontWeight: FontWeight.w400),),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10,),
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(

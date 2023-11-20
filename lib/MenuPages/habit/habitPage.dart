@@ -209,6 +209,10 @@ class _HabitPageState extends State<HabitPage> {
         }
       });
     }
+    else{
+      // domyslnie bedzie wybrany ten
+      saveTodoFilter(0);
+    }
   }
   void saveHabitFilter(int filterIndex) async {
     final prefs = await SharedPreferences.getInstance();
@@ -230,6 +234,9 @@ class _HabitPageState extends State<HabitPage> {
         }
       });
     }
+    else{
+      saveHabitFilter(0);
+    }
   }
 
 
@@ -238,10 +245,14 @@ class _HabitPageState extends State<HabitPage> {
     super.initState();
     dailyTodos = Hive.box('daily');
     achievements = Hive.box('achievements');
+    if(dailyTodos.isNotEmpty){
     removeOldDates();
+    }
     habitsTodos = Hive.box('habits');
     habitsArchive = Hive.box('habitsArchive');
+    if(habitsTodos.isNotEmpty){
     removeOldHabits();
+    }
     readTodoData();
     readHabitData();
     //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)), 0, 0xFFD0312D,));

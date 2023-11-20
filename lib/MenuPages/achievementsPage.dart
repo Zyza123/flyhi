@@ -157,7 +157,6 @@ class _AchievementsPageState extends State<AchievementsPage> {
                   itemCount: achievements.length,
                   itemBuilder: (BuildContext context, int index) {
                     Achievements achievement = achievements.getAt(index) as Achievements;
-                    print(achievement.image);
                     // Tutaj możesz dostosować sposób wyświetlania poszczególnych osiągnięć
                     // Możesz użyć np. ListTile, Container, itp.
                     return Container(

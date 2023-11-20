@@ -21,15 +21,16 @@ class DailyTodosAdapter extends TypeAdapter<DailyTodos> {
       fields[1] as String,
       fields[2] as String,
       fields[3] as DateTime,
-      fields[4] as int,
+      (fields[4] as List).cast<String>(),
       fields[5] as int,
+      fields[6] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, DailyTodos obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -39,8 +40,10 @@ class DailyTodosAdapter extends TypeAdapter<DailyTodos> {
       ..writeByte(3)
       ..write(obj.date)
       ..writeByte(4)
-      ..write(obj.importance)
+      ..write(obj.time)
       ..writeByte(5)
+      ..write(obj.importance)
+      ..writeByte(6)
       ..write(obj.dailyTheme);
   }
 

@@ -32,6 +32,8 @@ class Texts{
   late List<String> addDailyImpList = ["","",""];
   late String addDailyIcon;
   late String addDailyTheme;
+  late String addDailyHour;
+  late String addDailyHourPickOther;
   late String addSave;
   late String addDailyAppearDay;
   late String addDailyAppearToday;
@@ -106,6 +108,8 @@ class Texts{
     addDailyImpList[0] = language == "ENG" ? "high" : "wysoka";
     addDailyImpList[1] = language == "ENG" ? "medium" : "średnia";
     addDailyImpList[2] = language == "ENG" ? "low" : "niska";
+    addDailyHour = language == "ENG" ? "Hour" : "Godzina";
+    addDailyHourPickOther = language == "ENG" ? "Pick other" : "Wybierz inną";
     addDailyIcon = language == "ENG" ? "Icon" : "Ikona";
     addDailyTheme = language == "ENG" ? "Theme" : "Motyw";
     addSave = language == "ENG" ? "Save   " : "Zapisz   ";
