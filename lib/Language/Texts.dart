@@ -24,7 +24,7 @@ class Texts{
   late String habitsAlertCancel;
   late String habitsAlertConfirm;
   late String todosHabits;
-  late List<String> todosFilterList = ["","",""];
+  late List<String> todosFilterList = ["","","",""];
   late String addDailyAppBar;
   late String modifyDailyAppBar;
   late String addDailyName;
@@ -101,6 +101,7 @@ class Texts{
     todosFilterList[0] = language == "ENG" ? "In the order added" : "W kolejności dodania";
     todosFilterList[1] = language == "ENG" ? "Importance descending" : "Waga malejąco";
     todosFilterList[2] = language == "ENG" ? "Importance ascending" : "Waga rosnąco";
+    todosFilterList[3] = language == "Hourly" ? "" : "Godzinowo";
     addDailyAppBar = language == "ENG" ? "Add Daily" : "Dodaj obowiązek";
     modifyDailyAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj obowiązek";
     addDailyName = language == "ENG" ? "Name" : "Nazwa";

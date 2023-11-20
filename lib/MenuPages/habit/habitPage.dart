@@ -85,6 +85,34 @@ class _HabitPageState extends State<HabitPage> {
     }
   }
 
+  double timeToDouble(TimeOfDay time1){
+    double time1double = time1.hour + time1.minute/60.0;
+    return time1double;
+  }
+
+  void addElementsToTodosHourly() {
+    todosCopy.clear();
+    indexListMirror.clear();
+    Map<int, double> mapa = {};
+    int today = DateTime.now().day;
+    for (int i = 0; i < dailyTodos.length; i++)
+    {
+      if (today == dailyTodos.getAt(i).date.day) {
+        TimeOfDay time = TimeOfDay(hour: int.parse(dailyTodos.getAt(i).time[0]), minute: int.parse(dailyTodos.getAt(i).time[1]));
+        mapa[i] = timeToDouble(time);
+      }
+    }
+    var posortowanaMapa = Map.fromEntries(mapa.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value)));
+
+    posortowanaMapa.forEach((key, value) {
+      todosCopy.add(dailyTodos.getAt(key));
+      indexListMirror.add(key);
+    });
+    mapa.clear();
+    posortowanaMapa.clear();
+  }
+
   void addElementsToHabits(){
     // co jeszcze brakuje
     // dodanie usuwania starych nawyków które się już skończyły i dodanie ich danych całych do
@@ -204,8 +232,11 @@ class _HabitPageState extends State<HabitPage> {
         else if(selectedTodoFilter == 1){
           addElementsToTodosAsc();
         }
-        else{
+        else if(selectedTodoFilter == 2){
           addElementsToTodosDesc();
+        }
+        else{
+          addElementsToTodosHourly();
         }
       });
     }
@@ -420,6 +451,11 @@ class _HabitPageState extends State<HabitPage> {
                               selectedTodoFilter = 2;
                               addElementsToTodosDesc();
                             }
+                            else if(newValue == texts.todosFilterList[3]){
+                              saveTodoFilter(3);
+                              selectedTodoFilter = 3;
+                              addElementsToTodosHourly();
+                            }
                           });
                         },
                         items: texts.todosFilterList
@@ -629,9 +665,19 @@ class _HabitPageState extends State<HabitPage> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                "${texts.addDailyImportance.toLowerCase()}: ${texts.addDailyImpList[item.importance]}",
-                                                style: TextStyle(fontSize: 15, color: styles.classicFont),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    '${int.parse(item.time[0]) > 9 ? int.parse(item.time[0]) : ('0'+item.time[0])}:'
+                                                        '${int.parse(item.time[1]) > 9 ? int.parse(item.time[1]) : ('0'+item.time[1])}',
+                                                    style: TextStyle(fontSize: 15, color: styles.classicFont, fontWeight: FontWeight.bold),
+                                                  ),
+                                                  SizedBox(width: 15,),
+                                                  Text(
+                                                    "${texts.addDailyImportance.toLowerCase()}: ${texts.addDailyImpList[item.importance]}",
+                                                    style: TextStyle(fontSize: 15, color: styles.classicFont),
+                                                  ),
+                                                ],
                                               ),
                                               GestureDetector(
                                                   onTap: (){
