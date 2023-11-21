@@ -472,7 +472,7 @@ class _HabitPageState extends State<HabitPage> {
                           onPressed: ()  {
                             todo_mode == 0 ? Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1,)
+                              MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1, dayShift: selectedDay,)
                               )).then((value){
                                 if(value == true) {
                                     setState(() {
@@ -643,12 +643,12 @@ class _HabitPageState extends State<HabitPage> {
                                                   if(item.index == 0){
                                                     Navigator.push(
                                                         context,
-                                                        MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],)
+                                                        MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],dayShift: selectedDay,)
                                                         )).then((value){
                                                       if(value == true) {
                                                         setState(() {
                                                           dailyTodos = Hive.box('daily');
-                                                          todosCopy[index] = dailyTodos.getAt(indexListMirror[index]);
+                                                          readTodoData(weekDates[selectedDay]);
                                                         });
                                                       }
                                                     });

@@ -10,10 +10,11 @@ import '../../Theme/DarkThemeProvider.dart';
 import '../../Theme/Styles.dart';
 
 class AddDaily extends StatefulWidget {
-  const AddDaily({super.key, required this.editMode, required this.editIndex});
+  const AddDaily({super.key, required this.editMode, required this.editIndex, required this.dayShift});
 
   final bool editMode;
   final int editIndex;
+  final int dayShift;
 
   @override
   State<AddDaily> createState() => _AddDailyState();
@@ -25,7 +26,6 @@ class _AddDailyState extends State<AddDaily> {
   late Box dailyTodos;
   String _weightValue = "wysoka";
   late DateTime _pickedDate;
-  bool enabledDateButton = true;
   int imp = 0;
   bool do_once = true;
   int _iconValue = 0;
@@ -88,7 +88,6 @@ class _AddDailyState extends State<AddDaily> {
     _pickedDate= dailyTodos.getAt(widget.editIndex).date;
     _selectedTime = TimeOfDay(hour: int.parse(dailyTodos.getAt(widget.editIndex).time[0]),
         minute: int.parse(dailyTodos.getAt(widget.editIndex).time[1]));
-    enabledDateButton = false;
     _iconValue = customImagePaths.indexOf(modified);
     selectedColor = dailyTodos.getAt(widget.editIndex).dailyTheme;
     imp = dailyTodos.getAt(widget.editIndex).importance;
@@ -105,12 +104,14 @@ class _AddDailyState extends State<AddDaily> {
   }
 
   Future<void> _selectDate(BuildContext context, bool mode, String langmode) async {
+    DateTime first = DateTime.now();
+    print("first: "+widget.dayShift.toString());
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: _pickedDate,
         locale: langmode == "ENG" ?  const Locale('en'): const Locale('pl'),
-        firstDate: DateTime.now(), // Ustala, że nie można wybrać daty wcześniejszej niż dzisiaj
-        lastDate: DateTime.now().add(Duration(days: 6)), // Ustal maksymalną dostępną datę
+        firstDate: first, // Ustala, że nie można wybrać daty wcześniejszej niż dzisiaj
+        lastDate: first.add(Duration(days: 6)), // Ustal maksymalną dostępną datę
         builder: (BuildContext? context, Widget? child){
           return Theme(
             data: mode == false ? ThemeData.light() : ThemeData.dark(),
@@ -153,7 +154,7 @@ class _AddDailyState extends State<AddDaily> {
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
-    _pickedDate = DateTime.now();
+    _pickedDate = DateTime.now().add(Duration(days: widget.dayShift));
     if(widget.editMode == true){
       getHiveFromIndex();
     }
@@ -371,15 +372,15 @@ class _AddDailyState extends State<AddDaily> {
                                 style: TextStyle(fontSize: 16, color: styles.classicFont),
                               ),
                             ),
-                            Opacity(
-                              opacity: enabledDateButton == true ? 1.0 : 0.5,
-                              child: ElevatedButton(
-                                onPressed: enabledDateButton == true?  () => _selectDate(context,themeChange.darkTheme, langChange.language) : null,
-                                child: Text(texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
-                                    fontWeight: FontWeight.w400),),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
-                                ),
+                            ElevatedButton(
+                              onPressed: () {
+                                _selectDate(context, themeChange.darkTheme,
+                                    langChange.language);
+                              } ,
+                              child: Text(texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
+                                  fontWeight: FontWeight.w400),),
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
                               ),
                             ),
                           ],
