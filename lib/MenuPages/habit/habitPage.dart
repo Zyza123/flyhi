@@ -203,22 +203,14 @@ class _HabitPageState extends State<HabitPage> {
   }
 
   void removeOldDates(){
-    int today = DateTime.now().day;
-    int tomorrow = DateTime.now().add(Duration(days: 1)).day;
-    //print("dzisiaj 1: "+today.toString());
-    //print("jutro 1: "+tomorrow.toString());
+    DateTime today = DateTime.now();
     List<dynamic> toRemove = [];
     int points_counter = 0;
     for(int i = 0; i < dailyTodos.length; i++){
-      if(today != dailyTodos.getAt(i).date.day && tomorrow != dailyTodos.getAt(i).date.day){
+      int days_diff = (today.difference(dailyTodos.getAt(i).date).inHours/24).ceil();
+      if(days_diff >= 1){
         toRemove.add(dailyTodos.keyAt(i));
         if(dailyTodos.getAt(i).status == "done"){
-          points_counter++;
-        }
-      }
-      else{
-        if(dailyTodos.getAt(i).status == "done"){
-          toRemove.add(dailyTodos.keyAt(i));
           points_counter++;
         }
       }
@@ -226,7 +218,7 @@ class _HabitPageState extends State<HabitPage> {
     // dodawanie do osiągnieć punktów ze zdobytych obowiazkow
     Achievements ach = achievements.getAt(2);
     ach.value += points_counter;
-    while(ach.value > ach.level[ach.progress]){
+    while(ach.value >= ach.level[ach.progress]){
       ach.progress += 1;
     }
     achievements.putAt(2, ach);
@@ -264,8 +256,10 @@ class _HabitPageState extends State<HabitPage> {
     }
     else{
       // domyslnie bedzie wybrany ten
-      saveTodoFilter(0);
+      await prefs.setInt('filter', 0);
+      setState(() {
       selectedTodoFilter = prefs.getInt('filter')!;
+      });
     }
   }
   void saveHabitFilter(int filterIndex) async {

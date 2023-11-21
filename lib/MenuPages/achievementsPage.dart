@@ -73,7 +73,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
         ach.value++;
       }
     }
-    while(ach.value > ach.level[ach.progress]){
+    while(ach.value >= ach.level[ach.progress]){
       ach.progress += 1;
       achievements.putAt(1, ach);
     }
@@ -101,7 +101,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
     }
     if(index != -1){
       ach.value = effectiveness;
-      while(checkHabitEffectiveness(index) > ach.level[ach.progress]){
+      while(checkHabitEffectiveness(index) >= ach.level[ach.progress]){
         ach.progress += 1;
       }
       achievements.putAt(3,ach);

@@ -46,7 +46,26 @@ class _HomePageState extends State<HomePage> {
     texts.setTextLang(langChange.language);
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
-      body: Container()
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20.0,right:20,top: 25),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  child: Text(texts.menu[0].toUpperCase(),style: TextStyle(
+                      fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
+                ),
+              ),
+              SizedBox(height: 30,),
+            ],
+          ),
+        ),
+      )
     );
   }
 }
