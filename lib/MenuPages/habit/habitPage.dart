@@ -39,14 +39,28 @@ class _HabitPageState extends State<HabitPage> {
   List<HabitTodos> habitsCopy = [];
   List<int> indexListHabitsMirror = [];
 
+  late List<DateTime> weekDates = [];
+  late List<int> fillweek = [];
+  late int selectedDay;
 
-  void addElementsToTodosAsc(){
+  void fillData() {
+    weekDates.clear();
+    fillweek.clear();
+    DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+    for (int i = 0; i < 7; i++) {
+      weekDates.add(today.add(Duration(days: i)));
+      fillweek.add(weekDates[i].weekday - 1);
+    }
+    selectedDay = 0;
+  }
+
+  void addElementsToTodosAsc(int dayShift){
     todosCopy.clear();
     indexListMirror.clear();
-    int today = DateTime.now().day;
+    int sel_day = dayShift == 0 ? DateTime.now().day: DateTime.now().add(Duration(days: dayShift)).day;
     for(int i = 0; i < 3; i++){
       for(int j = 0; j < dailyTodos.length; j++){
-        if(today == dailyTodos.getAt(j).date.day){
+        if(sel_day == dailyTodos.getAt(j).date.day){
           if(dailyTodos.getAt(j).importance == i)
           todosCopy.add(dailyTodos.getAt(j));
           // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
@@ -56,13 +70,13 @@ class _HabitPageState extends State<HabitPage> {
     }
   }
 
-  void addElementsToTodosDesc(){
+  void addElementsToTodosDesc(int dayShift){
     todosCopy.clear();
     indexListMirror.clear();
-    int today = DateTime.now().day;
+    int sel_day = dayShift == 0 ? DateTime.now().day: DateTime.now().add(Duration(days: dayShift)).day;
     for(int i = 2; i >= 0; i--){
       for(int j = 0; j < dailyTodos.length; j++){
-        if(today == dailyTodos.getAt(j).date.day){
+        if(sel_day == dailyTodos.getAt(j).date.day){
           if(dailyTodos.getAt(j).importance == i)
             todosCopy.add(dailyTodos.getAt(j));
           // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
@@ -72,12 +86,12 @@ class _HabitPageState extends State<HabitPage> {
     }
   }
 
-  void addElementsToTodos(){
+  void addElementsToTodos(int dayShift){
     todosCopy.clear();
     indexListMirror.clear();
-    int today = DateTime.now().day;
+    int sel_day = dayShift == 0 ? DateTime.now().day: DateTime.now().add(Duration(days: dayShift)).day;
     for(int i = 0; i < dailyTodos.length; i++){
-      if(today == dailyTodos.getAt(i).date.day){
+      if(sel_day == dailyTodos.getAt(i).date.day){
         todosCopy.add(dailyTodos.getAt(i));
        // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
         indexListMirror.add(i);
@@ -90,14 +104,14 @@ class _HabitPageState extends State<HabitPage> {
     return time1double;
   }
 
-  void addElementsToTodosHourly() {
+  void addElementsToTodosHourly(int dayShift) {
     todosCopy.clear();
     indexListMirror.clear();
     Map<int, double> mapa = {};
-    int today = DateTime.now().day;
+    int sel_day = dayShift == 0 ? DateTime.now().day: DateTime.now().add(Duration(days: dayShift)).day;
     for (int i = 0; i < dailyTodos.length; i++)
     {
-      if (today == dailyTodos.getAt(i).date.day) {
+      if (sel_day == dailyTodos.getAt(i).date.day) {
         TimeOfDay time = TimeOfDay(hour: int.parse(dailyTodos.getAt(i).time[0]), minute: int.parse(dailyTodos.getAt(i).time[1]));
         mapa[i] = timeToDouble(time);
       }
@@ -202,6 +216,12 @@ class _HabitPageState extends State<HabitPage> {
           points_counter++;
         }
       }
+      else{
+        if(dailyTodos.getAt(i).status == "done"){
+          toRemove.add(dailyTodos.keyAt(i));
+          points_counter++;
+        }
+      }
     }
     // dodawanie do osiągnieć punktów ze zdobytych obowiazkow
     Achievements ach = achievements.getAt(2);
@@ -220,29 +240,32 @@ class _HabitPageState extends State<HabitPage> {
     // Możesz użyć innych metod, takich jak setInt(), setDouble(), itp., w zależności od rodzaju danych.
   }
 
-  Future<void> readTodoData() async {
+  Future<void> readTodoData(DateTime pickedDay) async {
     final prefs = await SharedPreferences.getInstance();
     final key = "filter";
     if(prefs.containsKey("filter")){
       setState(() {
         selectedTodoFilter = prefs.getInt('filter')!;
+        int days_diff = (pickedDay.difference(weekDates[0]).inHours/24).ceil();
+        print("days diff: "+days_diff.toString());
         if(selectedTodoFilter == 0){
-          addElementsToTodos();
+          addElementsToTodos(days_diff);
         }
         else if(selectedTodoFilter == 1){
-          addElementsToTodosAsc();
+          addElementsToTodosAsc(days_diff);
         }
         else if(selectedTodoFilter == 2){
-          addElementsToTodosDesc();
+          addElementsToTodosDesc(days_diff);
         }
         else{
-          addElementsToTodosHourly();
+          addElementsToTodosHourly(days_diff);
         }
       });
     }
     else{
       // domyslnie bedzie wybrany ten
       saveTodoFilter(0);
+      selectedTodoFilter = prefs.getInt('filter')!;
     }
   }
   void saveHabitFilter(int filterIndex) async {
@@ -274,6 +297,7 @@ class _HabitPageState extends State<HabitPage> {
   @override
   void initState() {
     super.initState();
+    fillData();
     dailyTodos = Hive.box('daily');
     achievements = Hive.box('achievements');
     if(dailyTodos.isNotEmpty){
@@ -284,7 +308,8 @@ class _HabitPageState extends State<HabitPage> {
     if(habitsTodos.isNotEmpty){
     removeOldHabits();
     }
-    readTodoData();
+    DateTime pickedDateFormat = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+    readTodoData(pickedDateFormat);
     readHabitData();
     //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)), 0, 0xFFD0312D,));
     //dailyTodos.clear();
@@ -375,7 +400,59 @@ class _HabitPageState extends State<HabitPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 15,),
+                  todo_mode == 0? Padding(
+                    padding: const EdgeInsets.only(left: 5,right: 5),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(weekDates.length, (index) {
+                          return GestureDetector(
+                            onTap: () {
+                              //print('Wybrano dzień: ${weekDates[index]}');
+                              setState(() {
+                                selectedDay = index;
+                                readTodoData(weekDates[selectedDay]);
+                              });
+                            },
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 200),
+                              width: 80.0,
+                              height: 80.0,
+                              decoration: BoxDecoration(
+                                  color: index == selectedDay
+                                      ? styles.dateColor // Dzisiaj
+                                      : styles.mainBackgroundColor, // Pozostałe dni
+                                  borderRadius: index == selectedDay
+                                      ? BorderRadius.circular(10):
+                                  BorderRadius.zero
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    '${weekDates[index].day}',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      color: styles.classicFont,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${texts.homeDays[fillweek[index]]}',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: styles.classicFont,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ): Container(),
                   SizedBox(height: 10,),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0,right: 20),
@@ -399,7 +476,7 @@ class _HabitPageState extends State<HabitPage> {
                               )).then((value){
                                 if(value == true) {
                                     setState(() {
-                                      readTodoData();
+                                      readTodoData(weekDates[selectedDay]);
                                     });
                                   }
                             })
@@ -440,22 +517,22 @@ class _HabitPageState extends State<HabitPage> {
                             if(newValue == texts.todosFilterList[0]){
                               saveTodoFilter(0);
                               selectedTodoFilter = 0;
-                              addElementsToTodos();
+                              readTodoData(weekDates[selectedDay]);
                             }
                             else if(newValue == texts.todosFilterList[1]){
                               saveTodoFilter(1);
                               selectedTodoFilter = 1;
-                              addElementsToTodosAsc();
+                              readTodoData(weekDates[selectedDay]);
                             }
                             else if(newValue == texts.todosFilterList[2]){
                               saveTodoFilter(2);
                               selectedTodoFilter = 2;
-                              addElementsToTodosDesc();
+                              readTodoData(weekDates[selectedDay]);
                             }
                             else if(newValue == texts.todosFilterList[3]){
                               saveTodoFilter(3);
                               selectedTodoFilter = 3;
-                              addElementsToTodosHourly();
+                              readTodoData(weekDates[selectedDay]);
                             }
                           });
                         },
@@ -598,7 +675,7 @@ class _HabitPageState extends State<HabitPage> {
                                                                 setState(() {
                                                                   dailyTodos.deleteAt(
                                                                       indexListMirror[index]);
-                                                                  readTodoData();
+                                                                  readTodoData(weekDates[selectedDay]);
                                                                 });
                                                                 Navigator.pop(context);
                                                               },
@@ -614,7 +691,7 @@ class _HabitPageState extends State<HabitPage> {
                                                     existingTodo.date = existingTodo.date.add(Duration(days: 1));
                                                     setState(() {
                                                       dailyTodos.putAt(indexListMirror[index], existingTodo);
-                                                      addElementsToTodos();
+                                                      readTodoData(weekDates[selectedDay]);
                                                     });
                                                   }
                                                 },
@@ -711,7 +788,7 @@ class _HabitPageState extends State<HabitPage> {
                                     color: Colors.grey, // Kolor tła kontenera
                                   ),
                                   child: TweenAnimationBuilder<double>(
-                                  key: Key("1"),
+                                  key: Key("1"+weekDates[selectedDay].day.toString()),  // osobne klucze dla danego okna tweenów
                                   duration: const Duration(milliseconds: 400),
                                   curve: Curves.decelerate,
                                   tween: Tween<double>(

@@ -85,7 +85,7 @@ class Texts{
     todosMain = language == "ENG" ? "TODOS" : "AKTYWNOŚĆ";
     todosPickerDaily = language == "ENG" ? "Daily" : "Dzienne";
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";
-    todosPlannedText = language == "ENG" ? "Planned for today" : "Zaplanowane na dzisiaj";
+    todosPlannedText = language == "ENG" ? "Planned daylies" : "Zaplanowane obowiązki";
     todosPopupEdit = language == "ENG" ? "Edit " : "Edytuj ";
     todosPopupRemove = language == "ENG" ? "Remove " : "Usuń ";
     todosPopupPostpone = language == "ENG" ? "Postpone " : "Przełóż ";
@@ -101,7 +101,7 @@ class Texts{
     todosFilterList[0] = language == "ENG" ? "In the order added" : "W kolejności dodania";
     todosFilterList[1] = language == "ENG" ? "Importance descending" : "Waga malejąco";
     todosFilterList[2] = language == "ENG" ? "Importance ascending" : "Waga rosnąco";
-    todosFilterList[3] = language == "Hourly" ? "" : "Godzinowo";
+    todosFilterList[3] = language == "ENG" ? "Hourly" : "Godzinowo";
     addDailyAppBar = language == "ENG" ? "Add Daily" : "Dodaj obowiązek";
     modifyDailyAppBar = language == "ENG" ? "Modify Daily" : "Modyfikuj obowiązek";
     addDailyName = language == "ENG" ? "Name" : "Nazwa";

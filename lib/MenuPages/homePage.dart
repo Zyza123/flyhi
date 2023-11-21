@@ -30,19 +30,6 @@ class _HomePageState extends State<HomePage> {
     selectedDay = 0;
   }
 
-  BorderRadius _getBorderRadius(int index) {
-    if (index == 0) {
-      // Dla pierwszego elementu, dodaj border radius w dolnym prawym rogu
-      return BorderRadius.only(bottomRight: Radius.circular(10.0));
-    } else if (index == 6) {
-      // Dla ostatniego elementu, dodaj border radius w dolnym lewym rogu
-      return BorderRadius.only(bottomLeft: Radius.circular(10.0));
-    } else {
-      // Dla innych przypadków, brak border radius
-      return BorderRadius.zero;
-    }
-  }
-
   @override
   void initState() {
     fillData();
@@ -59,56 +46,7 @@ class _HomePageState extends State<HomePage> {
     texts.setTextLang(langChange.language);
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.only(top: 10.0,left: 5,right: 5),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(weekDates.length, (index) {
-              return GestureDetector(
-                onTap: () {
-                  print('Wybrano dzień: ${weekDates[index]}');
-                  setState(() {
-                  selectedDay = index;
-                  });
-                },
-                child: Container(
-                  width: 80.0,
-                  height: 80.0,
-                  decoration: BoxDecoration(
-                    color: index == selectedDay
-                        ? styles.dateColor // Dzisiaj
-                        : styles.mainBackgroundColor, // Pozostałe dni
-                    borderRadius: index == selectedDay
-                      ? BorderRadius.circular(10):
-                        BorderRadius.zero
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        '${weekDates[index].day}',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: styles.classicFont,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '${texts.homeDays[fillweek[index]]}',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: styles.classicFont,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
-      ),
+      body: Container()
     );
   }
 }
