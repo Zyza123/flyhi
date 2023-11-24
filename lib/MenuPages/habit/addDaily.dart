@@ -3,6 +3,7 @@ import 'package:flyhi/HiveClasses/DailyTodos.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
@@ -10,11 +11,13 @@ import '../../Theme/DarkThemeProvider.dart';
 import '../../Theme/Styles.dart';
 
 class AddDaily extends StatefulWidget {
-  const AddDaily({super.key, required this.editMode, required this.editIndex, required this.dayShift});
+  const AddDaily({super.key, required this.editMode, required this.editIndex, required this.dayShift,
+    required  this.longerDay});
 
   final bool editMode;
   final int editIndex;
   final int dayShift;
+  final bool longerDay;
 
   @override
   State<AddDaily> createState() => _AddDailyState();
@@ -43,6 +46,7 @@ class _AddDailyState extends State<AddDaily> {
   ScrollController _scrollController = ScrollController();
   bool showValidationMessage = false;
   String mainDailyImage = 'assets/images/addTodo.png';
+  late int day_offset;
 
   TimeOfDay _selectedTime = TimeOfDay.now();
 
@@ -104,7 +108,7 @@ class _AddDailyState extends State<AddDaily> {
   }
 
   Future<void> _selectDate(BuildContext context, bool mode, String langmode) async {
-    DateTime first = DateTime.now();
+    DateTime first = widget.longerDay ? DateTime.now().subtract(Duration(days: 1)): DateTime.now();
     print("first: "+widget.dayShift.toString());
     final DateTime? picked = await showDatePicker(
         context: context,
@@ -154,9 +158,17 @@ class _AddDailyState extends State<AddDaily> {
   void initState() {
     super.initState();
     dailyTodos = Hive.box('daily');
-    _pickedDate = DateTime.now().add(Duration(days: widget.dayShift));
     if(widget.editMode == true){
       getHiveFromIndex();
+    }
+    else{
+      DateTime today = DateTime.now();
+      if(widget.longerDay){
+        _pickedDate = today.add(Duration(days: widget.dayShift -1));
+      }
+      else{
+        _pickedDate = today.add(Duration(days: widget.dayShift));
+      }
     }
   }
 
@@ -368,8 +380,10 @@ class _AddDailyState extends State<AddDaily> {
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
                               child: Text(
-                                "${_pickedDate.toLocal()}".split(' ')[0],
-                                style: TextStyle(fontSize: 16, color: styles.classicFont),
+                                _pickedDate != null
+                                    ? "${_pickedDate!.toLocal()}".split(' ')[0]
+                                    : 'Loading...',
+                                style: TextStyle(fontSize: 16, color: Colors.black),
                               ),
                             ),
                             ElevatedButton(

@@ -42,11 +42,19 @@ class _HabitPageState extends State<HabitPage> {
   late List<DateTime> weekDates = [];
   late List<int> fillweek = [];
   late int selectedDay;
+  late int day_offset;
+
+  Future<void> getOffsetFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    day_offset = prefs.getInt('DAY_OFFSET') ?? 0;
+  }
 
   void fillData() {
     weekDates.clear();
     fillweek.clear();
-    DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+    DateTime today = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
+        DateTime.now().subtract(Duration(hours: day_offset)).month,
+        DateTime.now().subtract(Duration(hours: day_offset)).day);
     for (int i = 0; i < 7; i++) {
       weekDates.add(today.add(Duration(days: i)));
       fillweek.add(weekDates[i].weekday - 1);
@@ -57,7 +65,8 @@ class _HabitPageState extends State<HabitPage> {
   void addElementsToTodosAsc(int dayShift){
     todosCopy.clear();
     indexListMirror.clear();
-    int sel_day = dayShift == 0 ? DateTime.now().day: DateTime.now().add(Duration(days: dayShift)).day;
+    DateTime day1 = DateTime.now().subtract(Duration(hours: day_offset));
+    int sel_day = dayShift == 0 ? day1.day: day1.add(Duration(days: dayShift)).day;
     for(int i = 0; i < 3; i++){
       for(int j = 0; j < dailyTodos.length; j++){
         if(sel_day == dailyTodos.getAt(j).date.day){
@@ -73,7 +82,8 @@ class _HabitPageState extends State<HabitPage> {
   void addElementsToTodosDesc(int dayShift){
     todosCopy.clear();
     indexListMirror.clear();
-    int sel_day = dayShift == 0 ? DateTime.now().day: DateTime.now().add(Duration(days: dayShift)).day;
+    DateTime day1 = DateTime.now().subtract(Duration(hours: day_offset));
+    int sel_day = dayShift == 0 ? day1.day: day1.add(Duration(days: dayShift)).day;
     for(int i = 2; i >= 0; i--){
       for(int j = 0; j < dailyTodos.length; j++){
         if(sel_day == dailyTodos.getAt(j).date.day){
@@ -89,7 +99,8 @@ class _HabitPageState extends State<HabitPage> {
   void addElementsToTodos(int dayShift){
     todosCopy.clear();
     indexListMirror.clear();
-    int sel_day = dayShift == 0 ? DateTime.now().day: DateTime.now().add(Duration(days: dayShift)).day;
+    DateTime day1 = DateTime.now().subtract(Duration(hours: day_offset));
+    int sel_day = dayShift == 0 ? day1.day: day1.add(Duration(days: dayShift)).day;
     for(int i = 0; i < dailyTodos.length; i++){
       if(sel_day == dailyTodos.getAt(i).date.day){
         todosCopy.add(dailyTodos.getAt(i));
@@ -108,7 +119,8 @@ class _HabitPageState extends State<HabitPage> {
     todosCopy.clear();
     indexListMirror.clear();
     Map<int, double> mapa = {};
-    int sel_day = dayShift == 0 ? DateTime.now().day: DateTime.now().add(Duration(days: dayShift)).day;
+    DateTime day1 = DateTime.now().subtract(Duration(hours: day_offset));
+    int sel_day = dayShift == 0 ? day1.day: day1.add(Duration(days: dayShift)).day;
     for (int i = 0; i < dailyTodos.length; i++)
     {
       if (sel_day == dailyTodos.getAt(i).date.day) {
@@ -137,7 +149,9 @@ class _HabitPageState extends State<HabitPage> {
     for(int i = 0; i < habitsTodos.length; i++)
     {
       HabitTodos existingHabit = habitsTodos.getAt(i);
-      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      DateTime today = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
+          DateTime.now().subtract(Duration(hours: day_offset)).month,
+          DateTime.now().subtract(Duration(hours: day_offset)).day);
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         DateTime before = existingHabit.efficiency.keys.last;
         DateTime week_before = today.subtract(Duration(days: 7));
@@ -161,7 +175,9 @@ class _HabitPageState extends State<HabitPage> {
     for(int i = habitsTodos.length -1; i >= 0; i--)
     {
       var existingHabit = habitsTodos.getAt(i);
-      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      DateTime today = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
+          DateTime.now().subtract(Duration(hours: day_offset)).month,
+          DateTime.now().subtract(Duration(hours: day_offset)).day);
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         if(existingHabit.dayNumber > existingHabit.fullTime){
           HabitTodos ht = habitsTodos.getAt(i);
@@ -184,7 +200,9 @@ class _HabitPageState extends State<HabitPage> {
     for(int i = habitsTodos.length -1; i >= 0; i--)
     {
       var existingHabit = habitsTodos.getAt(i);
-      DateTime today = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      DateTime today = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
+          DateTime.now().subtract(Duration(hours: day_offset)).month,
+          DateTime.now().subtract(Duration(hours: day_offset)).day);
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         DateTime before = existingHabit.efficiency.keys.last;
         DateTime week_before = today.subtract(Duration(days: 7));
@@ -203,12 +221,12 @@ class _HabitPageState extends State<HabitPage> {
   }
 
   void removeOldDates(){
-    DateTime today = DateTime.now();
+    DateTime today = DateTime.now().subtract(Duration(hours: day_offset));
     List<dynamic> toRemove = [];
     int points_counter = 0;
     for(int i = 0; i < dailyTodos.length; i++){
-      int days_diff = (today.difference(dailyTodos.getAt(i).date).inHours/24).ceil();
-      if(days_diff >= 1){
+      bool different = (today.day != dailyTodos.getAt(i).date) && today.isAfter(dailyTodos.getAt(i).date);
+      if(different){
         toRemove.add(dailyTodos.keyAt(i));
         if(dailyTodos.getAt(i).status == "done"){
           points_counter++;
@@ -287,24 +305,25 @@ class _HabitPageState extends State<HabitPage> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
-    fillData();
-    dailyTodos = Hive.box('daily');
     achievements = Hive.box('achievements');
-    if(dailyTodos.isNotEmpty){
-    removeOldDates();
-    }
-    habitsTodos = Hive.box('habits');
-    habitsArchive = Hive.box('habitsArchive');
-    if(habitsTodos.isNotEmpty){
-    removeOldHabits();
-    }
-    DateTime pickedDateFormat = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
-    readTodoData(pickedDateFormat);
-    readHabitData();
+    dailyTodos = Hive.box('daily');
+    getOffsetFromPrefs().then((value) {
+      fillData();
+      if(dailyTodos.isNotEmpty){
+        removeOldDates();
+      }
+      DateTime pickedDateFormat = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      readTodoData(pickedDateFormat);
+      habitsTodos = Hive.box('habits');
+      habitsArchive = Hive.box('habitsArchive');
+      if(habitsTodos.isNotEmpty){
+        removeOldHabits();
+      }
+      readHabitData();
+    });
     //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)), 0, 0xFFD0312D,));
     //dailyTodos.clear();
     todo_mode = 0;
@@ -466,7 +485,8 @@ class _HabitPageState extends State<HabitPage> {
                           onPressed: ()  {
                             todo_mode == 0 ? Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1, dayShift: selectedDay,)
+                              MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1, dayShift: selectedDay,
+                                longerDay: DateTime.now().day == weekDates[0] ? false : true,)
                               )).then((value){
                                 if(value == true) {
                                     setState(() {
@@ -477,7 +497,8 @@ class _HabitPageState extends State<HabitPage> {
                             :
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => AddHabit(editMode: false, editIndex: -1,))
+                                MaterialPageRoute(builder: (context) => AddHabit(editMode: false, editIndex: -1,
+                                  longerDay: DateTime.now().day == weekDates[0] ? false : true,))
                             ).then((value){
                               if(value == true) {
                                 setState(() {
@@ -637,7 +658,8 @@ class _HabitPageState extends State<HabitPage> {
                                                   if(item.index == 0){
                                                     Navigator.push(
                                                         context,
-                                                        MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],dayShift: selectedDay,)
+                                                        MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],dayShift: selectedDay,
+                                                          longerDay: DateTime.now().day == weekDates[0] ? false : true,)
                                                         )).then((value){
                                                       if(value == true) {
                                                         setState(() {
@@ -867,7 +889,8 @@ class _HabitPageState extends State<HabitPage> {
                                                       if(item1.index == 0){
                                                         Navigator.push(
                                                             context,
-                                                            MaterialPageRoute(builder: (context) => AddHabit(editMode: true, editIndex: indexListHabitsMirror[index],)
+                                                            MaterialPageRoute(builder: (context) => AddHabit(editMode: true, editIndex: indexListHabitsMirror[index],
+                                                              longerDay: DateTime.now().day == weekDates[0] ? false : true,)
                                                             )).then((value){
                                                           if(value == true) {
                                                             setState(() {

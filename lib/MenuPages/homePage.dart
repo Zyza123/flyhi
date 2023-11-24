@@ -15,24 +15,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  late List<DateTime> weekDates = [];
-  late List<int> fillweek = [];
-  late int selectedDay;
-
-  void fillData() {
-    weekDates.clear();
-    fillweek.clear();
-    DateTime today = DateTime.now();
-    for (int i = 0; i < 7; i++) {
-      weekDates.add(today.add(Duration(days: i)));
-      fillweek.add(weekDates[i].weekday - 1);
-    }
-    selectedDay = 0;
-  }
-
   @override
   void initState() {
-    fillData();
     super.initState();
   }
 

@@ -8,6 +8,8 @@ class Texts{
   late String settingsDarkMode;
   late String settingsLang;
   late List<String> langList = ["",""];
+  late String settingsOffset;
+  late List<String> timeOffsetList = ["",""];
   late String todosMain;
   late String todosPickerDaily;
   late String todosPickerHabits;
@@ -82,6 +84,9 @@ class Texts{
     settingsLang = language == "ENG" ? "Language" : "Język";
     langList[0] = language == "ENG" ? "english" : "angielski";
     langList[1] = language == "ENG" ? "polish" : "polski";
+    settingsOffset = language == "ENG" ? "Backup day" : "Dzień zapasowy";
+    timeOffsetList[0] = language == "ENG" ? "No shift" : "Brak";
+    timeOffsetList[1] = language == "ENG" ? "1 hour" : "1 godzina";
     todosMain = language == "ENG" ? "TODOS" : "AKTYWNOŚĆ";
     todosPickerDaily = language == "ENG" ? "Daily" : "Dzienne";
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";
@@ -152,6 +157,5 @@ class Texts{
     achievementsMainText[2] = language == "ENG" ? "Fulfill certain number of duties." : "Wypełnij określoną ilość obowiązków.";
     achievementsMainText[3] = language == "ENG" ? "Achieve the effectiveness of a completed habit (atleast 30 days)." : "Osiągnij skuteczność wykonanego nawyku (minimum 30 dni).";
     achievementsMainText[4] = language == "ENG" ? "Raise your pet's level." : "Podnieś poziom swojego pupila.";
-
   }
 }

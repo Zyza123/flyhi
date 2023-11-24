@@ -8,9 +8,11 @@ import '../../Theme/DarkThemeProvider.dart';
 import '../../Theme/Styles.dart';
 
 class AddHabit extends StatefulWidget {
-  const AddHabit({super.key,required this.editMode, required this.editIndex});
+  const AddHabit({super.key,required this.editMode, required this.editIndex,
+    required  this.longerDay});
   final bool editMode;
   final int editIndex;
+  final bool longerDay;
 
   @override
   State<AddHabit> createState() => _AddHabitState();
@@ -19,7 +21,7 @@ class AddHabit extends StatefulWidget {
 class _AddHabitState extends State<AddHabit> {
 
   late Box dailyHabits;
-  DateTime _pickedDate = DateTime.now();
+  late DateTime _pickedDate;
   bool enabledDateButton = true;
   bool enabledDaysButton = true;
   String _lengthValue = "Dni";
@@ -56,11 +58,12 @@ class _AddHabitState extends State<AddHabit> {
   }
 
   Future<void> _selectDate(BuildContext context, bool mode, String langmode) async {
+    DateTime first = widget.longerDay ? DateTime.now().subtract(Duration(days: 1)): DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _pickedDate,
         locale: langmode == "ENG" ?  const Locale('en'): const Locale('pl'),
-      firstDate: DateTime.now(), // Ustala, że nie można wybrać daty wcześniejszej niż dzisiaj
+      firstDate: first, // Ustala, że nie można wybrać daty wcześniejszej niż dzisiaj
       lastDate: DateTime.now().add(Duration(days: 30)), // Ustal maksymalną dostępną datę
       builder: (BuildContext? context, Widget? child){
         return Theme(
@@ -124,6 +127,15 @@ class _AddHabitState extends State<AddHabit> {
     dailyHabits = Hive.box('habits');
     if(widget.editMode == true){
       getHiveFromIndex();
+    }
+    else{
+      DateTime today = DateTime.now();
+      if(widget.longerDay){
+        _pickedDate = today.subtract(Duration(days: 1));
+      }
+      else{
+        _pickedDate = DateTime.now();
+      }
     }
   }
 
