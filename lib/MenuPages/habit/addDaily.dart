@@ -169,6 +169,14 @@ class _AddDailyState extends State<AddDaily> {
       else{
         _pickedDate = today.add(Duration(days: widget.dayShift));
       }
+      if(_pickedDate.day != DateTime.now().day){
+        _selectedTime = TimeOfDay(hour: 7, minute: 0);
+        print("tu 1");
+      }
+      else{
+        _selectedTime = TimeOfDay.now();
+        print("tu 2");
+      }
     }
   }
 

@@ -86,7 +86,7 @@ class _AccountPageState extends State<AccountPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 10),
                     Container(
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -126,7 +126,7 @@ class _AccountPageState extends State<AccountPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 10),
                     Container(
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -134,7 +134,7 @@ class _AccountPageState extends State<AccountPage> {
                         children: [
                           Container(
                             child: Text(
-                              "Przesunięcie dnia",
+                              texts.settingsDayOffset,
                               style: TextStyle(
                                 color: styles.classicFont,
                                 fontSize: 18,
@@ -160,6 +160,16 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        texts.settingsDayOffsetNote,
+                        style: TextStyle(
+                          color: styles.fontMenuOff,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ],

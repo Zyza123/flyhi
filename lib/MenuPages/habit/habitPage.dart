@@ -315,7 +315,9 @@ class _HabitPageState extends State<HabitPage> {
       if(dailyTodos.isNotEmpty){
         removeOldDates();
       }
-      DateTime pickedDateFormat = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day);
+      DateTime pickedDateFormat = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
+          DateTime.now().subtract(Duration(hours: day_offset)).month,
+          DateTime.now().subtract(Duration(hours: day_offset)).day);
       readTodoData(pickedDateFormat);
       habitsTodos = Hive.box('habits');
       habitsArchive = Hive.box('habitsArchive');
@@ -486,7 +488,7 @@ class _HabitPageState extends State<HabitPage> {
                             todo_mode == 0 ? Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1, dayShift: selectedDay,
-                                longerDay: DateTime.now().day == weekDates[0] ? true : false,)
+                                longerDay: DateTime.now().day != weekDates[0].day ? true : false,)
                               )).then((value){
                                 if(value == true) {
                                     setState(() {
@@ -498,7 +500,7 @@ class _HabitPageState extends State<HabitPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => AddHabit(editMode: false, editIndex: -1,
-                                  longerDay: DateTime.now().day == weekDates[0] ? true : false,))
+                                  longerDay: DateTime.now().day != weekDates[0].day ? true : false,))
                             ).then((value){
                               if(value == true) {
                                 setState(() {
@@ -659,7 +661,7 @@ class _HabitPageState extends State<HabitPage> {
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],dayShift: selectedDay,
-                                                          longerDay: DateTime.now().day == weekDates[0] ? true : false,)
+                                                          longerDay: DateTime.now().day != weekDates[0].day ? true : false,)
                                                         )).then((value){
                                                       if(value == true) {
                                                         setState(() {
@@ -890,7 +892,7 @@ class _HabitPageState extends State<HabitPage> {
                                                         Navigator.push(
                                                             context,
                                                             MaterialPageRoute(builder: (context) => AddHabit(editMode: true, editIndex: indexListHabitsMirror[index],
-                                                              longerDay: DateTime.now().day == weekDates[0] ? true : false,)
+                                                              longerDay: DateTime.now().day != weekDates[0].day ? true : false,)
                                                             )).then((value){
                                                           if(value == true) {
                                                             setState(() {

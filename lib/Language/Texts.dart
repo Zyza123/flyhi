@@ -9,7 +9,9 @@ class Texts{
   late String settingsLang;
   late List<String> langList = ["",""];
   late String settingsOffset;
-  late List<String> timeOffsetList = ["",""];
+  late List<String> timeOffsetList = ["","","",""];
+  late String settingsDayOffset;
+  late String settingsDayOffsetNote;
   late String todosMain;
   late String todosPickerDaily;
   late String todosPickerHabits;
@@ -87,6 +89,12 @@ class Texts{
     settingsOffset = language == "ENG" ? "Backup day" : "Dzień zapasowy";
     timeOffsetList[0] = language == "ENG" ? "No shift" : "Brak";
     timeOffsetList[1] = language == "ENG" ? "1 hour" : "1 godzina";
+    timeOffsetList[2] = language == "ENG" ? "2 hours" : "2 godziny";
+    timeOffsetList[3] = language == "ENG" ? "3 hours" : "3 godziny";
+    settingsDayOffset= language == "ENG" ? "Day shift" : "Przesunięcie doby";
+    settingsDayOffsetNote = language == "ENG" ?
+    "Day shift might be useful while\n going to bed late.\nAfter change, it is required\nto restart the app."
+        :  "Przesunięcie doby jest przydatne podczas\n późnego chodzenia spać.\nPo zmianie przesunięcia wymagany\njest restart aplikacji";
     todosMain = language == "ENG" ? "TODOS" : "AKTYWNOŚĆ";
     todosPickerDaily = language == "ENG" ? "Daily" : "Dzienne";
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";
