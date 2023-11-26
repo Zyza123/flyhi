@@ -225,7 +225,8 @@ class _HabitPageState extends State<HabitPage> {
     List<dynamic> toRemove = [];
     int points_counter = 0;
     for(int i = 0; i < dailyTodos.length; i++){
-      bool different = (today.day != dailyTodos.getAt(i).date) && today.isAfter(dailyTodos.getAt(i).date);
+      DailyTodos todo = dailyTodos.getAt(i);
+      bool different = (today.day != todo.date.day) && today.isAfter(todo.date);
       if(different){
         toRemove.add(dailyTodos.keyAt(i));
         if(dailyTodos.getAt(i).status == "done"){

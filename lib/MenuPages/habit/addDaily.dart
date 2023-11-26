@@ -391,7 +391,7 @@ class _AddDailyState extends State<AddDaily> {
                                 _pickedDate != null
                                     ? "${_pickedDate!.toLocal()}".split(' ')[0]
                                     : 'Loading...',
-                                style: TextStyle(fontSize: 16, color: Colors.black),
+                                style: TextStyle(fontSize: 16, color: styles.classicFont),
                               ),
                             ),
                             ElevatedButton(
