@@ -10,6 +10,9 @@ class Texts{
   late List<String> langList = ["",""];
   late String settingsOffset;
   late List<String> timeOffsetList = ["","","",""];
+  late String settingsReminder;
+  late List<String> reminderList = ["",""];
+  late String settingsReminderNote;
   late String settingsDayOffset;
   late String settingsDayOffsetNote;
   late String todosMain;
@@ -91,10 +94,18 @@ class Texts{
     timeOffsetList[1] = language == "ENG" ? "1 hour" : "1 godzina";
     timeOffsetList[2] = language == "ENG" ? "2 hours" : "2 godziny";
     timeOffsetList[3] = language == "ENG" ? "3 hours" : "3 godziny";
+    settingsReminder = language == "ENG" ? "Reminder" : "Przypomnienie";
+    reminderList[0] = language == "ENG" ? "No reminder" : "Bez przypomnienia";
+    reminderList[1] = language == "ENG" ? "minutes: 30" : "minuty: 30";
+    settingsReminderNote = language == "ENG" ?
+        "Reminder helps you not forget\nabout important events.\nAfter change, it clears all\n"
+            "notifications (off) and \napply to new duties (on).\nMoreover it is required\nto restart the app.":
+        "Przypomnienie pozwala nie zapomnieć\no ważnych wydarzeniach.\nPo zmianie czyści wszystkie \npowiadomienia"
+            "(wyłączone) i aktywwuje się\ntylko do nowych obowiązków.\nPo zmiane przypomnienia wymagany\njest restart aplikacji.";
     settingsDayOffset= language == "ENG" ? "Day shift" : "Przesunięcie doby";
     settingsDayOffsetNote = language == "ENG" ?
-    "Day shift might be useful while\n going to bed late.\nAfter change, it is required\nto restart the app."
-        :  "Przesunięcie doby jest przydatne podczas\n późnego chodzenia spać.\nPo zmianie przesunięcia wymagany\njest restart aplikacji";
+    "Day shift might be useful while\ngoing to bed late.\nAfter change, it is required\nto restart the app."
+        :  "Przesunięcie doby jest przydatne podczas\n późnego chodzenia spać.\nPo zmianie przesunięcia wymagany\njest restart aplikacji.";
     todosMain = language == "ENG" ? "TODOS" : "AKTYWNOŚĆ";
     todosPickerDaily = language == "ENG" ? "Daily" : "Dzienne";
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";

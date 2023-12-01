@@ -26,7 +26,18 @@ class _AccountPageState extends State<AccountPage> {
     day_offset = prefs.getInt('DAY_OFFSET') ?? 0;
   }
 
+  void saveRemindToPrefs(int offset) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('REMINDER', offset);
+  }
+
+  Future<void> getRemindFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    reminder = prefs.getInt('REMINDER') ?? 0;
+  }
+
   late int day_offset;
+  late int reminder;
 
   @override
   initState(){
@@ -43,7 +54,7 @@ class _AccountPageState extends State<AccountPage> {
     texts.setTextLang(langChange.language);
 
     return FutureBuilder(
-      future: getOffsetFromPrefs(),
+      future: Future.wait([getOffsetFromPrefs(),getRemindFromPrefs()]),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
@@ -166,6 +177,52 @@ class _AccountPageState extends State<AccountPage> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         texts.settingsDayOffsetNote,
+                        style: TextStyle(
+                          color: styles.fontMenuOff,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            child: Text(
+                              texts.settingsReminder,
+                              style: TextStyle(
+                                color: styles.classicFont,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: texts.reminderList[reminder],
+                              dropdownColor: styles.menuBg,
+                              items: texts.reminderList.map((String remind) {
+                                return DropdownMenuItem<String>(
+                                  value: remind,
+                                  child: Text(remind,style: TextStyle(color: styles.classicFont),),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                int selectedIndex = texts.reminderList.indexOf(newValue!);
+                                setState(() {
+                                  saveRemindToPrefs(selectedIndex);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        texts.settingsReminderNote,
                         style: TextStyle(
                           color: styles.fontMenuOff,
                           fontSize: 14,

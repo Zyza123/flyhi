@@ -17,9 +17,15 @@ import 'package:provider/provider.dart';
 import '/Theme/DarkThemeProvider.dart';
 import 'HiveClasses/HabitTodos.dart';
 import 'Language/Texts.dart';
+import 'Notification/NotificationManager.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationManager().initNotification();
+  await setup();
+  //tz.setLocalLocation(tz.getLocation('Europe/Warsaw'));
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
   Hive.registerAdapter(DailyTodosAdapter());
@@ -31,6 +37,12 @@ void main() async{
   await Hive.openBox('achievements');
   await Hive.openBox('habitsArchive');
   runApp(MainAppRoute());
+}
+
+Future<void> setup() async {
+  tz.initializeTimeZones();
+  var warsaw = tz.getLocation('Europe/Warsaw');
+  tz.setLocalLocation(warsaw);
 }
 
 class MainAppRoute extends StatefulWidget {

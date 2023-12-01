@@ -7,17 +7,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
+import '../../Notification/NotificationManager.dart';
 import '../../Theme/DarkThemeProvider.dart';
 import '../../Theme/Styles.dart';
 
 class AddDaily extends StatefulWidget {
   const AddDaily({super.key, required this.editMode, required this.editIndex, required this.dayShift,
-    required  this.longerDay});
+    required  this.longerDay, required this.reminder});
 
   final bool editMode;
   final int editIndex;
   final int dayShift;
   final bool longerDay;
+  final bool reminder;
 
   @override
   State<AddDaily> createState() => _AddDailyState();
@@ -141,6 +143,11 @@ class _AddDailyState extends State<AddDaily> {
     DailyTodos dt;
     dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", _pickedDate,[_selectedTime.hour.toString(),_selectedTime.minute.toString()],weightValue, selectedColor);
     dailyTodos.add(dt);
+    DateTime eventTime = DateTime(_pickedDate.year,_pickedDate.month,_pickedDate.day,_selectedTime.hour,_selectedTime.minute);
+    if(eventTime.subtract(Duration(minutes: 30)).isAfter(DateTime.now()) && widget.reminder){
+    NotificationManager().scheduleNotification(scheduledNotificationDateTime: eventTime.subtract(Duration(minutes: 30)),title: eventTime.toString(), body: 'wydarzenie: ${tec.text}', id: dailyTodos.getAt(dailyTodos.length -1).key);
+    }
+    //NotificationManager().showNotification(title: eventTime.toString(), body: 'wydarzenie: ${tec.text}');
   }
 
   void modifyDuty(){
@@ -151,6 +158,13 @@ class _AddDailyState extends State<AddDaily> {
     existingTodo.dailyTheme = selectedColor;
     existingTodo.date = _pickedDate;
     existingTodo.time = [_selectedTime.hour.toString(),_selectedTime.minute.toString()];
+    DateTime eventTime = DateTime(_pickedDate.year,_pickedDate.month,_pickedDate.day,_selectedTime.hour,_selectedTime.minute);
+    if(widget.reminder){
+      NotificationManager().flutterLocalNotificationsPlugin.cancel(widget.editIndex);
+      if(eventTime.subtract(Duration(minutes: 30)).isAfter(DateTime.now())){
+        NotificationManager().scheduleNotification(scheduledNotificationDateTime: eventTime.subtract(Duration(minutes: 30)),title: eventTime.toString(), body: 'wydarzenie: ${tec.text}', id: dailyTodos.getAt(widget.editIndex).key);
+      }
+    }
     dailyTodos.putAt(widget.editIndex, existingTodo);
   }
 

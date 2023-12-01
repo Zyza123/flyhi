@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../HiveClasses/Achievements.dart';
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
+import '../../Notification/NotificationManager.dart';
 import '../../Theme/DarkThemeProvider.dart';
 import '../../Theme/Styles.dart';
 import 'dart:math';
@@ -43,6 +44,12 @@ class _HabitPageState extends State<HabitPage> {
   late List<int> fillweek = [];
   late int selectedDay;
   late int day_offset;
+  late int reminder;
+
+  Future<void> getRemindFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    reminder = prefs.getInt('REMINDER') ?? 0;
+  }
 
   Future<void> getOffsetFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -311,6 +318,11 @@ class _HabitPageState extends State<HabitPage> {
     super.initState();
     achievements = Hive.box('achievements');
     dailyTodos = Hive.box('daily');
+    getRemindFromPrefs().then((value) {
+      if(reminder == 0){
+        NotificationManager().flutterLocalNotificationsPlugin.cancelAll();
+      }
+    });
     getOffsetFromPrefs().then((value) {
       fillData();
       if(dailyTodos.isNotEmpty){
@@ -489,7 +501,7 @@ class _HabitPageState extends State<HabitPage> {
                             todo_mode == 0 ? Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => AddDaily(editMode: false, editIndex: -1, dayShift: selectedDay,
-                                longerDay: DateTime.now().day != weekDates[0].day ? true : false,)
+                                longerDay: DateTime.now().day != weekDates[0].day ? true : false, reminder: reminder == 0? false: true)
                               )).then((value){
                                 if(value == true) {
                                     setState(() {
@@ -662,7 +674,7 @@ class _HabitPageState extends State<HabitPage> {
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(builder: (context) => AddDaily(editMode: true, editIndex: indexListMirror[index],dayShift: selectedDay,
-                                                          longerDay: DateTime.now().day != weekDates[0].day ? true : false,)
+                                                          longerDay: DateTime.now().day != weekDates[0].day ? true : false,reminder: reminder == 0? false: true)
                                                         )).then((value){
                                                       if(value == true) {
                                                         setState(() {
