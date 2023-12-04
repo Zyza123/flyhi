@@ -3,6 +3,7 @@ import 'package:flyhi/Language/LanguageProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Language/Texts.dart';
+import '../Notification/NotificationManager.dart';
 import '../Theme/DarkThemeProvider.dart';
 import '../Theme/Styles.dart';
 
@@ -212,6 +213,9 @@ class _AccountPageState extends State<AccountPage> {
                                 int selectedIndex = texts.reminderList.indexOf(newValue!);
                                 setState(() {
                                   saveRemindToPrefs(selectedIndex);
+                                  if(selectedIndex == 0){
+                                    NotificationManager().flutterLocalNotificationsPlugin.cancelAll();
+                                  }
                                 });
                               },
                             ),

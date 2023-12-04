@@ -4,7 +4,6 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
 import '../../Notification/NotificationManager.dart';
@@ -144,8 +143,9 @@ class _AddDailyState extends State<AddDaily> {
     dt = DailyTodos(tec.text, 'assets/images/ikona${_iconValue + 1}/128x128.png', "not done", _pickedDate,[_selectedTime.hour.toString(),_selectedTime.minute.toString()],weightValue, selectedColor);
     dailyTodos.add(dt);
     DateTime eventTime = DateTime(_pickedDate.year,_pickedDate.month,_pickedDate.day,_selectedTime.hour,_selectedTime.minute);
+    TimeOfDay tod = TimeOfDay(hour: eventTime.hour, minute: eventTime.minute);
     if(eventTime.subtract(Duration(minutes: 30)).isAfter(DateTime.now()) && widget.reminder){
-    NotificationManager().scheduleNotification(scheduledNotificationDateTime: eventTime.subtract(Duration(minutes: 30)),title: eventTime.toString(), body: 'wydarzenie: ${tec.text}', id: dailyTodos.getAt(dailyTodos.length -1).key);
+    NotificationManager().scheduleNotification(scheduledNotificationDateTime: eventTime.subtract(Duration(minutes: 30)),title: tod.toString(), body: '${tec.text}', id: dailyTodos.getAt(dailyTodos.length -1).key);
     }
     //NotificationManager().showNotification(title: eventTime.toString(), body: 'wydarzenie: ${tec.text}');
   }
@@ -159,10 +159,11 @@ class _AddDailyState extends State<AddDaily> {
     existingTodo.date = _pickedDate;
     existingTodo.time = [_selectedTime.hour.toString(),_selectedTime.minute.toString()];
     DateTime eventTime = DateTime(_pickedDate.year,_pickedDate.month,_pickedDate.day,_selectedTime.hour,_selectedTime.minute);
+    TimeOfDay tod = TimeOfDay(hour: eventTime.hour, minute: eventTime.minute);
     if(widget.reminder){
       NotificationManager().flutterLocalNotificationsPlugin.cancel(widget.editIndex);
       if(eventTime.subtract(Duration(minutes: 30)).isAfter(DateTime.now())){
-        NotificationManager().scheduleNotification(scheduledNotificationDateTime: eventTime.subtract(Duration(minutes: 30)),title: eventTime.toString(), body: 'wydarzenie: ${tec.text}', id: dailyTodos.getAt(widget.editIndex).key);
+        NotificationManager().scheduleNotification(scheduledNotificationDateTime: eventTime.subtract(Duration(minutes: 30)),title: tod.toString(), body: '${tec.text}', id: dailyTodos.getAt(widget.editIndex).key);
       }
     }
     dailyTodos.putAt(widget.editIndex, existingTodo);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flyhi/HiveClasses/DailyTodos.dart';
 import 'package:flyhi/HiveClasses/HabitTodos.dart';
 import 'package:flyhi/MenuPages/habit/addHabit.dart';
@@ -45,6 +46,7 @@ class _HabitPageState extends State<HabitPage> {
   late int selectedDay;
   late int day_offset;
   late int reminder;
+  //final String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
 
   Future<void> getRemindFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,6 +56,21 @@ class _HabitPageState extends State<HabitPage> {
   Future<void> getOffsetFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     day_offset = prefs.getInt('DAY_OFFSET') ?? 0;
+  }
+
+  void addNotificationsToNewDuties() async{
+    List<PendingNotificationRequest> an = await NotificationManager().flutterLocalNotificationsPlugin.pendingNotificationRequests();
+
+      if(an.isEmpty && dailyTodos.isNotEmpty){
+        for(int i = 0; i < dailyTodos.length; i++){
+          DailyTodos dt = dailyTodos.getAt(i);
+          DateTime eventTime = DateTime(dt.date.year,dt.date.month,dt.date.day,int.parse(dt.time[0]),int.parse(dt.time[1]));
+          TimeOfDay tod = TimeOfDay(hour: eventTime.hour, minute: eventTime.minute);
+          if(eventTime.subtract(Duration(minutes: 30)).isAfter(DateTime.now())){
+            NotificationManager().scheduleNotification(scheduledNotificationDateTime: eventTime.subtract(Duration(minutes: 30)),title: tod.toString(), body: '${dt.name}', id: dt.key);
+          }
+        }
+      }
   }
 
   void fillData() {
@@ -278,6 +295,9 @@ class _HabitPageState extends State<HabitPage> {
         else{
           addElementsToTodosHourly(days_diff);
         }
+        if(reminder == 1){
+        addNotificationsToNewDuties();
+        }
       });
     }
     else{
@@ -318,11 +338,7 @@ class _HabitPageState extends State<HabitPage> {
     super.initState();
     achievements = Hive.box('achievements');
     dailyTodos = Hive.box('daily');
-    getRemindFromPrefs().then((value) {
-      if(reminder == 0){
-        NotificationManager().flutterLocalNotificationsPlugin.cancelAll();
-      }
-    });
+    getRemindFromPrefs();
     getOffsetFromPrefs().then((value) {
       fillData();
       if(dailyTodos.isNotEmpty){

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:flyhi/HiveClasses/Achievements.dart';
 import 'package:flyhi/HiveClasses/DailyTodos.dart';
 import 'package:flyhi/HiveClasses/HabitArchive.dart';
@@ -41,8 +42,8 @@ void main() async{
 
 Future<void> setup() async {
   tz.initializeTimeZones();
-  var warsaw = tz.getLocation('Europe/Warsaw');
-  tz.setLocalLocation(warsaw);
+  final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+  tz.setLocalLocation(tz.getLocation(currentTimeZone));
 }
 
 class MainAppRoute extends StatefulWidget {

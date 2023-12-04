@@ -1,4 +1,3 @@
-import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -9,7 +8,7 @@ class NotificationManager {
 
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('bell');
+    AndroidInitializationSettings('mipmap/ic_stat_public');
     InitializationSettings initializationSettings =
     InitializationSettings(android: initializationSettingsAndroid);
 
@@ -39,9 +38,9 @@ class NotificationManager {
     required DateTime scheduledNotificationDateTime,
   }) async {
     try {
-      tz.initializeTimeZones();
-      var warsaw = tz.getLocation('Europe/Warsaw');
-      tz.setLocalLocation(warsaw);
+      //tz.initializeTimeZones();
+      //var warsaw = tz.getLocation('Europe/Warsaw');
+      //tz.setLocalLocation(warsaw);
 
       print("test: " + scheduledNotificationDateTime.toString());
       print("test id: "+ id.toString());

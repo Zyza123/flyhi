@@ -161,7 +161,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
                     // Możesz użyć np. ListTile, Container, itp.
                     return Container(
                       width: 160,
-                      height: 160,
+                      height: 175,
                       margin: EdgeInsets.all(8.0), // Możesz dostosować marginesy według własnych preferencji
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
