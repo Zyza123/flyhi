@@ -15,9 +15,10 @@ import '../../Theme/Styles.dart';
 import 'dart:math';
 
 import 'addDaily.dart';
+import 'detailsHabit.dart';
 
 enum SampleItem { edit, remove, postpone }
-enum SampleItemHabit {edit, remove, minus }
+enum SampleItemHabit {edit, remove, minus, details }
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
@@ -180,8 +181,10 @@ class _HabitPageState extends State<HabitPage> {
         DateTime before = existingHabit.efficiency.keys.last;
         DateTime week_before = today.subtract(Duration(days: 7));
         int days_dif = (today.difference(before).inHours/24).ceil() + 1;
+
+        int habit_day_counter = (today.difference(existingHabit.date).inHours/24).ceil() + 1;
         if(existingHabit.dayNumber <= existingHabit.fullTime){
-          existingHabit.dayNumber = days_dif;
+          existingHabit.dayNumber = habit_day_counter;
         }
         if(week_before.isAtSameMomentAs(before) || week_before.isAfter(before)){
           existingHabit.efficiency[today] = 0.0;
@@ -977,6 +980,12 @@ class _HabitPageState extends State<HabitPage> {
                                                           });
                                                         }
                                                       }
+                                                      if(item1.index == 3){
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => DetailsHabit(editIndex: indexListHabitsMirror[index],)
+                                                            ));
+                                                      }
                                                     },
                                                     itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItemHabit>>[
                                                       PopupMenuItem<SampleItemHabit>(
@@ -1014,6 +1023,19 @@ class _HabitPageState extends State<HabitPage> {
                                                             children: [
                                                               Text(texts.habitsPopupMinus, style: TextStyle(color: styles.classicFont)),
                                                               Icon(Icons.remove_circle_outline, color: styles.classicFont),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      PopupMenuItem<SampleItemHabit>(
+                                                        value: SampleItemHabit.details,
+                                                        child: Container(
+                                                          height: 40,
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Text("details", style: TextStyle(color: styles.classicFont)),
+                                                              Icon(Icons.read_more, color: styles.classicFont),
                                                             ],
                                                           ),
                                                         ),

@@ -88,7 +88,7 @@ class _AddHabitState extends State<AddHabit> {
     if(minimum_days < 7){
       minimum_days = 7;
     }
-    days_counter = dailyHabits.getAt(widget.editIndex).dayNumber.toDouble();
+    days_counter = dailyHabits.getAt(widget.editIndex).fullTime.toDouble();
     if(days_counter < minimum_days){
       days_counter = minimum_days;
     }
@@ -417,6 +417,8 @@ class _AddHabitState extends State<AddHabit> {
                                     onChanged: enabledDaysButton == true ? (value) {
                                       setState(() {
                                         _lengthValue = value!;
+                                        days_counter = dailyHabits.getAt(widget.editIndex).fullTime.toDouble() > 365?
+                                          365: dailyHabits.getAt(widget.editIndex).fullTime.toDouble();
                                       });
                                     } : null,
                                     activeColor: styles.classicFont,
