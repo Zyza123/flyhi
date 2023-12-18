@@ -71,6 +71,8 @@ class Texts{
   late String achievementsTitle;
   late List<String> achievementsTitleText = ["","","","",""];
   late List<String> achievementsMainText = ["","","","",""];
+  late String finishedHabitsName;
+  late String detailsHabitName;
 
 
   void setTextLang(String language){
@@ -176,5 +178,7 @@ class Texts{
     achievementsMainText[2] = language == "ENG" ? "Fulfill certain number of duties." : "Wypełnij określoną ilość obowiązków.";
     achievementsMainText[3] = language == "ENG" ? "Achieve the effectiveness of a completed habit (atleast 30 days)." : "Osiągnij skuteczność wykonanego nawyku (minimum 30 dni).";
     achievementsMainText[4] = language == "ENG" ? "Raise your pet's level." : "Podnieś poziom swojego pupila.";
+    finishedHabitsName = language == "ENG" ? "Finished Habits": "Ukończone nawyki";
+    detailsHabitName = language == "ENG" ? "Habit details": "Szczegóły nawyku";
   }
 }

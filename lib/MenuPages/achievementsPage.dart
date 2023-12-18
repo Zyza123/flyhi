@@ -38,18 +38,24 @@ class _AchievementsPageState extends State<AchievementsPage> {
   }
 
   int checkHabitEffectiveness(int index){
-    HabitArchive ht = habits.getAt(index);
+    HabitArchive ht = habitsArchive.getAt(index);
     // czyli np dla 10 tygodni * 4 daje nam 40 cwiczen, w ostatnim tygodniu sprawdzamy ile bylo dni i dajemy srednia
     DateTime end = ht.efficiency.keys.first.add(Duration(days: ht.fullTime-1));
     int days_diff = (end.difference(ht.efficiency.keys.last).inHours/24).ceil();
-    int weekCorrection = ((days_diff/7) * ht.frequency).toInt();
-    int full = (ht.efficiency.length * ht.frequency) - weekCorrection;
+    int weekCorrection = 0;
+    if(ht.efficiency.keys.last != ht.efficiency.keys.first) {
+      weekCorrection = ((days_diff / 7) * ht.frequency).toInt();
+    }
+    int full = ((ht.efficiency.length * ht.frequency) - weekCorrection);
     int collected = 0;
     ht.efficiency.forEach((key, value) {
       collected += value.toInt();
       index++;
     });
-    return collected~/full;
+    print("effi: "+((1.0 * collected~/full) * 100).toInt().toString());
+    print("coll: "+(collected.toString()));
+    print("full: "+(full.toString()));
+    return ((1.0 * collected~/full) * 100).toInt();
   }
 
   void readAchievements(){

@@ -8,7 +8,7 @@ class NotificationManager {
 
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('mipmap/ic_stat_public');
+    const AndroidInitializationSettings('ic_stat_public');
     InitializationSettings initializationSettings =
     InitializationSettings(android: initializationSettingsAndroid);
 

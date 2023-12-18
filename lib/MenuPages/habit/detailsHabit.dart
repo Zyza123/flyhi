@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyhi/HiveClasses/HabitArchive.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -9,8 +10,9 @@ import '../../Theme/DarkThemeProvider.dart';
 import '../../Theme/Styles.dart';
 
 class DetailsHabit extends StatefulWidget {
-  const DetailsHabit({super.key,required this.editIndex});
+  const DetailsHabit({super.key,required this.editIndex, required this.habitType});
   final int editIndex;
+  final int habitType;
 
   @override
   State<DetailsHabit> createState() => _DetailsHabitState();
@@ -21,10 +23,10 @@ class _DetailsHabitState extends State<DetailsHabit> {
   late Box dailyHabits;
   List<ChartData> chartData = [];
   late TooltipBehavior _tooltipBehavior;
-  late HabitTodos ht;
+  late var habit;
 
   void getHiveFromIndex(){
-    ht = dailyHabits.getAt(widget.editIndex);
+      habit = dailyHabits.getAt(widget.editIndex);
   }
 
   String formatChartData(DateTime dt){
@@ -33,12 +35,12 @@ class _DetailsHabitState extends State<DetailsHabit> {
 
   void getEfficiencyMap(){
     chartData.clear();
-    HabitTodos ht = dailyHabits.getAt(widget.editIndex);
-    DateTime firstDate = ht.efficiency.keys.first;
+    var habit = dailyHabits.getAt(widget.editIndex);
+    DateTime firstDate = habit.efficiency.keys.first;
     firstDate = firstDate.subtract(Duration(days: 7));
     String formatted = formatChartData(firstDate);
     chartData.add(ChartData(formatted, 0));
-    ht.efficiency.forEach((DateTime key, double value) {
+    habit.efficiency.forEach((DateTime key, double value) {
       // Utworzenie formatu daty z tylko rokiem, miesiącem i dniem
       String formattedDate = formatChartData(key);
 
@@ -50,7 +52,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
   @override
   void initState() {
     super.initState();
-    dailyHabits = Hive.box('habits');
+    dailyHabits = widget.habitType == 0 ? Hive.box('habits') : Hive.box('habitsArchive');
     getHiveFromIndex();
     getEfficiencyMap();
     _tooltipBehavior = TooltipBehavior(enable: true);
@@ -75,7 +77,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
         backgroundColor: styles.elementsInBg,
         title:
             Text(
-              "Habit Details",
+              texts.detailsHabitName,
               style: TextStyle(color: styles.classicFont,fontSize: 16),
             ),
       ),
@@ -91,23 +93,25 @@ class _DetailsHabitState extends State<DetailsHabit> {
                   child: SfCartesianChart(
                     primaryXAxis: CategoryAxis(
                       labelRotation: chartData.length > 5 ? 90 : 0, // Obraca etykiety osi X
+                      labelStyle: TextStyle(color: styles.classicFont),
                       //labelFormat: '{value:MM/dd}', // Formatuje datę
                     ),
                     primaryYAxis: NumericAxis(
                       minimum: 0, // Minimalna wartość osi Y
                       maximum: 8, // Maksymalna wartość osi Y
-                      interval: 1
-                      // Możesz również ustawić interval, jeśli chcesz
+                      interval: 1,
+                      labelStyle: TextStyle(color: styles.classicFont),
                     ),
-                    title: ChartTitle(text: ht.name,textStyle: TextStyle(fontSize: 18)),
+                    title: ChartTitle(text: habit.name,textStyle: TextStyle(fontSize: 18,color: styles.classicFont)),
                     legend: Legend(
                         isVisible: true,
-                        position: LegendPosition.top // Umieszcza legendę na górze
+                        position: LegendPosition.top, // Umieszcza legendę na górze
+                        textStyle: TextStyle(color: styles.classicFont)
                     ),
                     tooltipBehavior: _tooltipBehavior,
                     series: <LineSeries<ChartData, String>>[
                       LineSeries<ChartData,String>(
-                          name: 'frequency',
+                          name: texts.habitsFrequency,
                           dataSource: chartData,
                           xValueMapper: (ChartData chd, _) => chd.week,
                           yValueMapper: (ChartData chd, _) => chd.frequency,
@@ -122,10 +126,11 @@ class _DetailsHabitState extends State<DetailsHabit> {
                   child: Container(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Start day:",textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 18),)
+                        texts.addHabitDateOfAppearance,textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 18, color: styles.classicFont),)
                   ),
                 ),
+                SizedBox(height: 5,),
                 FittedBox(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -135,7 +140,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: Text(
-                      "${ht.date}".split(' ')[0],
+                      "${habit.date}".split(' ')[0],
                       style: TextStyle(fontSize: 16, color: styles.classicFont),
                     ),
                   ),
@@ -146,8 +151,8 @@ class _DetailsHabitState extends State<DetailsHabit> {
                   child: Container(
                     alignment: Alignment.topLeft,
                       child: Text(
-                        "Postęp:",textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 18),)
+                        texts.habitsProgress ,textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 18, color: styles.classicFont),)
                   ),
                 ),
                 SizedBox(height: 5,),
@@ -159,7 +164,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                     curve: Curves.decelerate,
                     tween: Tween<double>(
                       begin: 0,
-                      end: (ht.dayNumber / ht.fullTime.toDouble()),
+                      end: (habit.dayNumber / habit.fullTime.toDouble()),
                     ),
                     builder: (context, value, _) => Column(
                       children: [
@@ -167,7 +172,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${ht.dayNumber}',
+                              '${habit.dayNumber}',
                               style: TextStyle(color: Color(0xFF508bba),
                                 fontSize: 16,fontWeight: FontWeight.bold,),
                             ),
@@ -177,7 +182,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                                   fontSize: 16,fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '${ht.fullTime} DAYS',
+                              '${habit.fullTime} ${texts.habitsProgressDays}',
                               style: TextStyle(color: Color(0xFF508bba),
                                   fontSize: 16,fontWeight: FontWeight.bold),
                             ),
@@ -190,7 +195,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                             value: value,
                             valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF508bba)),
                             backgroundColor: styles.todosPickerOn,
-                            minHeight: 16,
+                            minHeight: 13,
                           ),
                         ),
                       ],

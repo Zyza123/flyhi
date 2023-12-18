@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../HiveClasses/Achievements.dart';
+import '../../HiveClasses/HabitArchive.dart';
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
 import '../../Notification/NotificationManager.dart';
@@ -16,6 +17,7 @@ import 'dart:math';
 
 import 'addDaily.dart';
 import 'detailsHabit.dart';
+import 'finishedHabits.dart';
 
 enum SampleItem { edit, remove, postpone }
 enum SampleItemHabit {edit, remove, minus, details }
@@ -353,6 +355,9 @@ class _HabitPageState extends State<HabitPage> {
       readTodoData(pickedDateFormat);
       habitsTodos = Hive.box('habits');
       habitsArchive = Hive.box('habitsArchive');
+      //habitsArchive.add(HabitArchive("Testowy", 'assets/images/ikona${3 + 1}/128x128.png',
+      //    pickedDateFormat, 3, 7, 7,
+      //    {pickedDateFormat : 3}, 0xFFD0312D));
       if(habitsTodos.isNotEmpty){
         removeOldHabits();
       }
@@ -595,41 +600,66 @@ class _HabitPageState extends State<HabitPage> {
                       ),
                     ),
                   ):
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    decoration: BoxDecoration(
-                      color: styles.elementsInBg,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: DropdownButton<String>(
-                        dropdownColor: styles.elementsInBg,
-                        isExpanded: true,
-                        value: texts.habitsFilterList[selectedHabitFilter],
-                        underline: Container(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            if(newValue == texts.habitsFilterList[0]){
-                              saveHabitFilter(0);
-                              selectedHabitFilter = 0;
-                              addElementsToHabits();
-                            }
-                            else if(newValue == texts.habitsFilterList[1]){
-                              saveHabitFilter(1);
-                              selectedHabitFilter = 1;
-                              addElementsToHabitsByNew();
-                            }
-                          });
-                        },
-                        items: texts.habitsFilterList
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value,style: TextStyle(color: styles.classicFont,fontSize: 17),),
-                          );
-                        }).toList(),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          decoration: BoxDecoration(
+                            color: styles.elementsInBg,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: DropdownButton<String>(
+                              dropdownColor: styles.elementsInBg,
+                              isExpanded: true,
+                              value: texts.habitsFilterList[selectedHabitFilter],
+                              underline: Container(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  if(newValue == texts.habitsFilterList[0]){
+                                    saveHabitFilter(0);
+                                    selectedHabitFilter = 0;
+                                    addElementsToHabits();
+                                  }
+                                  else if(newValue == texts.habitsFilterList[1]){
+                                    saveHabitFilter(1);
+                                    selectedHabitFilter = 1;
+                                    addElementsToHabitsByNew();
+                                  }
+                                });
+                              },
+                              items: texts.habitsFilterList
+                                  .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value,style: TextStyle(color: styles.classicFont,fontSize: 17),),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const FinishedHabits()),
+                            );
+                          },
+                          child: Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: styles.elementsInBg,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Icon(Icons.done_all, color: styles.classicFont)
+                          ),
+                        ),
+
+                      ],
                     ),
                   ),
                   SizedBox(height: 15,),
@@ -837,22 +867,25 @@ class _HabitPageState extends State<HabitPage> {
                                     borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi
                                     color: Colors.grey, // Kolor tła kontenera
                                   ),
-                                  child: TweenAnimationBuilder<double>(
-                                  key: Key("1"+weekDates[selectedDay].day.toString()),  // osobne klucze dla danego okna tweenów
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.decelerate,
-                                  tween: Tween<double>(
-                                    begin: 0,
-                                    end: colored,
-                                  ),
-                                    builder: (context,value, _) =>
-                                        LinearProgressIndicator(
-                                          // Tu określ procent postępu (0.6 oznacza 60%)
-                                          value: value,
-                                          valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
-                                          backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
-                                          minHeight: 4, // Ustaw wysokość paska postępu (grubość)
-                                        ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: TweenAnimationBuilder<double>(
+                                    key: Key("1"+weekDates[selectedDay].day.toString()),  // osobne klucze dla danego okna tweenów
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.decelerate,
+                                    tween: Tween<double>(
+                                      begin: 0,
+                                      end: colored,
+                                    ),
+                                      builder: (context,value, _) =>
+                                          LinearProgressIndicator(
+                                            // Tu określ procent postępu (0.6 oznacza 60%)
+                                            value: value,
+                                            valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
+                                            backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
+                                            minHeight: 4, // Ustaw wysokość paska postępu (grubość)
+                                          ),
+                                    ),
                                   ),
                                 )
                               ],
@@ -983,7 +1016,7 @@ class _HabitPageState extends State<HabitPage> {
                                                       if(item1.index == 3){
                                                         Navigator.push(
                                                             context,
-                                                            MaterialPageRoute(builder: (context) => DetailsHabit(editIndex: indexListHabitsMirror[index],)
+                                                            MaterialPageRoute(builder: (context) => DetailsHabit(editIndex: indexListHabitsMirror[index], habitType: 0,)
                                                             ));
                                                       }
                                                     },
@@ -1081,22 +1114,25 @@ class _HabitPageState extends State<HabitPage> {
                                         borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi
                                         color: Colors.grey, // Kolor tła kontenera
                                       ),
-                                      child: TweenAnimationBuilder<double>(
-                                        key: Key("2"),
-                                        duration: const Duration(milliseconds: 400),
-                                        curve: Curves.decelerate,
-                                        tween: Tween<double>(
-                                          begin: 0,
-                                          end: item.frequency.toDouble(),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20.0),
+                                        child: TweenAnimationBuilder<double>(
+                                          key: Key("2"),
+                                          duration: const Duration(milliseconds: 400),
+                                          curve: Curves.decelerate,
+                                          tween: Tween<double>(
+                                            begin: 0,
+                                            end: item.frequency.toDouble(),
+                                          ),
+                                          builder: (context,value, _) =>
+                                              LinearProgressIndicator(
+                                                // Tu określ procent postępu (0.6 oznacza 60%)
+                                                value: (week_value/item.frequency.toDouble()),
+                                                valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
+                                                backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
+                                                minHeight: 4, // Ustaw wysokość paska postępu (grubość)
+                                              ),
                                         ),
-                                        builder: (context,value, _) =>
-                                            LinearProgressIndicator(
-                                              // Tu określ procent postępu (0.6 oznacza 60%)
-                                              value: (week_value/item.frequency.toDouble()),
-                                              valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
-                                              backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
-                                              minHeight: 4, // Ustaw wysokość paska postępu (grubość)
-                                            ),
                                       ),
                                     ),
                                     SizedBox(height: 15,),
@@ -1116,22 +1152,25 @@ class _HabitPageState extends State<HabitPage> {
                                         borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi
                                         color: Colors.grey, // Kolor tła kontenera
                                       ),
-                                      child: TweenAnimationBuilder<double>(
-                                        key: Key("3"),
-                                        duration: const Duration(milliseconds: 400),
-                                        curve: Curves.decelerate,
-                                        tween: Tween<double>(
-                                          begin: 0,
-                                          end: item.fullTime.toDouble(),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20.0),
+                                        child: TweenAnimationBuilder<double>(
+                                          key: Key("3"),
+                                          duration: const Duration(milliseconds: 400),
+                                          curve: Curves.decelerate,
+                                          tween: Tween<double>(
+                                            begin: 0,
+                                            end: item.fullTime.toDouble(),
+                                          ),
+                                          builder: (context,value, _) =>
+                                              LinearProgressIndicator(
+                                                // Tu określ procent postępu (0.6 oznacza 60%)
+                                                value: (item.dayNumber/item.fullTime.toDouble()),
+                                                valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
+                                                backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
+                                                minHeight: 4, // Ustaw wysokość paska postępu (grubość)
+                                              ),
                                         ),
-                                        builder: (context,value, _) =>
-                                            LinearProgressIndicator(
-                                              // Tu określ procent postępu (0.6 oznacza 60%)
-                                              value: (item.dayNumber/item.fullTime.toDouble()),
-                                              valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
-                                              backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
-                                              minHeight: 4, // Ustaw wysokość paska postępu (grubość)
-                                            ),
                                       ),
                                     ),
                                   ],
