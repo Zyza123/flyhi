@@ -8,7 +8,7 @@ import 'package:flyhi/Language/LanguageProvider.dart';
 import 'package:flyhi/MenuPages/accountPage.dart';
 import 'package:flyhi/MenuPages/achievementsPage.dart';
 import 'package:flyhi/MenuPages/habit/habitPage.dart';
-import 'package:flyhi/MenuPages/homePage.dart';
+import 'package:flyhi/MenuPages/home/homePage.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:flyhi/Theme/Styles.dart';
 import 'package:hive/hive.dart';
@@ -17,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '/Theme/DarkThemeProvider.dart';
 import 'HiveClasses/HabitTodos.dart';
+import 'HiveClasses/Pets.dart';
 import 'Language/Texts.dart';
 import 'Notification/NotificationManager.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -33,10 +34,12 @@ void main() async{
   Hive.registerAdapter(HabitTodosAdapter());
   Hive.registerAdapter(AchievementsAdapter());
   Hive.registerAdapter(HabitArchiveAdapter());
+    Hive.registerAdapter(PetsAdapter());
   await Hive.openBox('daily');
   await Hive.openBox('habits');
   await Hive.openBox('achievements');
   await Hive.openBox('habitsArchive');
+  await Hive.openBox('pets');
   runApp(MainAppRoute());
 }
 

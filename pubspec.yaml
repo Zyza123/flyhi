@@ -79,6 +79,11 @@ flutter:
     #- assets/icons/habits_icon.png
     - assets/spinner.gif
     - assets/empty.png
+    - assets/pets/tiger/tiger1.png
+    - assets/pets/tiger/tiger2.png
+    - assets/pets/tiger/tiger3.png
+    - assets/pets/tiger/tiger4.png
+    - assets/pets/tiger/tiger5.png
     - assets/achievements/ach1.png
     - assets/achievements/ach2.png
     - assets/achievements/ach3.png

@@ -207,17 +207,26 @@ class _HabitPageState extends State<HabitPage> {
       DateTime today = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
           DateTime.now().subtract(Duration(hours: day_offset)).month,
           DateTime.now().subtract(Duration(hours: day_offset)).day);
+      print("nazwa: "+existingHabit.name.toString());
+      print("Dzisiaj: "+today.toString());
+      print("Wtedy: "+existingHabit.date.toString());
+      print("numer dnia: "+existingHabit.dayNumber.toString());
+      print("ilosc dni: "+existingHabit.fullTime.toString());
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         if(existingHabit.dayNumber > existingHabit.fullTime){
           HabitTodos ht = habitsTodos.getAt(i);
           ht.dayNumber -= 1;
-          habitsArchive.add(ht);
+          habitsArchive.add(rewriteToArchive(ht));
           toRemove.add(habitsTodos.keyAt(i));
         }
       }
     }
     habitsTodos.deleteAll(toRemove);
     toRemove.clear();
+  }
+
+  HabitArchive rewriteToArchive(HabitTodos ht){
+    return HabitArchive(ht.name, ht.icon, ht.date, ht.frequency, ht.fullTime, ht.dayNumber, ht.efficiency, ht.dailyTheme);
   }
 
   void addElementsToHabitsByNew(){
@@ -355,9 +364,9 @@ class _HabitPageState extends State<HabitPage> {
       readTodoData(pickedDateFormat);
       habitsTodos = Hive.box('habits');
       habitsArchive = Hive.box('habitsArchive');
-      //habitsArchive.add(HabitArchive("Testowy", 'assets/images/ikona${3 + 1}/128x128.png',
-      //    pickedDateFormat, 3, 7, 7,
-      //    {pickedDateFormat : 3}, 0xFFD0312D));
+      habitsTodos.add(HabitTodos("Testowy2", 'assets/images/ikona${3 + 1}/128x128.png',
+          pickedDateFormat.subtract(Duration(days: 7)), 3, 7, 8,
+          {pickedDateFormat : 3}, 0xFFD0312D));
       if(habitsTodos.isNotEmpty){
         removeOldHabits();
       }
