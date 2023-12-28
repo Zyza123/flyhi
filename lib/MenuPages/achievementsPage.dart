@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import '../HiveClasses/Achievements.dart';
 import '../HiveClasses/HabitArchive.dart';
+import '../HiveClasses/Pets.dart';
 import '../Language/LanguageProvider.dart';
 import '../Language/Texts.dart';
 import '../Theme/DarkThemeProvider.dart';
@@ -21,6 +22,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
   late Box achievements;
   late Box habits;
   late Box habitsArchive;
+  late Box pets;
   List<String> mainImages = List.generate(5, (index) => 'assets/achievements/ach${index + 1}.png');
 
   void buildAchievements(){
@@ -29,7 +31,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
     Achievements achievement2 = Achievements("1", mainImages[1], [2,5,10,20,40]);
     Achievements achievement3 = Achievements("2", mainImages[2], [10,25,75,150,300]);
     Achievements achievement4 = Achievements("3", mainImages[3], [70,80,90,95,100]);
-    Achievements achievement5 = Achievements("4", mainImages[4], [1,2,3,4,5]);
+    Achievements achievement5 = Achievements("4", mainImages[4], [10,20,30,40,50]);
     achievements.add(achievement1);
     achievements.add(achievement2);
     achievements.add(achievement3);
@@ -79,6 +81,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
         ach.value++;
       }
     }
+    print("archiwum : "+habitsArchive.length.toString());
     while(ach.value >= ach.level[ach.progress]){
       ach.progress += 1;
       achievements.putAt(1, ach);
@@ -105,6 +108,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
           }
       }
     }
+
     if(index != -1){
       ach.value = effectiveness;
       while(checkHabitEffectiveness(index) >= ach.level[ach.progress]){
@@ -112,6 +116,20 @@ class _AchievementsPageState extends State<AchievementsPage> {
       }
       achievements.putAt(3,ach);
     }
+
+    ach = achievements.getAt(4);
+    Pets pet = pets.getAt(0);
+    int highest_level = 0;
+    for (var element in pet.level) {
+      if(element > highest_level){
+        highest_level = element;
+      }
+    }
+    ach.value = highest_level;
+    while(ach.value >= ach.level[ach.progress]){
+      ach.progress += 1;
+    }
+    achievements.putAt(4,ach);
   }
 
   @override
@@ -120,6 +138,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
     achievements = Hive.box('achievements');
     habits = Hive.box('habits');
     habitsArchive = Hive.box('habitsArchive');
+    pets = Hive.box('pets');
     if(achievements.isEmpty){
       buildAchievements();
       readAchievements();

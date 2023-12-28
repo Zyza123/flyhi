@@ -73,7 +73,9 @@ class Texts{
   late List<String> achievementsMainText = ["","","","",""];
   late String finishedHabitsName;
   late String detailsHabitName;
-
+  late String homeLevel;
+  late String homeSelectButton;
+  late String pickPetText;
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -180,5 +182,8 @@ class Texts{
     achievementsMainText[4] = language == "ENG" ? "Raise your pet's level." : "Podnieś poziom swojego pupila.";
     finishedHabitsName = language == "ENG" ? "Finished Habits": "Ukończone nawyki";
     detailsHabitName = language == "ENG" ? "Habit details": "Szczegóły nawyku";
+    homeLevel = language == "ENG" ? "Level": "Poziom";
+    homeSelectButton = language == "ENG" ? "SELECT PET": "WYBIERZ PUPILA";
+    pickPetText = language == "ENG" ? "Pick your pet": "Wybierz swojego pupila";
   }
 }

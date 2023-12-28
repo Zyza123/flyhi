@@ -20,4 +20,25 @@ class Pets extends HiveObject {
   late int chosenPet;
 
   Pets(this.exp,this.level,this.name,this.avatars,this.chosenPet);
+
+  void addExp(int experience){
+    exp[chosenPet] += experience;
+  }
+
+  void checkLvlUp(){
+    int expNeeded = totalExp();
+    if(exp[chosenPet] > expNeeded){
+      level[chosenPet] += 1;
+      int rest = exp[chosenPet] - expNeeded;
+      exp[chosenPet] = rest;
+    }
+  }
+
+  int totalExp(){
+    return 150 + (50 *level[chosenPet]);
+  }
+
+  void changeName(String newName){
+    name[chosenPet] = newName;
+  }
 }

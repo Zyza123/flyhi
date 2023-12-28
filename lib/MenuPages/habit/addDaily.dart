@@ -263,13 +263,9 @@ class _AddDailyState extends State<AddDaily> {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.35,
-                child: FadeInImage(
-                  fadeInDuration: Duration(milliseconds: 200),
-                  key: ValueKey<String>(mainDailyImage), // Klucz jako ciąg znaków
-                  placeholder: AssetImage('assets/empty.png'),
-                  image: AssetImage(mainDailyImage), // Ścieżka do obrazu jako ciąg znaków
-                  fit: BoxFit.fitHeight,
-                ),
+                child: Image.asset(mainDailyImage,
+                  fit: BoxFit.scaleDown,
+                )
               ),
               Container(
                 width: MediaQuery.of(context).size.width,

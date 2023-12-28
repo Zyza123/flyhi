@@ -125,13 +125,62 @@ class _FinishedHabitsState extends State<FinishedHabits> {
                         ],
                       ),
                       SizedBox(height: 10,),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "${texts.habitsProgress}: ${item.dayNumber} "
-                              "${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}",
-                          style: TextStyle(fontSize: 15, color: styles.classicFont),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${texts.habitsProgress}: ${item.dayNumber} "
+                                "${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}",
+                            style: TextStyle(fontSize: 15, color: styles.classicFont),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                showDialog<void>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Deleting'),
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text('Are you sure u want to delete habit from history?'),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            TextButton(
+                                              child: Text('Cancel'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: Text('Delete'),
+                                              onPressed: () {
+                                                habitArchive.deleteAt(index);
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Icon(
+                                Icons.highlight_remove,
+                                size: 27,
+                                color: styles.classicFont,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ],
                   ),

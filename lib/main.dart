@@ -61,6 +61,7 @@ class _MainAppRouteState extends State<MainAppRoute> {
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
   LanguageProvider languageProvider = LanguageProvider();
   int currentIndex = 0;
+  late Box pets;
 
   final List<Widget> _screens = [
     HomePage(),
@@ -79,11 +80,25 @@ class _MainAppRouteState extends State<MainAppRoute> {
         await languageProvider.languagePreference.getLang();
   }
 
+  void loadPetsInstance(){
+    pets.add(Pets([0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],
+        ["Tiger","Bear","Lion","Wolf","Deer","Monkey"],
+        [["tiger/tiger1.png","tiger/tiger2.png","tiger/tiger3.png","tiger/tiger4.png","tiger/tiger5.png"],
+          ["bear/bear1.png","bear/bear2.png","bear/bear3.png","bear/bear4.png","bear/bear5.png"],
+          ["lion/lion1.png","lion/lion2.png","lion/lion3.png","lion/lion4.png","lion/lion5.png"],
+          ["wolf/wolf1.png","wolf/wolf2.png","wolf/wolf3.png","wolf/wolf4.png","wolf/wolf5.png"]],
+        -1));
+  }
+
   @override
   void initState() {
     super.initState();
     getCurrentAppTheme();
     getCurrentAppLanguage();
+    pets = Hive.box('pets');
+    if(pets.isEmpty){
+      loadPetsInstance();
+    }
   }
 
   @override

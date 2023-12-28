@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../HiveClasses/Achievements.dart';
 import '../../HiveClasses/HabitArchive.dart';
+import '../../HiveClasses/Pets.dart';
 import '../../Language/LanguageProvider.dart';
 import '../../Language/Texts.dart';
 import '../../Notification/NotificationManager.dart';
@@ -41,6 +42,7 @@ class _HabitPageState extends State<HabitPage> {
   late Box habitsTodos;
   late Box achievements;
   late Box habitsArchive;
+  late Box pets;
   List<HabitTodos> habitsCopy = [];
   List<int> indexListHabitsMirror = [];
 
@@ -190,6 +192,11 @@ class _HabitPageState extends State<HabitPage> {
         }
         if(week_before.isAtSameMomentAs(before) || week_before.isAfter(before)){
           existingHabit.efficiency[today] = 0.0;
+          int getExp = 8 + (existingHabit.efficiency.length * (1 + existingHabit.frequency.toDouble()/10)).toInt();
+          Pets pet = pets.getAt(0);
+          pet.addExp(getExp);
+          pet.checkLvlUp();
+          pets.putAt(0, pet);
         }
         habitsTodos.putAt(i, existingHabit);
         habitsCopy.add(habitsTodos.getAt(i));
@@ -198,6 +205,13 @@ class _HabitPageState extends State<HabitPage> {
     }
   }
 
+  int calculateExpForHabit(HabitTodos ht){
+    int frequencyAll = 0;
+    ht.efficiency.forEach((key, value) {
+      frequencyAll += value.toInt();
+    });
+    return frequencyAll * 3;
+  }
   // remove all old habits and add them to archive
   void removeOldHabits(){
     List<dynamic> toRemove = [];
@@ -207,17 +221,21 @@ class _HabitPageState extends State<HabitPage> {
       DateTime today = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
           DateTime.now().subtract(Duration(hours: day_offset)).month,
           DateTime.now().subtract(Duration(hours: day_offset)).day);
-      print("nazwa: "+existingHabit.name.toString());
-      print("Dzisiaj: "+today.toString());
-      print("Wtedy: "+existingHabit.date.toString());
-      print("numer dnia: "+existingHabit.dayNumber.toString());
-      print("ilosc dni: "+existingHabit.fullTime.toString());
+      //print("nazwa: "+existingHabit.name.toString());
+      //print("Dzisiaj: "+today.toString());
+      //print("Wtedy: "+existingHabit.date.toString());
+      //print("numer dnia: "+existingHabit.dayNumber.toString());
+      //print("ilosc dni: "+existingHabit.fullTime.toString());
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         if(existingHabit.dayNumber > existingHabit.fullTime){
           HabitTodos ht = habitsTodos.getAt(i);
           ht.dayNumber -= 1;
           habitsArchive.add(rewriteToArchive(ht));
           toRemove.add(habitsTodos.keyAt(i));
+          Pets pet = pets.getAt(0);
+          pet.addExp(calculateExpForHabit(ht));
+          pet.checkLvlUp();
+          pets.putAt(0, pet);
         }
       }
     }
@@ -237,7 +255,7 @@ class _HabitPageState extends State<HabitPage> {
     indexListHabitsMirror.clear();
     for(int i = habitsTodos.length -1; i >= 0; i--)
     {
-      var existingHabit = habitsTodos.getAt(i);
+      HabitTodos existingHabit = habitsTodos.getAt(i);
       DateTime today = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
           DateTime.now().subtract(Duration(hours: day_offset)).month,
           DateTime.now().subtract(Duration(hours: day_offset)).day);
@@ -250,6 +268,12 @@ class _HabitPageState extends State<HabitPage> {
         }
         if(week_before.isAtSameMomentAs(before) || week_before.isAfter(before)){
           existingHabit.efficiency[today] = 0.0;
+          //obliczanie expa dodawanego co tydzien
+          int getExp = 8 + (existingHabit.efficiency.length * (1 + existingHabit.frequency.toDouble()/10)).toInt();
+          Pets pet = pets.getAt(0);
+          pet.addExp(getExp);
+          pet.checkLvlUp();
+          pets.putAt(0, pet);
         }
         habitsTodos.putAt(i, existingHabit);
         habitsCopy.add(habitsTodos.getAt(i));
@@ -258,7 +282,7 @@ class _HabitPageState extends State<HabitPage> {
     }
   }
 
-  void removeOldDates(){
+  void removeOldTodos(){
     DateTime today = DateTime.now().subtract(Duration(hours: day_offset));
     List<dynamic> toRemove = [];
     int points_counter = 0;
@@ -280,6 +304,12 @@ class _HabitPageState extends State<HabitPage> {
     }
     achievements.putAt(2, ach);
     dailyTodos.deleteAll(toRemove);
+    if(toRemove.isNotEmpty){
+      Pets pet = pets.getAt(0);
+      pet.addExp(toRemove.length * 10);
+      pet.checkLvlUp();
+      pets.putAt(0, pet);
+    }
     toRemove.clear();
   }
 
@@ -352,11 +382,13 @@ class _HabitPageState extends State<HabitPage> {
     super.initState();
     achievements = Hive.box('achievements');
     dailyTodos = Hive.box('daily');
+    pets = Hive.box('pets');
     getRemindFromPrefs();
     getOffsetFromPrefs().then((value) {
       fillData();
       if(dailyTodos.isNotEmpty){
-        removeOldDates();
+        //dailyTodos.add(DailyTodos("test", 'assets/images/ikona4/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)),[DateTime.now().hour.toString(),DateTime.now().minute.toString()],0, 0xFFD0312D));
+        removeOldTodos();
       }
       DateTime pickedDateFormat = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
           DateTime.now().subtract(Duration(hours: day_offset)).month,
@@ -364,9 +396,9 @@ class _HabitPageState extends State<HabitPage> {
       readTodoData(pickedDateFormat);
       habitsTodos = Hive.box('habits');
       habitsArchive = Hive.box('habitsArchive');
-      habitsTodos.add(HabitTodos("Testowy2", 'assets/images/ikona${3 + 1}/128x128.png',
-          pickedDateFormat.subtract(Duration(days: 7)), 3, 7, 8,
-          {pickedDateFormat : 3}, 0xFFD0312D));
+     //habitsTodos.add(HabitTodos("Testowy2", 'assets/images/ikona${3 + 1}/128x128.png',
+     //    pickedDateFormat.subtract(Duration(days: 7)), 3, 7, 8,
+     //    {pickedDateFormat : 3}, 0xFFD0312D));
       if(habitsTodos.isNotEmpty){
         removeOldHabits();
       }
@@ -699,7 +731,7 @@ class _HabitPageState extends State<HabitPage> {
                                       key: ValueKey<AssetImage>(AssetImage(item.icon)), // Generuj losowy klucz za każdym razem
                                       placeholder: const AssetImage('assets/empty.png'),
                                       image: AssetImage(item.icon),
-                                      fit: BoxFit.contain,
+                                      fit: BoxFit.scaleDown,
                                     ),
                                     SizedBox(width: 10,),
                                     Expanded(
@@ -934,7 +966,7 @@ class _HabitPageState extends State<HabitPage> {
                                           key: ValueKey<AssetImage>(AssetImage(item.icon)), // Generuj losowy klucz za każdym razem
                                           placeholder: const AssetImage('assets/empty.png'),
                                           image: AssetImage(item.icon),
-                                          fit: BoxFit.contain,
+                                          fit: BoxFit.scaleDown,
                                         ),
                                         SizedBox(width: 10,),
                                         Expanded(
