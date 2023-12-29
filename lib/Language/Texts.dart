@@ -76,6 +76,9 @@ class Texts{
   late String homeLevel;
   late String homeSelectButton;
   late String pickPetText;
+  late List<String> attributes1 = ["","","","","",""];
+  late List<String> attributes2 = ["","","","","",""];
+  late List<String> attributes3 = ["","","","","",""];
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -185,5 +188,23 @@ class Texts{
     homeLevel = language == "ENG" ? "Level": "Poziom";
     homeSelectButton = language == "ENG" ? "SELECT PET": "WYBIERZ PUPILA";
     pickPetText = language == "ENG" ? "Pick your pet": "Wybierz swojego pupila";
+    attributes1[0] = language == "ENG" ? "Power" : "Siła";
+    attributes2[0] = language == "ENG" ? "Agility" : "Zwinność";
+    attributes3[0] = language == "ENG" ? "Independence" : "Samodzielność";
+    attributes1[1] = language == "ENG" ? "Wisdom" : "Mądrość";
+    attributes2[1] = language == "ENG" ? "Health" : "Zdrowie";
+    attributes3[1] = language == "ENG" ? "Courage" : "Odwaga";
+    attributes1[2] = language == "ENG" ? "Loyalty" : "Lojalność";
+    attributes2[2] = language == "ENG" ? "Cunning" : "Przebiegłość";
+    attributes3[2] = language == "ENG" ? "Cooperation" : "Współpraca";
+    attributes1[3] = language == "ENG" ? "Power" : "Siła";
+    attributes2[3] = language == "ENG" ? "Affection" : "Czułość";
+    attributes3[3] = language == "ENG" ? "Family" : "Rodzina";
+    attributes1[4] = language == "ENG" ? "Beauty" : "Power";
+    attributes2[4] = language == "ENG" ? "Delicacy" : "Delikatność";
+    attributes3[4] = language == "ENG" ? "Spirituality" : "Duchowość";
+    attributes1[5] = language == "ENG" ? "Intelligence" : "Inteligencja";
+    attributes2[5] = language == "ENG" ? "Flair" : "Spryt";
+    attributes3[5] = language == "ENG" ? "Scrupulous" : "Sumienny";
   }
 }

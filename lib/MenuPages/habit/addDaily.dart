@@ -254,7 +254,7 @@ class _AddDailyState extends State<AddDaily> {
           ],
         ),
       ),
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
@@ -263,8 +263,12 @@ class _AddDailyState extends State<AddDaily> {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.35,
-                child: Image.asset(mainDailyImage,
-                  fit: BoxFit.scaleDown,
+                child: FadeInImage(
+                  fadeInDuration: Duration(milliseconds: 150),
+                  key: ValueKey<String>(mainDailyImage), // Klucz jako ciąg znaków
+                  placeholder: AssetImage('assets/empty.png'),
+                  image: AssetImage(mainDailyImage), // Ścieżka do obrazu jako ciąg znaków
+                  fit: BoxFit.fitHeight,
                 )
               ),
               Container(

@@ -99,6 +99,16 @@ flutter:
     - assets/pets/wolf/wolf3.png
     - assets/pets/wolf/wolf4.png
     - assets/pets/wolf/wolf5.png
+    - assets/pets/deer/deer1.png
+    - assets/pets/deer/deer2.png
+    - assets/pets/deer/deer3.png
+    - assets/pets/deer/deer4.png
+    - assets/pets/deer/deer5.png
+    - assets/pets/gorilla/gorilla1.png
+    - assets/pets/gorilla/gorilla2.png
+    - assets/pets/gorilla/gorilla3.png
+    - assets/pets/gorilla/gorilla4.png
+    - assets/pets/gorilla/gorilla5.png
     - assets/achievements/ach1.png
     - assets/achievements/ach2.png
     - assets/achievements/ach3.png

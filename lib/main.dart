@@ -86,7 +86,9 @@ class _MainAppRouteState extends State<MainAppRoute> {
         [["tiger/tiger1.png","tiger/tiger2.png","tiger/tiger3.png","tiger/tiger4.png","tiger/tiger5.png"],
           ["bear/bear1.png","bear/bear2.png","bear/bear3.png","bear/bear4.png","bear/bear5.png"],
           ["lion/lion1.png","lion/lion2.png","lion/lion3.png","lion/lion4.png","lion/lion5.png"],
-          ["wolf/wolf1.png","wolf/wolf2.png","wolf/wolf3.png","wolf/wolf4.png","wolf/wolf5.png"]],
+          ["wolf/wolf1.png","wolf/wolf2.png","wolf/wolf3.png","wolf/wolf4.png","wolf/wolf5.png"],
+          ["deer/deer1.png","deer/deer2.png","deer/deer3.png","deer/deer4.png","deer/deer5.png"],
+          ["gorilla/gorilla1.png","gorilla/gorilla2.png","gorilla/gorilla3.png","gorilla/gorilla4.png","gorilla/gorilla5.png"]],
         -1));
   }
 

@@ -20,7 +20,8 @@ class _HomePageState extends State<HomePage> {
 
   late Box pets;
   late Pets pet;
-  List<Color> nameColors = [Colors.orange, Colors.brown, Colors.yellow.shade700, Colors.green.shade600];
+  List<Color> nameColors = [Colors.orange, Colors.brown, Colors.yellow.shade800, Colors.green.shade600,
+  Colors.brown, Colors.indigo.shade900];
 
   Future<void> _showEditNameDialog(BuildContext context) async {
     String newName = '';
@@ -183,10 +184,127 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          SizedBox(height: 15),
-          Text("${pet.exp[pet.chosenPet]} / ${pet.totalExp()} EXP",
-            style: TextStyle(fontSize: 23,color: nameColors[pet.chosenPet],fontWeight: FontWeight.bold),),
-          SizedBox(height: 15),
+          SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Text("${pet.exp[pet.chosenPet]} / ${pet.totalExp()} EXP",
+                style: TextStyle(fontSize: 23,color: nameColors[pet.chosenPet],fontWeight: FontWeight.bold),),
+            ),
+          ),
+          SizedBox(height: 25),
+          Row(
+            children: [
+              Container(
+                width: 125,
+                child: Text(
+                  texts.attributes1[pet.chosenPet],
+                  style: TextStyle(fontSize: 20,color: styles.classicFont,fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center, // Tekst wyśrodkowany w poziomie
+                  overflow: TextOverflow.ellipsis, // Use ellipsis for text overflow
+                  maxLines: 1, // Ensure text does not exceed one line
+                ),
+              ),
+              SizedBox(width: 25,),
+              Expanded(
+                child: TweenAnimationBuilder<double>(
+                  key: Key("111"),
+                  duration: const Duration(milliseconds: 1000),
+                  curve: Curves.decelerate,
+                  tween: Tween<double>(
+                    begin: 0,
+                    end: 1,
+                  ),
+                  builder: (context, value, _) =>
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: LinearProgressIndicator(
+                          value: (pet.level[pet.chosenPet]+1)/50 <= 1 ? (pet.level[pet.chosenPet]+1)/50 : 50,
+                          valueColor: AlwaysStoppedAnimation<Color>(nameColors[pet.chosenPet]),
+                          backgroundColor: styles.todosPickerOn,
+                          minHeight: 18,
+                        ),
+                      ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 25),
+          Row(
+            children: [
+              Container(
+                width: 125,
+                child: Text(
+                  texts.attributes2[pet.chosenPet],
+                  style: TextStyle(fontSize: 20,color: styles.classicFont, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center, // Tekst wyśrodkowany w poziomie
+                  overflow: TextOverflow.ellipsis, // Use ellipsis for text overflow
+                  maxLines: 1, // Ensure text does not exceed one line
+                ),
+              ),
+              SizedBox(width: 25,),
+              Expanded(
+                child: TweenAnimationBuilder<double>(
+                  key: Key("222"),
+                  duration: const Duration(milliseconds: 1000),
+                  curve: Curves.decelerate,
+                  tween: Tween<double>(
+                    begin: 0,
+                    end: 1,
+                  ),
+                  builder: (context, value, _) =>
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: LinearProgressIndicator(
+                          value: (pet.level[pet.chosenPet]+1)/50 <= 1 ? (pet.level[pet.chosenPet]+1)/50 : 50,
+                          valueColor: AlwaysStoppedAnimation<Color>(nameColors[pet.chosenPet]),
+                          backgroundColor: styles.todosPickerOn,
+                          minHeight: 18,
+                        ),
+                      ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 25),
+          Row(
+            children: [
+              Container(
+                width: 125,
+                child: Text(
+                  texts.attributes3[pet.chosenPet],
+                  style: TextStyle(fontSize: 20,color: styles.classicFont, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center, // Tekst wyśrodkowany w poziomie
+                  overflow: TextOverflow.ellipsis, // Use ellipsis for text overflow
+                  maxLines: 1, // Ensure text does not exceed one line
+                ),
+              ),
+              SizedBox(width: 25,),
+              Expanded(
+                child: TweenAnimationBuilder<double>(
+                  key: Key("333"),
+                  duration: const Duration(milliseconds: 1000),
+                  curve: Curves.decelerate,
+                  tween: Tween<double>(
+                    begin: 0,
+                    end: 1,
+                  ),
+                  builder: (context, value, _) =>
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: LinearProgressIndicator(
+                          value: (pet.level[pet.chosenPet]+1)/50 <= 1 ? (pet.level[pet.chosenPet]+1)/50 : 50,
+                          valueColor: AlwaysStoppedAnimation<Color>(nameColors[pet.chosenPet]),
+                          backgroundColor: styles.todosPickerOn,
+                          minHeight: 18,
+                        ),
+                      ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 25),
           ElevatedButton(
             onPressed: () {
               Navigator.push(
@@ -202,13 +320,13 @@ class _HomePageState extends State<HomePage> {
             },
             child: Text(
               texts.homeSelectButton,
-              style: TextStyle(fontSize: 20, color: styles.classicFont,fontWeight: FontWeight.bold), // Powiększenie czcionki do 28
+              style: TextStyle(fontSize: 20, color: nameColors[pet.chosenPet],fontWeight: FontWeight.bold), // Powiększenie czcionki do 28
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: styles.mainBackgroundColor, foregroundColor: styles.mainBackgroundColor, elevation: 0, // Kolor tekstu (czarny)
-              side: BorderSide(color: styles.classicFont, width: 2),
+              side: BorderSide(color: styles.classicFont, width: 3),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12), // Zaokrąglone rogi
+                borderRadius: BorderRadius.circular(15), // Zaokrąglone rogi
               ),
               minimumSize: const Size.fromHeight(40)),
           ),

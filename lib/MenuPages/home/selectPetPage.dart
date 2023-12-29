@@ -97,9 +97,12 @@ class _SelectPetPageState extends State<SelectPetPage> {
                   },
                   child: Column(
                     children: [
-                      Image.asset(
-                        'assets/pets/${pet.avatars[index][pet.level[index]]}',
+                      FadeInImage(
+                        fadeInDuration: Duration(milliseconds: 200),
+                        key: ValueKey<AssetImage>(AssetImage('assets/pets/${pet.avatars[index][pet.level[index]]}')),
                         fit: BoxFit.scaleDown,
+                        placeholder: const AssetImage('assets/empty.png'),
+                        image: AssetImage('assets/pets/${pet.avatars[index][pet.level[index]]}'),
                       ),
                       Text(
                         pet.name[index],
