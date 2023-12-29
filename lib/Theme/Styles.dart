@@ -17,6 +17,8 @@ class Styles{
  late Color sliderColorsInact;
  late Color achievementsColor;
  late Color dateColor;
+ List<Color> nameColors = [Colors.orange,Colors.brown,Colors.yellow.shade800,Colors.green.shade600,
+  Colors.brown,Colors.indigo.shade900];
 
  void setColors(bool darkMode){
   mainBackgroundColor = !darkMode ?  Color(0xFFF1F1F1) : Color(0xFF161616);
@@ -32,5 +34,9 @@ class Styles{
   sliderColorsInact = Color(0xFF777777);
   achievementsColor = !darkMode ? Colors.grey.shade300 : Color(0xFF272727);
   dateColor = !darkMode ? Colors.grey.shade300 : Color(0xFF272727);
+  nameColors[1] = !darkMode ? Colors.brown : Colors.brown.shade400;
+  nameColors[4] = !darkMode ? Colors.brown : Colors.brown.shade400;
+  nameColors[5] = !darkMode ? Colors.indigo.shade900 : Colors.indigo;
+
  }
 }

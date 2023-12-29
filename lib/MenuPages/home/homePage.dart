@@ -20,8 +20,6 @@ class _HomePageState extends State<HomePage> {
 
   late Box pets;
   late Pets pet;
-  List<Color> nameColors = [Colors.orange, Colors.brown, Colors.yellow.shade800, Colors.green.shade600,
-  Colors.brown, Colors.indigo.shade900];
 
   Future<void> _showEditNameDialog(BuildContext context) async {
     String newName = '';
@@ -135,7 +133,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(
                 pet.name[pet.chosenPet],
-                style: TextStyle(fontSize: 32,color: nameColors[pet.chosenPet],fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 32,color: styles.nameColors[pet.chosenPet],fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center, // Tekst wyśrodkowany w poziomie
               ),
               SizedBox(width: 30,),
@@ -190,14 +188,14 @@ class _HomePageState extends State<HomePage> {
             child: Align(
               alignment: Alignment.bottomRight,
               child: Text("${pet.exp[pet.chosenPet]} / ${pet.totalExp()} EXP",
-                style: TextStyle(fontSize: 23,color: nameColors[pet.chosenPet],fontWeight: FontWeight.bold),),
+                style: TextStyle(fontSize: 23,color: styles.nameColors[pet.chosenPet],fontWeight: FontWeight.bold),),
             ),
           ),
           SizedBox(height: 25),
           Row(
             children: [
               Container(
-                width: 125,
+                width: 130,
                 child: Text(
                   texts.attributes1[pet.chosenPet],
                   style: TextStyle(fontSize: 20,color: styles.classicFont,fontWeight: FontWeight.bold),
@@ -221,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
                           value: (pet.level[pet.chosenPet]+1)/50 <= 1 ? (pet.level[pet.chosenPet]+1)/50 : 50,
-                          valueColor: AlwaysStoppedAnimation<Color>(nameColors[pet.chosenPet]),
+                          valueColor: AlwaysStoppedAnimation<Color>(styles.nameColors[pet.chosenPet]),
                           backgroundColor: styles.todosPickerOn,
                           minHeight: 18,
                         ),
@@ -234,7 +232,7 @@ class _HomePageState extends State<HomePage> {
           Row(
             children: [
               Container(
-                width: 125,
+                width: 130,
                 child: Text(
                   texts.attributes2[pet.chosenPet],
                   style: TextStyle(fontSize: 20,color: styles.classicFont, fontWeight: FontWeight.bold),
@@ -258,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
                           value: (pet.level[pet.chosenPet]+1)/50 <= 1 ? (pet.level[pet.chosenPet]+1)/50 : 50,
-                          valueColor: AlwaysStoppedAnimation<Color>(nameColors[pet.chosenPet]),
+                          valueColor: AlwaysStoppedAnimation<Color>(styles.nameColors[pet.chosenPet]),
                           backgroundColor: styles.todosPickerOn,
                           minHeight: 18,
                         ),
@@ -271,7 +269,7 @@ class _HomePageState extends State<HomePage> {
           Row(
             children: [
               Container(
-                width: 125,
+                width: 130,
                 child: Text(
                   texts.attributes3[pet.chosenPet],
                   style: TextStyle(fontSize: 20,color: styles.classicFont, fontWeight: FontWeight.bold),
@@ -295,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
                           value: (pet.level[pet.chosenPet]+1)/50 <= 1 ? (pet.level[pet.chosenPet]+1)/50 : 50,
-                          valueColor: AlwaysStoppedAnimation<Color>(nameColors[pet.chosenPet]),
+                          valueColor: AlwaysStoppedAnimation<Color>(styles.nameColors[pet.chosenPet]),
                           backgroundColor: styles.todosPickerOn,
                           minHeight: 18,
                         ),
@@ -305,30 +303,35 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           SizedBox(height: 25),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SelectPetPage())
-              ).then((value) {
-                if (value == true) {
-                  setState(() {
-                    pet = pets.getAt(0);
-                  });
-                }
-              });
-            },
-            child: Text(
-              texts.homeSelectButton,
-              style: TextStyle(fontSize: 20, color: nameColors[pet.chosenPet],fontWeight: FontWeight.bold), // Powiększenie czcionki do 28
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: styles.mainBackgroundColor, foregroundColor: styles.mainBackgroundColor, elevation: 0, // Kolor tekstu (czarny)
-              side: BorderSide(color: styles.classicFont, width: 3),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15), // Zaokrąglone rogi
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: styles.nameColors[pet.chosenPet], // Twój obecny kolor
+                width: 3,
               ),
-              minimumSize: const Size.fromHeight(40)),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SelectPetPage())
+                ).then((value) {
+                  if (value == true) {
+                    setState(() {
+                      pet = pets.getAt(0);
+                    });
+                  }
+                });
+              },
+              child: Text(
+                texts.homeSelectButton,
+                style: TextStyle(fontSize: 20, color: styles.nameColors[pet.chosenPet],fontWeight: FontWeight.bold), // Powiększenie czcionki do 28
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: styles.mainBackgroundColor, foregroundColor: styles.mainBackgroundColor, elevation: 0, // Kolor tekstu (czarny)
+                minimumSize: const Size.fromHeight(40)),
+            ),
           ),
         ],
       );
@@ -337,7 +340,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
       body: Padding(
-        padding: const EdgeInsets.only(left: 20.0,right:20,top: 25),
+        padding: const EdgeInsets.only(left: 15.0,right:15,top: 25),
         child: SingleChildScrollView( // Dodaj SingleChildScrollView tutaj
           child: SizedBox(
             width: MediaQuery.of(context).size.width,

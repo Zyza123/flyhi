@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flyhi/Language/LanguageProvider.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../HiveClasses/Achievements.dart';
 import '../Language/Texts.dart';
 import '../Notification/NotificationManager.dart';
+import '../Storage/FileStorage.dart';
 import '../Theme/DarkThemeProvider.dart';
 import '../Theme/Styles.dart';
 
@@ -37,6 +43,26 @@ class _AccountPageState extends State<AccountPage> {
     reminder = prefs.getInt('REMINDER') ?? 0;
   }
 
+  Future<Map<String, dynamic>> collectHiveData() async {
+    var achievementsBox = Hive.box('achievements');
+
+    // Konwersja każdego obiektu Achievements do Mapy, która może być zakodowana do JSON
+    List<Map<String, dynamic>> achievementsData = achievementsBox.values
+        .cast<Achievements>() // Upewnij się, że masz do czynienia z obiektami Achievements
+        .map((achievement) => achievement.toJson()) // Użyj metody toJson zdefiniowanej w klasie Achievements
+        .toList();
+
+    return {
+      'achievements': achievementsData,
+    };
+  }
+
+  void saveDataToFile() async {
+    Map<String, dynamic> hiveData = await collectHiveData();
+    String jsonString = jsonEncode(hiveData);
+    await FileStorage.writeCounter(jsonString, 'hive_backup.json');
+  }
+
   late int day_offset;
   late int reminder;
 
@@ -47,6 +73,9 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    const myList = {
+      "name":"GeeksForGeeks1122"
+    };
     final themeChange = Provider.of<DarkThemeProvider>(context);
     final langChange = Provider.of<LanguageProvider>(context);
     Styles styles = Styles();
@@ -233,6 +262,11 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                       ),
                     ),
+                    ElevatedButton(
+                        onPressed: (){
+                          saveDataToFile();
+                        },
+                        child: Text("Save file")),
                   ],
                 ),
               ),

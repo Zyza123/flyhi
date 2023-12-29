@@ -20,4 +20,14 @@ class Achievements extends HiveObject {
   late int value;
 
   Achievements(this.name, this.image, this.level, {this.progress = 0, this.value = 0} );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'image': image,
+      'progress': progress,
+      'level': level,
+      'value': value,
+    };
+  }
 }

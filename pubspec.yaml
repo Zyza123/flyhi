@@ -53,6 +53,7 @@ dependencies:
   timezone: ^0.9.2
   flutter_timezone: ^1.0.8
   syncfusion_flutter_charts: ^23.2.7
+  permission_handler: ^11.1.0
 
 dev_dependencies:
   flutter_test:
