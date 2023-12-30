@@ -286,6 +286,7 @@ class _HabitPageState extends State<HabitPage> {
     DateTime today = DateTime.now().subtract(Duration(hours: day_offset));
     List<dynamic> toRemove = [];
     int points_counter = 0;
+    Pets pet = pets.getAt(0);
     for(int i = 0; i < dailyTodos.length; i++){
       DailyTodos todo = dailyTodos.getAt(i);
       bool different = (today.day != todo.date.day) && today.isAfter(todo.date);
@@ -293,9 +294,12 @@ class _HabitPageState extends State<HabitPage> {
         toRemove.add(dailyTodos.keyAt(i));
         if(dailyTodos.getAt(i).status == "done"){
           points_counter++;
+          pet.addExp(toRemove.length * 10);
         }
       }
     }
+    pet.checkLvlUp();
+    pets.putAt(0, pet);
     // dodawanie do osiągnieć punktów ze zdobytych obowiazkow
     Achievements ach = achievements.getAt(2);
     ach.value += points_counter;
@@ -304,12 +308,6 @@ class _HabitPageState extends State<HabitPage> {
     }
     achievements.putAt(2, ach);
     dailyTodos.deleteAll(toRemove);
-    if(toRemove.isNotEmpty){
-      Pets pet = pets.getAt(0);
-      pet.addExp(toRemove.length * 10);
-      pet.checkLvlUp();
-      pets.putAt(0, pet);
-    }
     toRemove.clear();
   }
 
