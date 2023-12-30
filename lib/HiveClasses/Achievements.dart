@@ -30,4 +30,11 @@ class Achievements extends HiveObject {
       'value': value,
     };
   }
+  Achievements.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    image = json['image'];
+    progress = json['progress'];
+    level = List<int>.from(json['level']);
+    value = json['value'];
+  }
 }

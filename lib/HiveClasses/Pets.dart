@@ -21,6 +21,24 @@ class Pets extends HiveObject {
 
   Pets(this.exp,this.level,this.name,this.avatars,this.chosenPet);
 
+  Map<String, dynamic> toJson() {
+    return {
+      'exp': exp,
+      'level': level,
+      'name': name,
+      'avatars': avatars,
+      'chosenPet': chosenPet,
+    };
+  }
+
+  Pets.fromJson(Map<String, dynamic> json) {
+    exp = List<int>.from(json['exp']);
+    level = List<int>.from(json['level']);
+    name = List<String>.from(json['name']);
+    avatars = (json['avatars'] as List).map((e) => List<String>.from(e)).toList();
+    chosenPet = json['chosenPet'];
+  }
+
   void addExp(int experience){
     exp[chosenPet] += experience;
   }

@@ -1,12 +1,19 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flyhi/Language/LanguageProvider.dart';
 import 'package:hive/hive.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../HiveClasses/Achievements.dart';
+import '../HiveClasses/DailyTodos.dart';
+import '../HiveClasses/HabitArchive.dart';
+import '../HiveClasses/HabitTodos.dart';
+import '../HiveClasses/Pets.dart';
 import '../Language/Texts.dart';
 import '../Notification/NotificationManager.dart';
 import '../Storage/FileStorage.dart';
@@ -43,18 +50,151 @@ class _AccountPageState extends State<AccountPage> {
     reminder = prefs.getInt('REMINDER') ?? 0;
   }
 
-  Future<Map<String, dynamic>> collectHiveData() async {
-    var achievementsBox = Hive.box('achievements');
+  Future<bool> requestStoragePermission() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      var result = await Permission.manageExternalStorage.request();
+      return result.isGranted;
+    }
+    return true;
+  }
 
-    // Konwersja każdego obiektu Achievements do Mapy, która może być zakodowana do JSON
+  Future<String?> pickAndReadFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null && result.files.single.path != null) {
+      String filePath = result.files.single.path!;
+      File file = File(filePath);
+      String basename1 = basename(file.path);
+      print("Basename: " + basename1);
+      //if(basename1 != "hive_backup.json"){
+        String fileContent = await file.readAsString();
+        return fileContent;
+      //}
+    } else {
+      // Użytkownik anulował wybór pliku lub ścieżka jest nieważna
+      return null;
+    }
+  }
+
+  Future<bool> showConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Warning'),
+        content: Text('Opening file may cause losing your data. '
+            'Make sure you are opening the right file. '
+            'Dont change filename to make sure you are opening right file. '
+            'Data are saved in Downloads and called hive_backup.json.'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Pick file'),
+          ),
+        ],
+      ),
+    ) ?? false; // Zwraca false, jeśli dialog zostanie zamknięty inaczej
+  }
+
+  Future<Map<String, dynamic>> collectHiveData() async {
+    // Otwórz skrzynki
+    var achievementsBox = Hive.box('achievements');
+    var dailyTodosBox = Hive.box('daily');
+    var habitArchiveBox = Hive.box('habitsArchive');
+    var habitTodosBox = Hive.box('habits');
+    var petsBox = Hive.box('pets');
+
+    // Konwersja danych do JSON
     List<Map<String, dynamic>> achievementsData = achievementsBox.values
-        .cast<Achievements>() // Upewnij się, że masz do czynienia z obiektami Achievements
-        .map((achievement) => achievement.toJson()) // Użyj metody toJson zdefiniowanej w klasie Achievements
+        .cast<Achievements>()
+        .map((achievement) => achievement.toJson())
+        .toList();
+
+    List<Map<String, dynamic>> dailyTodosData = dailyTodosBox.values
+        .cast<DailyTodos>()
+        .map((todo) => todo.toJson())
+        .toList();
+
+    List<Map<String, dynamic>> habitArchiveData = habitArchiveBox.values
+        .cast<HabitArchive>()
+        .map((archive) => archive.toJson())
+        .toList();
+
+    List<Map<String, dynamic>> habitTodosData = habitTodosBox.values
+        .cast<HabitTodos>()
+        .map((todo) => todo.toJson())
+        .toList();
+
+    List<Map<String, dynamic>> petsData = petsBox.values
+        .cast<Pets>()
+        .map((pet) => pet.toJson())
         .toList();
 
     return {
       'achievements': achievementsData,
+      'dailyTodos': dailyTodosData,
+      'habitArchive': habitArchiveData,
+      'habitTodos': habitTodosData,
+      'pets': petsData,
     };
+  }
+
+  Future<void> loadHiveDataFromJson(String jsonData) async {
+    var decodedData = jsonDecode(jsonData);
+
+    // Wczytywanie danych do skrzynki 'achievements'
+    if (decodedData['achievements'] != null) {
+      var achievementsBox = Hive.box('achievements');
+      await achievementsBox.clear();
+      for (var achievementJson in decodedData['achievements']) {
+        var achievement = Achievements.fromJson(achievementJson);
+        await achievementsBox.add(achievement);
+      }
+    }
+
+    // Wczytywanie danych do skrzynki 'dailyTodos'
+    if (decodedData['dailyTodos'] != null) {
+      var dailyTodosBox =  Hive.box('daily');
+      await dailyTodosBox.clear();
+      for (var dailyTodoJson in decodedData['dailyTodos']) {
+        var dailyTodo = DailyTodos.fromJson(dailyTodoJson);
+        await dailyTodosBox.add(dailyTodo);
+      }
+    }
+
+    // Wczytywanie danych do skrzynki 'habitArchive'
+    if (decodedData['habitsArchive'] != null) {
+      var habitArchiveBox = Hive.box('habitsArchive');
+      await habitArchiveBox.clear();
+      for (var archiveJson in decodedData['habitArchive']) {
+        var archive = HabitArchive.fromJson(archiveJson);
+        await habitArchiveBox.add(archive);
+      }
+    }
+
+    // Wczytywanie danych do skrzynki 'habitTodos'
+    if (decodedData['habitTodos'] != null) {
+      var habitTodosBox = Hive.box('habits');
+      await habitTodosBox.clear();
+      for (var todoJson in decodedData['habitTodos']) {
+        var todo = HabitTodos.fromJson(todoJson);
+        await habitTodosBox.add(todo);
+      }
+    }
+
+    // Wczytywanie danych do skrzynki 'pets'
+    if (decodedData['pets'] != null) {
+      var petsBox = Hive.box('pets');
+      await petsBox.clear();
+      for (var petJson in decodedData['pets']) {
+        var pet = Pets.fromJson(petJson);
+        await petsBox.add(pet);
+      }
+    }
   }
 
   void saveDataToFile() async {
@@ -73,9 +213,6 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    const myList = {
-      "name":"GeeksForGeeks1122"
-    };
     final themeChange = Provider.of<DarkThemeProvider>(context);
     final langChange = Provider.of<LanguageProvider>(context);
     Styles styles = Styles();
@@ -263,10 +400,31 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                     ElevatedButton(
-                        onPressed: (){
+                      onPressed: () async {
+                        if (await requestStoragePermission()) {
                           saveDataToFile();
-                        },
-                        child: Text("Save file")),
+                        } else {
+                          // Użytkownik odmówił uprawnień
+                        }
+                      },
+                      child: Text("Save to backup file"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        bool confirm = await showConfirmationDialog(context);
+                        if (confirm) {
+                          String? jsonString = await pickAndReadFile();
+                          print(jsonString);
+                          if (jsonString != null) {
+                            loadHiveDataFromJson(jsonString);
+                          } else {
+                            // Obsługa sytuacji, gdy jsonString jest null, np. wyświetlenie komunikatu
+                            print('Nie wybrano pliku lub plik jest pusty');
+                          }
+                        }
+                      },
+                      child: Text("Read from backup file"),
+                    ),
                   ],
                 ),
               ),

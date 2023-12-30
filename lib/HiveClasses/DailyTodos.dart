@@ -29,4 +29,26 @@ class DailyTodos extends HiveObject {
 
   DailyTodos(this.name, this.icon, this.status, this.date, this.time, this.importance,
       this.dailyTheme);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'icon': icon,
+      'status': status,
+      'date': date.toIso8601String(),
+      'time': time,
+      'importance': importance,
+      'dailyTheme': dailyTheme,
+    };
+  }
+
+  DailyTodos.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    icon = json['icon'];
+    status = json['status'];
+    date = DateTime.parse(json['date']);
+    time = List<String>.from(json['time']);
+    importance = json['importance'];
+    dailyTheme = json['dailyTheme'];
+  }
 }

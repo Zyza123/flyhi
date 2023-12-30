@@ -9,7 +9,7 @@ class FileStorage {
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       // If not we will ask for permission first
-      await Permission.storage.request();
+      await Permission.manageExternalStorage.request();
     }
     Directory _directory = Directory("");
     if (Platform.isAndroid) {

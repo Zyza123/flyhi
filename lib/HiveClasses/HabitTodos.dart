@@ -30,4 +30,28 @@ class HabitTodos extends HiveObject {
 
   HabitTodos(this.name, this.icon, this.date, this.frequency, this.fullTime,
       this.dayNumber, this.efficiency, this.dailyTheme);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'icon': icon,
+      'date': date.toIso8601String(),
+      'frequency': frequency,
+      'fullTime': fullTime,
+      'dayNumber': dayNumber,
+      'efficiency': efficiency.map((key, value) => MapEntry(key.toIso8601String(), value)),
+      'dailyTheme': dailyTheme,
+    };
+  }
+
+  HabitTodos.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    icon = json['icon'];
+    date = DateTime.parse(json['date']);
+    frequency = json['frequency'];
+    fullTime = json['fullTime'];
+    dayNumber = json['dayNumber'];
+    efficiency = (json['efficiency'] as Map).map((key, value) => MapEntry(DateTime.parse(key), value.toDouble()));
+    dailyTheme = json['dailyTheme'];
+  }
 }
