@@ -342,21 +342,17 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.only(left: 15.0,right:15,top: 25),
         child: SingleChildScrollView( // Dodaj SingleChildScrollView tutaj
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(texts.menu[0].toUpperCase(),style: TextStyle(
-                      fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
-                ),
-                SizedBox(height: 10,),
-                petWidget,
-              ],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Text(texts.menu[0].toUpperCase(),style: TextStyle(
+                    fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
+              ),
+              SizedBox(height: 10,),
+              petWidget,
+            ],
           ),
         ),
       ),

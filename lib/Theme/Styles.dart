@@ -19,6 +19,7 @@ class Styles{
  late Color dateColor;
  List<Color> nameColors = [Colors.orange,Colors.brown,Colors.yellow.shade800,Colors.green.shade600,
   Colors.brown,Colors.indigo.shade900];
+ late Color whiteBlack;
 
  void setColors(bool darkMode){
   mainBackgroundColor = !darkMode ?  Color(0xFFF1F1F1) : Color(0xFF161616);
@@ -37,6 +38,6 @@ class Styles{
   nameColors[1] = !darkMode ? Colors.brown : Colors.brown.shade400;
   nameColors[4] = !darkMode ? Colors.brown : Colors.brown.shade400;
   nameColors[5] = !darkMode ? Colors.indigo.shade900 : Colors.indigo;
-
+  whiteBlack = !darkMode ? Colors.white : Colors.black;
  }
 }

@@ -79,6 +79,14 @@ class Texts{
   late List<String> attributes1 = ["","","","","",""];
   late List<String> attributes2 = ["","","","","",""];
   late List<String> attributes3 = ["","","","","",""];
+  late String savingBackupShort;
+  late String savingBackupLong;
+  late String readingBackupShort;
+  late String readingBackupLong;
+  late String backupButton1;
+  late String backupButton2;
+  late String warningBackup;
+  late String warningTitle;
 
   void setTextLang(String language){
     menu[0] = language == "ENG" ? "Home" : "Dom";
@@ -206,5 +214,32 @@ class Texts{
     attributes1[5] = language == "ENG" ? "Intelligence" : "Inteligencja";
     attributes2[5] = language == "ENG" ? "Flair" : "Spryt";
     attributes3[5] = language == "ENG" ? "Scrupulous" : "Sumienny";
+    savingBackupShort = language == "ENG" ? "Saving backup" : "Zapis kopii";
+    readingBackupShort = language == "ENG" ? "Reading backup" : "Odczyt kopii";
+    savingBackupLong = language == "ENG" ? "Backup helps to care of your data.\n"
+        "Moreover you can transfer app \n"
+        "to other devices. It is recommended\n"
+        "to do it atleast once a few days.\n"
+        "It creates or overwrite the same file." :
+    "Kopia pozwala zadbać o twoje dane.\n"
+        "Ponadto mozesz zrobić transfer danych\n"
+        "do innych urządzeń. Jest to zalecane\n"
+        "wykonywać przynajmniej raz na kilka dni.\n"
+        "Tworzy lub nadpisuje stworzony plik.";
+    readingBackupLong = language == "ENG" ? "Reading backup helps transfer data.\n"
+        "Remember to do it only if neccesary.\n"
+        "All data will be overwritten." :
+    "Odczyt kopii pomaga przetrasnferować dane.\n"
+        "Pamietaj wykonywać to tylko gdy jest to konieczne.\n"
+        "Wszystkie dane zostaną nadpisane";
+    backupButton1 = language == "ENG" ? "Save to backup file" : "Zapisz kopię";
+    backupButton2 = language == "ENG" ? "Read from backup file" : "Odczyt kopii";
+    warningBackup = language == "ENG" ? "Opening file may cause losing your data. "
+    "Dont change filename to make sure you are opening right file. "
+        "Data are saved in Downloads and called hive_backup.json." :
+    "Otwarcie pliku może spowodować utratę danych."
+    "Nie zmieniaj nazwy pliku, aby mieć pewność, że otwierasz właściwy plik."
+    "Dane są zapisywane w Pobranych plikach i nazywane są hive_backup.json.";
+    warningTitle = language == "ENG" ? "Warning" : "Uwaga";
   }
 }

@@ -67,33 +67,36 @@ class _AccountPageState extends State<AccountPage> {
       File file = File(filePath);
       String basename1 = basename(file.path);
       print("Basename: " + basename1);
-      //if(basename1 != "hive_backup.json"){
+      if(basename1 == "hive_backup.json"){
         String fileContent = await file.readAsString();
         return fileContent;
-      //}
+      }
     } else {
       // Użytkownik anulował wybór pliku lub ścieżka jest nieważna
       return null;
     }
   }
 
-  Future<bool> showConfirmationDialog(BuildContext context) async {
+  Future<bool> showConfirmationDialog(BuildContext context,String warningBackup,
+      String cancel, String accept, String warningTitle) async {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Warning'),
-        content: Text('Opening file may cause losing your data. '
-            'Make sure you are opening the right file. '
-            'Dont change filename to make sure you are opening right file. '
-            'Data are saved in Downloads and called hive_backup.json.'),
+        title: Text(warningTitle),
+        content: Text(warningBackup),
         actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Pick file'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(cancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(accept),
+              ),
+            ],
           ),
         ],
       ),
@@ -227,10 +230,8 @@ class _AccountPageState extends State<AccountPage> {
           return Scaffold(
             backgroundColor: styles.mainBackgroundColor,
             body: Padding(
-              padding: const EdgeInsets.only(left: 20.0,right:20,top: 25),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+              padding: const EdgeInsets.only(left: 20.0,right:20,top: 25,bottom: 5),
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -399,6 +400,29 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 15,),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        texts.savingBackupShort,
+                        style: TextStyle(
+                          color: styles.classicFont,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        texts.savingBackupLong,
+                        style: TextStyle(
+                          color: styles.fontMenuOff,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
                     ElevatedButton(
                       onPressed: () async {
                         if (await requestStoragePermission()) {
@@ -407,11 +431,39 @@ class _AccountPageState extends State<AccountPage> {
                           // Użytkownik odmówił uprawnień
                         }
                       },
-                      child: Text("Save to backup file"),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
+                        side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
+                      ),
+                      child: Text(texts.backupButton1),
                     ),
+                    SizedBox(height: 15,),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        texts.readingBackupShort,
+                        style: TextStyle(
+                          color: styles.classicFont,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        texts.readingBackupLong,
+                        style: TextStyle(
+                          color: styles.fontMenuOff,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
                     ElevatedButton(
                       onPressed: () async {
-                        bool confirm = await showConfirmationDialog(context);
+                        bool confirm = await showConfirmationDialog(context,texts.warningBackup,
+                          texts.habitsAlertCancel,texts.habitsAlertConfirm,texts.warningTitle);
                         if (confirm) {
                           String? jsonString = await pickAndReadFile();
                           print(jsonString);
@@ -423,7 +475,11 @@ class _AccountPageState extends State<AccountPage> {
                           }
                         }
                       },
-                      child: Text("Read from backup file"),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
+                        side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
+                      ),
+                      child: Text(texts.backupButton2),
                     ),
                   ],
                 ),
