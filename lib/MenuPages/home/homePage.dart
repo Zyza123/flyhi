@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
                           value: pet.exp[pet.chosenPet].toDouble()/pet.totalExp(),
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                          valueColor: AlwaysStoppedAnimation<Color>(styles.nameColors[pet.chosenPet]),
                           backgroundColor: styles.todosPickerOn,
                           minHeight: 18,
                         ),

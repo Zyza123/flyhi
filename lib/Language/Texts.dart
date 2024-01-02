@@ -220,12 +220,15 @@ class Texts{
         "Moreover you can transfer app \n"
         "to other devices. It is recommended\n"
         "to do it atleast once a few days.\n"
-        "It creates or overwrite the same file." :
+        "It creates or overwrite the same file.\n\n"
+        "Autosave: creates backup every entry to the app." :
     "Kopia pozwala zadbać o twoje dane.\n"
         "Ponadto mozesz zrobić transfer danych\n"
         "do innych urządzeń. Jest to zalecane\n"
         "wykonywać przynajmniej raz na kilka dni.\n"
-        "Tworzy lub nadpisuje stworzony plik.";
+        "Tworzy lub nadpisuje stworzony plik.\n\n"
+        "Autozapis: tworzy kopię po każdym\n"
+        "wejściu do aplikacji.";
     readingBackupLong = language == "ENG" ? "Reading backup helps transfer data.\n"
         "Remember to do it only if neccesary.\n"
         "All data will be overwritten." :

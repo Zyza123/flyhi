@@ -33,21 +33,40 @@ class _AccountPageState extends State<AccountPage> {
   void saveOffsetToPrefs(int offset) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('DAY_OFFSET', offset);
+    day_offsetNotifier.value = offset;
   }
 
   Future<void> getOffsetFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     day_offset = prefs.getInt('DAY_OFFSET') ?? 0;
+    day_offsetNotifier.value = day_offset;
   }
 
-  void saveRemindToPrefs(int offset) async {
+  void saveRemindToPrefs(int remind) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('REMINDER', offset);
+    prefs.setInt('REMINDER', remind);
+    reminderNotifier.value = remind;
   }
 
   Future<void> getRemindFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     reminder = prefs.getInt('REMINDER') ?? 0;
+    reminderNotifier.value = reminder;
+  }
+
+  void saveAutosaveToPrefs(bool save) async {
+    autocopy = save;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('AUTOSAVE', save);
+  }
+
+  Future<void> getAutosaveFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    autocopy = prefs.getBool('AUTOSAVE') ?? false;
+    autosaveNotifier = ValueNotifier(autocopy);
+    if(autocopy){
+      saveDataToFile();
+    }
   }
 
   Future<bool> requestStoragePermission() async {
@@ -206,12 +225,24 @@ class _AccountPageState extends State<AccountPage> {
     await FileStorage.writeCounter(jsonString, 'hive_backup.json');
   }
 
-  late int day_offset;
-  late int reminder;
+  int day_offset = 0;
+  ValueNotifier<int> day_offsetNotifier = ValueNotifier(0);
+  int reminder = 0;
+  ValueNotifier<int> reminderNotifier = ValueNotifier(0);
+  bool autocopy = false;
+  ValueNotifier<bool> autosaveNotifier = ValueNotifier(false);
 
   @override
   initState(){
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    autosaveNotifier.dispose();
+    day_offsetNotifier.dispose();
+    reminderNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -224,7 +255,7 @@ class _AccountPageState extends State<AccountPage> {
     texts.setTextLang(langChange.language);
 
     return FutureBuilder(
-      future: Future.wait([getOffsetFromPrefs(),getRemindFromPrefs()]),
+      future: Future.wait([getOffsetFromPrefs(),getRemindFromPrefs(),getAutosaveFromPrefs()]),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
@@ -253,8 +284,8 @@ class _AccountPageState extends State<AccountPage> {
                               color: styles.classicFont,fontSize: 18,),),
                           ),
                           Switch(
-                            activeColor: styles.switchColors,
-                            inactiveThumbColor: styles.switchColors,
+                            //activeColor: styles.switchColors,
+                            //inactiveThumbColor: styles.switchColors,
                             value: themeChange.darkTheme,
                             onChanged: (bool? value) {
                               if (value != null) {
@@ -320,23 +351,26 @@ class _AccountPageState extends State<AccountPage> {
                               ),
                             ),
                           ),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: texts.timeOffsetList[day_offset],
-                              dropdownColor: styles.menuBg,
-                              items: texts.timeOffsetList.map((String offset) {
-                                return DropdownMenuItem<String>(
-                                  value: offset,
-                                  child: Text(offset,style: TextStyle(color: styles.classicFont),),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                int selectedIndex = texts.timeOffsetList.indexOf(newValue!);
-                                setState(() {
-                                  saveOffsetToPrefs(selectedIndex);
-                                });
-                              },
-                            ),
+                          ValueListenableBuilder(
+                            valueListenable: day_offsetNotifier,
+                            builder: (context, value, child) {
+                              return DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: texts.timeOffsetList[value],
+                                  dropdownColor: styles.menuBg,
+                                  items: texts.timeOffsetList.map((String offset) {
+                                    return DropdownMenuItem<String>(
+                                      value: offset,
+                                      child: Text(offset,style: TextStyle(color: styles.classicFont),),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    int selectedIndex = texts.timeOffsetList.indexOf(newValue!);
+                                    saveOffsetToPrefs(selectedIndex);
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -366,26 +400,29 @@ class _AccountPageState extends State<AccountPage> {
                               ),
                             ),
                           ),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: texts.reminderList[reminder],
-                              dropdownColor: styles.menuBg,
-                              items: texts.reminderList.map((String remind) {
-                                return DropdownMenuItem<String>(
-                                  value: remind,
-                                  child: Text(remind,style: TextStyle(color: styles.classicFont),),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                int selectedIndex = texts.reminderList.indexOf(newValue!);
-                                setState(() {
-                                  saveRemindToPrefs(selectedIndex);
-                                  if(selectedIndex == 0){
-                                    NotificationManager().flutterLocalNotificationsPlugin.cancelAll();
-                                  }
-                                });
-                              },
-                            ),
+                          ValueListenableBuilder(
+                            valueListenable: reminderNotifier,
+                            builder: (context, value, child) {
+                              return DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: texts.reminderList[value],
+                                  dropdownColor: styles.menuBg,
+                                  items: texts.reminderList.map((String remind) {
+                                    return DropdownMenuItem<String>(
+                                      value: remind,
+                                      child: Text(remind,style: TextStyle(color: styles.classicFont),),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    int selectedIndex = texts.reminderList.indexOf(newValue!);
+                                    saveRemindToPrefs(selectedIndex);
+                                    if(selectedIndex == 0){
+                                      NotificationManager().flutterLocalNotificationsPlugin.cancelAll();
+                                    }
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -423,19 +460,36 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                     SizedBox(height: 10,),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (await requestStoragePermission()) {
-                          saveDataToFile();
-                        } else {
-                          // Użytkownik odmówił uprawnień
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
-                        side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
-                      ),
-                      child: Text(texts.backupButton1),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ValueListenableBuilder(
+                          valueListenable: autosaveNotifier,
+                          builder: (context, value, child) {
+                            return Switch(
+                              value: value,
+                              onChanged: (newValue) {
+                                autosaveNotifier.value = newValue;
+                                saveAutosaveToPrefs(newValue);
+                              },
+                            );
+                          },
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (await requestStoragePermission()) {
+                              saveDataToFile();
+                            } else {
+                              // Użytkownik odmówił uprawnień
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
+                            side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
+                          ),
+                          child: Text(texts.backupButton1),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 15,),
                     Container(
