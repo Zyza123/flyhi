@@ -231,6 +231,7 @@ class _AccountPageState extends State<AccountPage> {
   ValueNotifier<int> reminderNotifier = ValueNotifier(0);
   bool autocopy = false;
   ValueNotifier<bool> autosaveNotifier = ValueNotifier(false);
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   initState(){
@@ -258,284 +259,337 @@ class _AccountPageState extends State<AccountPage> {
       future: Future.wait([getOffsetFromPrefs(),getRemindFromPrefs(),getAutosaveFromPrefs()]),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Scaffold(
-            backgroundColor: styles.mainBackgroundColor,
-            body: Padding(
-              padding: const EdgeInsets.only(left: 20.0,right:20,top: 25,bottom: 5),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        child: Text(texts.menu[3].toUpperCase(),style: TextStyle(
-                            fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
+          return ScaffoldMessenger(
+            key: scaffoldMessengerKey,
+            child: Scaffold(
+              backgroundColor: styles.mainBackgroundColor,
+              body: Padding(
+                padding: const EdgeInsets.only(left: 20.0,right:20,top: 25,bottom: 5),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          child: Text(texts.menu[3].toUpperCase(),style: TextStyle(
+                              fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 30,),
-                    Container(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            child: Text(texts.settingsDarkMode,style: TextStyle(
-                              color: styles.classicFont,fontSize: 18,),),
-                          ),
-                          Switch(
-                            //activeColor: styles.switchColors,
-                            //inactiveThumbColor: styles.switchColors,
-                            value: themeChange.darkTheme,
-                            onChanged: (bool? value) {
-                              if (value != null) {
-                                themeChange.darkTheme = value;
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            child: Text(
-                              texts.settingsLang,
-                              style: TextStyle(
-                                color: styles.classicFont,
-                                fontSize: 18,
-                              ),
+                      SizedBox(height: 30,),
+                      Container(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              child: Text(texts.settingsDarkMode,style: TextStyle(
+                                color: styles.classicFont,fontSize: 18,),),
                             ),
-                          ),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: langChange.language == "ENG" ? "english": "polski",
-                              dropdownColor: styles.menuBg,
-                              items: texts.langList.map((String language) {
-                                return DropdownMenuItem<String>(
-                                  value: language,
-                                  child: Text(language,style: TextStyle(color: styles.classicFont),),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                if (newValue != null) {
-                                  if(newValue == "english" || newValue == "angielski"){
-                                    langChange.language = "ENG";
-                                  }
-                                  else{
-                                    langChange.language = "PL";
-                                  }
+                            Switch(
+                              //activeColor: styles.switchColors,
+                              //inactiveThumbColor: styles.switchColors,
+                              value: themeChange.darkTheme,
+                              onChanged: (bool? value) {
+                                if (value != null) {
+                                  themeChange.darkTheme = value;
                                 }
                               },
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            child: Text(
-                              texts.settingsDayOffset,
-                              style: TextStyle(
-                                color: styles.classicFont,
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                          ValueListenableBuilder(
-                            valueListenable: day_offsetNotifier,
-                            builder: (context, value, child) {
-                              return DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: texts.timeOffsetList[value],
-                                  dropdownColor: styles.menuBg,
-                                  items: texts.timeOffsetList.map((String offset) {
-                                    return DropdownMenuItem<String>(
-                                      value: offset,
-                                      child: Text(offset,style: TextStyle(color: styles.classicFont),),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    int selectedIndex = texts.timeOffsetList.indexOf(newValue!);
-                                    saveOffsetToPrefs(selectedIndex);
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        texts.settingsDayOffsetNote,
-                        style: TextStyle(
-                          color: styles.fontMenuOff,
-                          fontSize: 14,
+                          ],
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            child: Text(
-                              texts.settingsReminder,
-                              style: TextStyle(
-                                color: styles.classicFont,
-                                fontSize: 18,
+                      SizedBox(height: 10),
+                      Container(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              child: Text(
+                                texts.settingsLang,
+                                style: TextStyle(
+                                  color: styles.classicFont,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
-                          ),
-                          ValueListenableBuilder(
-                            valueListenable: reminderNotifier,
-                            builder: (context, value, child) {
-                              return DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: texts.reminderList[value],
-                                  dropdownColor: styles.menuBg,
-                                  items: texts.reminderList.map((String remind) {
-                                    return DropdownMenuItem<String>(
-                                      value: remind,
-                                      child: Text(remind,style: TextStyle(color: styles.classicFont),),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    int selectedIndex = texts.reminderList.indexOf(newValue!);
-                                    saveRemindToPrefs(selectedIndex);
-                                    if(selectedIndex == 0){
-                                      NotificationManager().flutterLocalNotificationsPlugin.cancelAll();
+                            DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: langChange.language == "ENG" ? "english": "polski",
+                                dropdownColor: styles.menuBg,
+                                items: texts.langList.map((String language) {
+                                  return DropdownMenuItem<String>(
+                                    value: language,
+                                    child: Text(language,style: TextStyle(color: styles.classicFont),),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    if(newValue == "english" || newValue == "angielski"){
+                                      langChange.language = "ENG";
                                     }
-                                  },
+                                    else{
+                                      langChange.language = "PL";
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              child: Text(
+                                texts.settingsDayOffset,
+                                style: TextStyle(
+                                  color: styles.classicFont,
+                                  fontSize: 18,
                                 ),
+                              ),
+                            ),
+                            ValueListenableBuilder(
+                              valueListenable: day_offsetNotifier,
+                              builder: (context, value, child) {
+                                return DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: texts.timeOffsetList[value],
+                                    dropdownColor: styles.menuBg,
+                                    items: texts.timeOffsetList.map((String offset) {
+                                      return DropdownMenuItem<String>(
+                                        value: offset,
+                                        child: Text(offset,style: TextStyle(color: styles.classicFont),),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      int selectedIndex = texts.timeOffsetList.indexOf(newValue!);
+                                      saveOffsetToPrefs(selectedIndex);
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.settingsDayOffsetNote,
+                          style: TextStyle(
+                            color: styles.fontMenuOff,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              child: Text(
+                                texts.settingsReminder,
+                                style: TextStyle(
+                                  color: styles.classicFont,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            ValueListenableBuilder(
+                              valueListenable: reminderNotifier,
+                              builder: (context, value, child) {
+                                return DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: texts.reminderList[value],
+                                    dropdownColor: styles.menuBg,
+                                    items: texts.reminderList.map((String remind) {
+                                      return DropdownMenuItem<String>(
+                                        value: remind,
+                                        child: Text(remind,style: TextStyle(color: styles.classicFont),),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      int selectedIndex = texts.reminderList.indexOf(newValue!);
+                                      saveRemindToPrefs(selectedIndex);
+                                      if(selectedIndex == 0){
+                                        NotificationManager().flutterLocalNotificationsPlugin.cancelAll();
+                                      }
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.settingsReminderNote,
+                          style: TextStyle(
+                            color: styles.fontMenuOff,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15,),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.savingBackupShort,
+                          style: TextStyle(
+                            color: styles.classicFont,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.savingBackupLong,
+                          style: TextStyle(
+                            color: styles.fontMenuOff,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ValueListenableBuilder(
+                            valueListenable: autosaveNotifier,
+                            builder: (context, value, child) {
+                              return Switch(
+                                value: value,
+                                onChanged: (newValue) {
+                                  autosaveNotifier.value = newValue;
+                                  saveAutosaveToPrefs(newValue);
+                                },
                               );
                             },
                           ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (await requestStoragePermission()) {
+                                saveDataToFile();
+                                SnackBar snackBar = SnackBar(
+                                  content: Text('File saved succesfully!',style: TextStyle(
+                                    color: styles.classicFont
+                                  ),),
+                                  backgroundColor: styles.whiteBlack.withOpacity(0.9),
+                                  action: SnackBarAction(
+                                    label: 'dismiss',
+                                    textColor: styles.classicFont,
+                                    onPressed: () {
+                                    },
+                                  ),
+                                );
+                                scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+                              } else {
+                                SnackBar snackBar = SnackBar(
+                                  content: Text('Cannot write, check permissions!',style: TextStyle(
+                                      color: styles.classicFont
+                                  ),),
+                                  backgroundColor: styles.whiteBlack.withOpacity(0.9),
+                                  action: SnackBarAction(
+                                    label: 'dismiss',
+                                    textColor: styles.classicFont,
+                                    onPressed: () {
+                                    },
+                                  ),
+                                );
+                                scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
+                              side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
+                            ),
+                            child: Text(texts.backupButton1),
+                          ),
                         ],
                       ),
-                    ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        texts.settingsReminderNote,
-                        style: TextStyle(
-                          color: styles.fontMenuOff,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 15,),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        texts.savingBackupShort,
-                        style: TextStyle(
-                          color: styles.classicFont,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10,),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        texts.savingBackupLong,
-                        style: TextStyle(
-                          color: styles.fontMenuOff,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ValueListenableBuilder(
-                          valueListenable: autosaveNotifier,
-                          builder: (context, value, child) {
-                            return Switch(
-                              value: value,
-                              onChanged: (newValue) {
-                                autosaveNotifier.value = newValue;
-                                saveAutosaveToPrefs(newValue);
-                              },
-                            );
-                          },
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (await requestStoragePermission()) {
-                              saveDataToFile();
-                            } else {
-                              // Użytkownik odmówił uprawnień
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
-                            side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
+                      SizedBox(height: 15,),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.readingBackupShort,
+                          style: TextStyle(
+                            color: styles.classicFont,
+                            fontSize: 18,
                           ),
-                          child: Text(texts.backupButton1),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15,),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        texts.readingBackupShort,
-                        style: TextStyle(
-                          color: styles.classicFont,
-                          fontSize: 18,
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10,),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        texts.readingBackupLong,
-                        style: TextStyle(
-                          color: styles.fontMenuOff,
-                          fontSize: 14,
+                      SizedBox(height: 10,),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          texts.readingBackupLong,
+                          style: TextStyle(
+                            color: styles.fontMenuOff,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10,),
-                    ElevatedButton(
-                      onPressed: () async {
-                        bool confirm = await showConfirmationDialog(context,texts.warningBackup,
-                          texts.habitsAlertCancel,texts.habitsAlertConfirm,texts.warningTitle);
-                        if (confirm) {
-                          String? jsonString = await pickAndReadFile();
-                          print(jsonString);
-                          if (jsonString != null) {
-                            loadHiveDataFromJson(jsonString);
-                          } else {
-                            // Obsługa sytuacji, gdy jsonString jest null, np. wyświetlenie komunikatu
-                            print('Nie wybrano pliku lub plik jest pusty');
+                      SizedBox(height: 10,),
+                      ElevatedButton(
+                        onPressed: () async {
+                          bool confirm = await showConfirmationDialog(context,texts.warningBackup,
+                            texts.habitsAlertCancel,texts.habitsAlertConfirm,texts.warningTitle);
+                          if (confirm) {
+                            String? jsonString = await pickAndReadFile();
+                            print(jsonString);
+                            if (jsonString != null) {
+                              loadHiveDataFromJson(jsonString);
+                              SnackBar snackBar = SnackBar(
+                                content: Text('Succesfully imported data!\nRestart the app!',style: TextStyle(
+                                    color: styles.classicFont
+                                ),),
+                                backgroundColor: styles.whiteBlack.withOpacity(0.9),
+                                action: SnackBarAction(
+                                  label: 'dismiss',
+                                  textColor: styles.classicFont,
+                                  onPressed: () {
+                                  },
+                                ),
+                              );
+                              scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+                            } else {
+                              SnackBar snackBar = SnackBar(
+                                content: Text('Bad file or the file is empty!',style: TextStyle(
+                                    color: styles.classicFont
+                                ),),
+                                backgroundColor: styles.whiteBlack.withOpacity(0.9),
+                                action: SnackBarAction(
+                                  label: 'dismiss',
+                                  textColor: styles.classicFont,
+                                  onPressed: () {
+                                  },
+                                ),
+                              );
+                              scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+                              print('Nie wybrano pliku lub plik jest pusty');
+                            }
                           }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
-                        side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
+                          side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
+                        ),
+                        child: Text(texts.backupButton2),
                       ),
-                      child: Text(texts.backupButton2),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
