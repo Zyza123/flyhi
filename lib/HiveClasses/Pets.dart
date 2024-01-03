@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:hive/hive.dart';
 part 'Pets.g.dart';
 
@@ -17,9 +19,12 @@ class Pets extends HiveObject {
   late List<List<String>> avatars;
 
   @HiveField(4)
+  late List<List<int>> attributes;
+
+  @HiveField(5)
   late int chosenPet;
 
-  Pets(this.exp,this.level,this.name,this.avatars,this.chosenPet);
+  Pets(this.exp,this.level,this.name,this.avatars,this.attributes,this.chosenPet);
 
   Map<String, dynamic> toJson() {
     return {
@@ -27,6 +32,7 @@ class Pets extends HiveObject {
       'level': level,
       'name': name,
       'avatars': avatars,
+      'attributes' : attributes,
       'chosenPet': chosenPet,
     };
   }
@@ -36,6 +42,7 @@ class Pets extends HiveObject {
     level = List<int>.from(json['level']);
     name = List<String>.from(json['name']);
     avatars = (json['avatars'] as List).map((e) => List<String>.from(e)).toList();
+    attributes = (json['attributes'] as List).map((e) => List<int>.from(e)).toList();
     chosenPet = json['chosenPet'];
   }
 
@@ -44,11 +51,29 @@ class Pets extends HiveObject {
   }
 
   void checkLvlUp(){
-    int expNeeded = totalExp();
-    if(exp[chosenPet] > expNeeded){
-      level[chosenPet] += 1;
-      int rest = exp[chosenPet] - expNeeded;
-      exp[chosenPet] = rest;
+    if(chosenPet != -1){
+      int expNeeded = totalExp();
+      if(exp[chosenPet] > expNeeded){
+        level[chosenPet] += 1;
+        int rest = exp[chosenPet] - expNeeded;
+        exp[chosenPet] = rest;
+        levelUpAttribute();
+      }
+    }
+  }
+
+  void levelUpAttribute(){
+    var rng = Random();
+    List<int> indexes = [0,1,2];
+    while(true){
+      int picked = indexes[rng.nextInt(indexes.length)];
+      if(attributes[chosenPet][picked] < 25){
+        attributes[chosenPet][picked]++;
+        break;
+      }
+      else{
+        indexes.removeAt(picked);
+      }
     }
   }
 

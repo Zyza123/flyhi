@@ -23,14 +23,15 @@ class PetsAdapter extends TypeAdapter<Pets> {
       (fields[3] as List)
           .map((dynamic e) => (e as List).cast<String>())
           .toList(),
-      fields[4] as int,
+      (fields[4] as List).map((dynamic e) => (e as List).cast<int>()).toList(),
+      fields[5] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, Pets obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.exp)
       ..writeByte(1)
@@ -40,6 +41,8 @@ class PetsAdapter extends TypeAdapter<Pets> {
       ..writeByte(3)
       ..write(obj.avatars)
       ..writeByte(4)
+      ..write(obj.attributes)
+      ..writeByte(5)
       ..write(obj.chosenPet);
   }
 
