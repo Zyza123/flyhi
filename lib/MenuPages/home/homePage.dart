@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
-                          value: (pet.attributes[pet.chosenPet][0])/25 <= 1 ? (pet.attributes[pet.chosenPet][0])/25 : 25,
+                          value: (pet.attributes[pet.chosenPet][0])/25 <= 1 ? (pet.attributes[pet.chosenPet][0])/25 : 1,
                           valueColor: AlwaysStoppedAnimation<Color>(styles.nameColors[pet.chosenPet]),
                           backgroundColor: styles.todosPickerOn,
                           minHeight: 18,
@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
-                          value: (pet.attributes[pet.chosenPet][1])/25 <= 1 ? (pet.attributes[pet.chosenPet][1])/25 : 25,
+                          value: (pet.attributes[pet.chosenPet][1])/25 <= 1 ? (pet.attributes[pet.chosenPet][1])/25 : 1,
                           valueColor: AlwaysStoppedAnimation<Color>(styles.nameColors[pet.chosenPet]),
                           backgroundColor: styles.todosPickerOn,
                           minHeight: 18,
@@ -292,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
-                          value: (pet.attributes[pet.chosenPet][2])/25 <= 1 ? (pet.attributes[pet.chosenPet][2])/25 : 25,
+                          value: (pet.attributes[pet.chosenPet][2])/25 <= 1 ? (pet.attributes[pet.chosenPet][2])/25 : 1,
                           valueColor: AlwaysStoppedAnimation<Color>(styles.nameColors[pet.chosenPet]),
                           backgroundColor: styles.todosPickerOn,
                           minHeight: 18,

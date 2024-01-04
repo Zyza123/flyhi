@@ -172,32 +172,40 @@ class _DetailsHabitState extends State<DetailsHabit> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${habit.dayNumber}',
+                              '${habit.dayNumber}   ',
                               style: TextStyle(color: Color(0xFF508bba),
                                 fontSize: 16,fontWeight: FontWeight.bold,),
                             ),
+                            if(habit.fullTime.toDouble() < 9999)
+                              Text(
+                                '/   ',
+                                style: TextStyle(color: Color(0xFF508bba),
+                                    fontSize: 16,fontWeight: FontWeight.bold),
+                              ),
+                            if(habit.fullTime.toDouble() < 9999)
+                              Text(
+                                '${habit.fullTime} ',
+                                style: TextStyle(color: Color(0xFF508bba),
+                                    fontSize: 16,fontWeight: FontWeight.bold),
+                              ),
                             Text(
-                              '   /   ',
-                              style: TextStyle(color: Color(0xFF508bba),
-                                  fontSize: 16,fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              '${habit.fullTime} ${texts.habitsProgressDays}',
+                              '${texts.habitsProgressDays}',
                               style: TextStyle(color: Color(0xFF508bba),
                                   fontSize: 16,fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-                        SizedBox(height: 5,),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: LinearProgressIndicator(
-                            value: value,
-                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF508bba)),
-                            backgroundColor: styles.todosPickerOn,
-                            minHeight: 13,
+                        SizedBox(height: 10,),
+                        if(habit.fullTime.toDouble() < 9999)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: LinearProgressIndicator(
+                              value: value,
+                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF508bba)),
+                              backgroundColor: styles.todosPickerOn,
+                              minHeight: 13,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),

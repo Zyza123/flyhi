@@ -114,9 +114,11 @@ class Texts{
     reminderList[1] = language == "ENG" ? "minutes: 30" : "minuty: 30";
     settingsReminderNote = language == "ENG" ?
         "Reminder helps you not forget\nabout important events.\nAfter change, it clears all\n"
-            "notifications (off) or \napply to duties (on).\nAfter turning on it is required\nto restart the app.":
+            "notifications (off) or \napply to duties (on).\nAfter turning on it is required\nto restart the app.\n"
+            "Check for notifications permission":
         "Przypomnienie pozwala nie zapomnieć\no ważnych wydarzeniach.\nPo zmianie czyści wszystkie \npowiadomienia"
-            "(wyłączone) lub\naktywwuje obowiązki (włączone).\nPo włączeniu wymagany\njest restart aplikacji.";
+            "(wyłączone) lub\naktywwuje obowiązki (włączone).\nPo włączeniu wymagany\njest restart aplikacji.\n"
+            "Sprawdź pozwolenia powiadomień.";
     settingsDayOffset= language == "ENG" ? "Day shift" : "Przesunięcie doby";
     settingsDayOffsetNote = language == "ENG" ?
     "Day shift might be useful while\ngoing to bed late.\nAfter change, it is required\nto restart the app."
