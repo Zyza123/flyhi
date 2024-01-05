@@ -417,8 +417,13 @@ class _AddHabitState extends State<AddHabit> {
                                     onChanged: enabledDaysButton == true ? (value) {
                                       setState(() {
                                         _lengthValue = value!;
-                                        days_counter = dailyHabits.getAt(widget.editIndex).fullTime.toDouble() > 365?
+                                        if(widget.editMode){
+                                          days_counter = dailyHabits.getAt(widget.editIndex).fullTime.toDouble() > 365?
                                           365: dailyHabits.getAt(widget.editIndex).fullTime.toDouble();
+                                        }
+                                        else{
+                                          days_counter =  7;
+                                        }
                                       });
                                     } : null,
                                     activeColor: styles.classicFont,
