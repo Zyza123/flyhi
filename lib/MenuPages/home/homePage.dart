@@ -21,14 +21,15 @@ class _HomePageState extends State<HomePage> {
   late Box pets;
   late Pets pet;
 
-  Future<void> _showEditNameDialog(BuildContext context) async {
+  Future<void> _showEditNameDialog(BuildContext context, Color bg, Color font) async {
     String newName = '';
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // Użytkownik musi nacisnąć przycisk, aby zamknąć dialog
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Change pet name'),
+          title: Text('Change pet name', style: TextStyle(color: font),),
+          backgroundColor: bg,
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -36,7 +37,14 @@ class _HomePageState extends State<HomePage> {
                   onChanged: (value) {
                     newName = value;
                   },
-                  decoration: InputDecoration(hintText: "Insert new name"),
+                  decoration: InputDecoration(
+                    hintText: "Insert new name",
+                    suffixStyle: TextStyle(color: font),
+                    labelStyle: TextStyle(color: font),
+                    hintStyle: TextStyle(color: font),
+                    counterStyle: TextStyle(color: font),
+                  ),
+                  style: TextStyle(color: Colors.white), // This line sets the text color to white
                 ),
               ],
             ),
@@ -46,13 +54,13 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton(
-                  child: Text('Cancel'),
+                  child: Text('Cancel',style: TextStyle(color: font)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
-                  child: Text('Save'),
+                  child: Text('Save',style: TextStyle(color: font)),
                   onPressed: () {
                     setState(() {
                       pet.changeName(newName);
@@ -139,7 +147,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(width: 30,),
               GestureDetector(
                 onTap: () {
-                    _showEditNameDialog(context);
+                    _showEditNameDialog(context,styles.elementsInBg, styles.classicFont);
                 },
                 child: Icon(
                   Icons.drive_file_rename_outline_rounded,

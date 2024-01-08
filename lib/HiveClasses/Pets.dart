@@ -73,6 +73,9 @@ class Pets extends HiveObject {
       }
       else{
         indexes.removeAt(picked);
+        if(indexes.isEmpty){
+          break;
+        }
       }
     }
   }

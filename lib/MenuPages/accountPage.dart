@@ -97,23 +97,24 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<bool> showConfirmationDialog(BuildContext context,String warningBackup,
-      String cancel, String accept, String warningTitle) async {
+      String cancel, String accept, String warningTitle, Color font, Color bg) async {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(warningTitle),
-        content: Text(warningBackup),
+        title: Text(warningTitle,style: TextStyle(color: font),),
+        content: Text(warningBackup,style: TextStyle(color: font),),
+        backgroundColor: bg,
         actions: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text(cancel),
+                child: Text(cancel,style: TextStyle(color: font),),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text(accept),
+                child: Text(accept,style: TextStyle(color: font),),
               ),
             ],
           ),
@@ -545,7 +546,8 @@ class _AccountPageState extends State<AccountPage> {
                       ElevatedButton(
                         onPressed: () async {
                           bool confirm = await showConfirmationDialog(context,texts.warningBackup,
-                            texts.habitsAlertCancel,texts.habitsAlertConfirm,texts.warningTitle);
+                            texts.habitsAlertCancel,texts.habitsAlertConfirm,texts.warningTitle,
+                              styles.classicFont, styles.elementsInBg);
                           if (confirm) {
                             String? jsonString = await pickAndReadFile();
                             print(jsonString);
