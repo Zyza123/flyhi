@@ -294,7 +294,7 @@ class _HabitPageState extends State<HabitPage> {
         toRemove.add(dailyTodos.keyAt(i));
         if(dailyTodos.getAt(i).status == "done"){
           points_counter++;
-          pet.addExp(toRemove.length * 10);
+          pet.addExp(10);
         }
       }
     }

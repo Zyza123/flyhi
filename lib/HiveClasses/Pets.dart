@@ -54,10 +54,13 @@ class Pets extends HiveObject {
     if(chosenPet != -1){
       int expNeeded = totalExp();
       if(exp[chosenPet] > expNeeded){
-        level[chosenPet] += 1;
-        int rest = exp[chosenPet] - expNeeded;
-        exp[chosenPet] = rest;
-        levelUpAttribute();
+        int rest = 0;
+        do{
+          level[chosenPet] += 1;
+          rest = exp[chosenPet] - expNeeded;
+          exp[chosenPet] = rest;
+          levelUpAttribute();
+        } while (rest > totalExp());
       }
     }
   }
