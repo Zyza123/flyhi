@@ -117,12 +117,12 @@ class Texts{
             "notifications (off) or \napply to duties (on).\nAfter turning on it is required\nto restart the app.\n"
             "Check for notifications permission":
         "Przypomnienie pozwala nie zapomnieć\no ważnych wydarzeniach.\nPo zmianie czyści wszystkie \npowiadomienia"
-            "(wyłączone) lub\naktywwuje obowiązki (włączone).\nPo włączeniu wymagany\njest restart aplikacji.\n"
+            "(wyłączone) lub\naktywuje obowiązki (włączone).\nPo włączeniu wymagany\njest restart aplikacji.\n"
             "Sprawdź pozwolenia powiadomień.";
     settingsDayOffset= language == "ENG" ? "Day shift" : "Przesunięcie doby";
     settingsDayOffsetNote = language == "ENG" ?
     "Day shift might be useful while\ngoing to bed late.\nAfter change, it is required\nto restart the app."
-        :  "Przesunięcie doby jest przydatne podczas\n późnego chodzenia spać.\nPo zmianie przesunięcia wymagany\njest restart aplikacji.";
+        :  "Przesunięcie doby jest przydatne podczas\npóźnego chodzenia spać.\nPo zmianie przesunięcia wymagany\njest restart aplikacji.";
     todosMain = language == "ENG" ? "TODOS" : "AKTYWNOŚĆ";
     todosPickerDaily = language == "ENG" ? "Daily" : "Dzienne";
     todosPickerHabits = language == "ENG" ? "Habits" : "Nawyki";
@@ -236,7 +236,7 @@ class Texts{
         "All data will be overwritten." :
     "Odczyt kopii pomaga przetrasnferować dane.\n"
         "Pamietaj wykonywać to tylko gdy jest to konieczne.\n"
-        "Wszystkie dane zostaną nadpisane";
+        "Wszystkie dane zostaną nadpisane.";
     backupButton1 = language == "ENG" ? "Save to backup file" : "Zapisz kopię";
     backupButton2 = language == "ENG" ? "Read from backup file" : "Odczyt kopii";
     warningBackup = language == "ENG" ? "Opening file may cause losing your data. "

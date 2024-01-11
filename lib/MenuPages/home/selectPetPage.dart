@@ -87,6 +87,7 @@ class _SelectPetPageState extends State<SelectPetPage> {
                 childAspectRatio: 3 / 4, // Aspect ratio of each grid item
               ),
               itemBuilder: (context, index) {
+                int petLevel = pet.level[pet.chosenPet] != 0 ? pet.level[pet.chosenPet]~/10 : 0;
                 return GestureDetector(
                   onTap: () {
                     pet.chosenPet = index;
@@ -99,7 +100,7 @@ class _SelectPetPageState extends State<SelectPetPage> {
                     children: [
                       FadeInImage(
                         //fadeInDuration: Duration(milliseconds: 200),
-                        key: ValueKey<AssetImage>(AssetImage('assets/pets/${pet.avatars[index][pet.level[index]]}')),
+                        key: ValueKey<AssetImage>(AssetImage('assets/pets/${pet.avatars[index][petLevel]}')),
                         fit: BoxFit.scaleDown,
                         placeholder: const AssetImage('assets/empty.png'),
                         image: AssetImage('assets/pets/${pet.avatars[index][pet.level[index]]}'),

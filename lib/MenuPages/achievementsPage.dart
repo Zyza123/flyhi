@@ -31,7 +31,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
     Achievements achievement2 = Achievements("1", mainImages[1], [2,5,10,20,40]);
     Achievements achievement3 = Achievements("2", mainImages[2], [10,25,75,150,300]);
     Achievements achievement4 = Achievements("3", mainImages[3], [70,80,90,95,100]);
-    Achievements achievement5 = Achievements("4", mainImages[4], [10,20,30,40,50]);
+    Achievements achievement5 = Achievements("4", mainImages[4], [5,15,30,50,75]);
     achievements.add(achievement1);
     achievements.add(achievement2);
     achievements.add(achievement3);
