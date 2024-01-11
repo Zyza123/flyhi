@@ -87,7 +87,7 @@ class _SelectPetPageState extends State<SelectPetPage> {
                 childAspectRatio: 3 / 4, // Aspect ratio of each grid item
               ),
               itemBuilder: (context, index) {
-                int petLevel = pet.level[pet.chosenPet] != 0 ? pet.level[pet.chosenPet]~/10 : 0;
+                int petLevel = pet.chosenPet >= 0 ? pet.level[pet.chosenPet]~/10 : 0;
                 return GestureDetector(
                   onTap: () {
                     pet.chosenPet = index;
