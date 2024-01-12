@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:flyhi/HiveClasses/Achievements.dart';
@@ -40,7 +41,12 @@ void main() async{
   await Hive.openBox('achievements');
   await Hive.openBox('habitsArchive');
   await Hive.openBox('pets');
-  runApp(MainAppRoute());
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((value) => {
+    runApp(const MainAppRoute())
+  });
 }
 
 Future<void> setup() async {
