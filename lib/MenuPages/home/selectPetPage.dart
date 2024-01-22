@@ -32,6 +32,12 @@ class _SelectPetPageState extends State<SelectPetPage> {
   //    //height: 200,
   //  )];
 
+  int getPetLevel(int level){
+    int petlevel = (level / 10).toInt();
+    print("poziom zwierza: "+petlevel.toString());
+    return petlevel;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -87,7 +93,7 @@ class _SelectPetPageState extends State<SelectPetPage> {
                 childAspectRatio: 3 / 4, // Aspect ratio of each grid item
               ),
               itemBuilder: (context, index) {
-                int petLevel = pet.chosenPet >= 0 ? pet.level[pet.chosenPet]~/10 : 0;
+                int petLevel = getPetLevel(pet.level[index]);
                 return GestureDetector(
                   onTap: () {
                     pet.chosenPet = index;
@@ -103,7 +109,7 @@ class _SelectPetPageState extends State<SelectPetPage> {
                         key: ValueKey<AssetImage>(AssetImage('assets/pets/${pet.avatars[index][petLevel]}')),
                         fit: BoxFit.scaleDown,
                         placeholder: const AssetImage('assets/empty.png'),
-                        image: AssetImage('assets/pets/${pet.avatars[index][pet.level[index]]}'),
+                        image: AssetImage('assets/pets/${pet.avatars[index][petLevel]}'),
                       ),
                       Text(
                         pet.name[index],

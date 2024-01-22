@@ -401,7 +401,8 @@ class _HabitPageState extends State<HabitPage> {
       }
       readHabitData();
     });
-    //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "not done", DateTime.now().subtract(Duration(days: 1)), 0, 0xFFD0312D,));
+    dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "done", DateTime.now().subtract(Duration(days: 1)),["10","25"], 0, 0xFFD0312D,));
+    dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "done", DateTime.now().subtract(Duration(days: 1)),["10","25"], 0, 0xFFD0312D,));
     //dailyTodos.clear();
     todo_mode = 0;
   }
