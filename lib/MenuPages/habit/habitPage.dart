@@ -401,8 +401,8 @@ class _HabitPageState extends State<HabitPage> {
       }
       readHabitData();
     });
-    dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "done", DateTime.now().subtract(Duration(days: 1)),["10","25"], 0, 0xFFD0312D,));
-    dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "done", DateTime.now().subtract(Duration(days: 1)),["10","25"], 0, 0xFFD0312D,));
+    //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "done", DateTime.now().subtract(Duration(days: 1)),["10","25"], 0, 0xFFD0312D,));
+    //dailyTodos.add(DailyTodos("dupa",'assets/images/ikona5/128x128.png', "done", DateTime.now().subtract(Duration(days: 1)),["10","25"], 0, 0xFFD0312D,));
     //dailyTodos.clear();
     todo_mode = 0;
   }
@@ -813,10 +813,12 @@ class _HabitPageState extends State<HabitPage> {
                                                       );
                                                     }
                                                     else if(item.index == 2){
-                                                      var existingTodo = dailyTodos.getAt(indexListMirror[index]) as DailyTodos;
+                                                      DailyTodos existingTodo = dailyTodos.getAt(indexListMirror[index]);
                                                       existingTodo.date = existingTodo.date.add(Duration(days: 1));
                                                       setState(() {
                                                         dailyTodos.putAt(indexListMirror[index], existingTodo);
+                                                        NotificationManager().flutterLocalNotificationsPlugin.cancel(indexListMirror[index]);
+                                                        NotificationManager().scheduleNotification(scheduledNotificationDateTime: existingTodo.date.subtract(Duration(minutes: 30)) ,title: TimeOfDay(hour: existingTodo.date.hour, minute: existingTodo.date.minute).toString(), body: existingTodo.name, id: indexListMirror[index]);
                                                         readTodoData(weekDates[selectedDay]);
                                                       });
                                                     }
