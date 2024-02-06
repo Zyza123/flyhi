@@ -65,6 +65,8 @@ class Texts{
   late String habitsConn;
   late String habitsProgress;
   late String habitsProgressDays;
+  late String habitsStartDay;
+  late String showFutureText;
   late String addThingWrongName;
   late String dayString;
   late String daysString;
@@ -179,6 +181,8 @@ class Texts{
     habitsConn = language == "ENG" ? "of" : "na";
     habitsProgress = language == "ENG" ? "Progress" : "Postęp";
     habitsProgressDays = language == "ENG" ? "days" : "dni";
+    habitsStartDay = language == "ENG" ? "Start:" : "Rozpoczęcie:";
+    showFutureText = language == "ENG" ? "Show future habits" : "Pokaż przyszłe nawyki";
     addThingWrongName = language == "ENG" ? "* This field is required" : "* To pole jest wymagane";
     dayString = language == "ENG" ? "day" : "dzień";
     daysString = language == "ENG" ? "days" : "dni";

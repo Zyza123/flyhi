@@ -4,6 +4,7 @@ import 'package:flyhi/HiveClasses/DailyTodos.dart';
 import 'package:flyhi/HiveClasses/HabitTodos.dart';
 import 'package:flyhi/MenuPages/habit/addHabit.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../HiveClasses/Achievements.dart';
@@ -51,6 +52,8 @@ class _HabitPageState extends State<HabitPage> {
   late int selectedDay;
   late int day_offset;
   late int reminder;
+  late bool futureh;
+  ValueNotifier<bool> futureNotifier = ValueNotifier(false);
 
   Future<void> getRemindFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -201,6 +204,11 @@ class _HabitPageState extends State<HabitPage> {
         habitsCopy.add(habitsTodos.getAt(i));
         indexListHabitsMirror.add(i);
       }
+      else if(futureh){
+        habitsTodos.putAt(i, existingHabit);
+        habitsCopy.add(habitsTodos.getAt(i));
+        indexListHabitsMirror.add(i);
+      }
     }
   }
 
@@ -278,6 +286,11 @@ class _HabitPageState extends State<HabitPage> {
         habitsCopy.add(habitsTodos.getAt(i));
         indexListHabitsMirror.add(i);
       }
+      else if(futureh){
+        habitsTodos.putAt(i, existingHabit);
+        habitsCopy.add(habitsTodos.getAt(i));
+        indexListHabitsMirror.add(i);
+      }
     }
   }
 
@@ -308,6 +321,18 @@ class _HabitPageState extends State<HabitPage> {
     achievements.putAt(2, ach);
     dailyTodos.deleteAll(toRemove);
     toRemove.clear();
+  }
+
+  void setFutureToPrefs(bool remind) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('FUTUREH', remind);
+    futureNotifier.value = remind;
+  }
+
+  Future<void> getFutureFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    futureh = prefs.getBool('FUTUREH') ?? false;
+    futureNotifier.value = futureh;
   }
 
   void saveTodoFilter(int filterIndex) async {
@@ -381,6 +406,7 @@ class _HabitPageState extends State<HabitPage> {
     dailyTodos = Hive.box('daily');
     pets = Hive.box('pets');
     getRemindFromPrefs();
+    getFutureFromPrefs();
     getOffsetFromPrefs().then((value) {
       fillData();
       if(dailyTodos.isNotEmpty){
@@ -639,67 +665,91 @@ class _HabitPageState extends State<HabitPage> {
                   ):
                   Padding(
                     padding: const EdgeInsets.only(top: 5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    child: Column(
                       children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          decoration: BoxDecoration(
-                            color: styles.elementsInBg,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: DropdownButton<String>(
-                              dropdownColor: styles.elementsInBg,
-                              isExpanded: true,
-                              value: texts.habitsFilterList[selectedHabitFilter],
-                              underline: Container(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  if(newValue == texts.habitsFilterList[0]){
-                                    saveHabitFilter(0);
-                                    selectedHabitFilter = 0;
-                                    addElementsToHabits();
-                                  }
-                                  else if(newValue == texts.habitsFilterList[1]){
-                                    saveHabitFilter(1);
-                                    selectedHabitFilter = 1;
-                                    addElementsToHabitsByNew();
-                                  }
-                                });
-                              },
-                              items: texts.habitsFilterList
-                                  .map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value,style: TextStyle(color: styles.classicFont,fontSize: 17),),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const FinishedHabits()),
-                            );
-                          },
-                          child: Container(
-                              padding: EdgeInsets.all(12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.6,
                               decoration: BoxDecoration(
                                 color: styles.elementsInBg,
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
-                              child: Icon(Icons.done_all, color: styles.classicFont)
-                          ),
-                        ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: DropdownButton<String>(
+                                  dropdownColor: styles.elementsInBg,
+                                  isExpanded: true,
+                                  value: texts.habitsFilterList[selectedHabitFilter],
+                                  underline: Container(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      if(newValue == texts.habitsFilterList[0]){
+                                        saveHabitFilter(0);
+                                        selectedHabitFilter = 0;
+                                        addElementsToHabits();
+                                      }
+                                      else if(newValue == texts.habitsFilterList[1]){
+                                        saveHabitFilter(1);
+                                        selectedHabitFilter = 1;
+                                        addElementsToHabitsByNew();
+                                      }
+                                    });
+                                  },
+                                  items: texts.habitsFilterList
+                                      .map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value,style: TextStyle(color: styles.classicFont,fontSize: 17),),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const FinishedHabits()),
+                                );
+                              },
+                              child: Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: styles.elementsInBg,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Icon(Icons.done_all, color: styles.classicFont)
+                              ),
+                            ),
 
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Row(
+                            //mainAxisSize: MainAxisSize.min, // Minimalizuje szerokość Row, dopasowując do zawartości
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text(texts.showFutureText,style: TextStyle(fontSize: 17, color: styles.classicFont),), // Tekst przed checkboxem
+                              Checkbox(
+                                value: futureh,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    futureh = value!;
+                                    setFutureToPrefs(futureh);
+                                    readHabitData();
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
-                  SizedBox(height: 15,),
+                  if(todo_mode == 0) SizedBox(height: 15,),
                   todo_mode == 0 ? Expanded(
                     child: ListView.builder(
                     itemCount: todosCopy.length,
@@ -955,6 +1005,7 @@ class _HabitPageState extends State<HabitPage> {
                           final item = habitsCopy[index];
                           double week_value = item.efficiency.values.last;
                           DateTime week_key = item.efficiency.keys.last;
+                          bool startDay = item.date.isBefore(DateTime.now());
                           GlobalKey itemHKey = GlobalKey(debugLabel: "menu_$index");
                           SampleItemHabit? selectedMenu;
                           return GestureDetector(
@@ -974,6 +1025,7 @@ class _HabitPageState extends State<HabitPage> {
                                   child: Column(
                                     children: [
                                       Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           FadeInImage(
                                             height: 64,
@@ -988,6 +1040,7 @@ class _HabitPageState extends State<HabitPage> {
                                             child: Column(
                                               children: [
                                                 Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Expanded(
                                                       child: Text(
@@ -1058,7 +1111,7 @@ class _HabitPageState extends State<HabitPage> {
                                                             },
                                                           );
                                                         }
-                                                        else if(item1.index == 2){
+                                                        else if(item1.index == 2 && startDay){
                                                           var existingHabit = habitsTodos.getAt(indexListHabitsMirror[index]) as HabitTodos;
                                                           DateTime dtKey = existingHabit.efficiency.keys.last;
                                                           double dtValue = existingHabit.efficiency.values.last;
@@ -1070,7 +1123,7 @@ class _HabitPageState extends State<HabitPage> {
                                                             });
                                                           }
                                                         }
-                                                        if(item1.index == 3){
+                                                        if(item1.index == 3 && startDay){
                                                           Navigator.push(
                                                               context,
                                                               MaterialPageRoute(builder: (context) => DetailsHabit(editIndex: indexListHabitsMirror[index], habitType: 0,)
@@ -1104,106 +1157,119 @@ class _HabitPageState extends State<HabitPage> {
                                                             ),
                                                           ),
                                                         ),
-                                                        PopupMenuItem<SampleItemHabit>(
-                                                          value: SampleItemHabit.minus,
-                                                          child: Container(
-                                                            height: 40,
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                Text(texts.habitsPopupMinus, style: TextStyle(color: styles.classicFont)),
-                                                                Icon(Icons.remove_circle_outline, color: styles.classicFont),
-                                                              ],
+                                                        if(startDay)
+                                                          PopupMenuItem<SampleItemHabit>(
+                                                            value: SampleItemHabit.minus,
+                                                            child: Container(
+                                                              height: 40,
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Text(texts.habitsPopupMinus, style: TextStyle(color: styles.classicFont)),
+                                                                  Icon(Icons.remove_circle_outline, color: styles.classicFont),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        PopupMenuItem<SampleItemHabit>(
-                                                          value: SampleItemHabit.details,
-                                                          child: Container(
-                                                            height: 40,
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                Text("details", style: TextStyle(color: styles.classicFont)),
-                                                                Icon(Icons.read_more, color: styles.classicFont),
-                                                              ],
+                                                        if(startDay)
+                                                          PopupMenuItem<SampleItemHabit>(
+                                                            value: SampleItemHabit.details,
+                                                            child: Container(
+                                                              height: 40,
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Text("details", style: TextStyle(color: styles.classicFont)),
+                                                                  Icon(Icons.read_more, color: styles.classicFont),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
                                                       ],
                                                     ),
                                                   ],
                                                 ),
                                                 SizedBox(height: 15,),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "${texts.habitsFrequency}: ${week_value.toInt()} ${texts.habitsConn} ${item.frequency}",
+                                                if(startDay)
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "${texts.habitsFrequency}: ${week_value.toInt()} ${texts.habitsConn} ${item.frequency}",
+                                                        style: TextStyle(fontSize: 15, color: styles.classicFont),
+                                                      ),
+                                                      GestureDetector(
+                                                          onTap: (){
+                                                            var existingHabit = habitsTodos.getAt(indexListHabitsMirror[index]) as HabitTodos;
+                                                            DateTime dtKey = existingHabit.efficiency.keys.last;
+                                                            double dtValue = existingHabit.efficiency.values.last;
+                                                            if(existingHabit.efficiency[dtKey]! < existingHabit.frequency){
+                                                              existingHabit.efficiency[dtKey] = dtValue + 1;
+                                                              setState(() {
+                                                                habitsTodos.putAt(indexListHabitsMirror[index], existingHabit);
+                                                                item.efficiency[dtKey] = dtValue + 1;
+                                                              });
+                                                            }
+                                                          },
+                                                          child: Icon(Icons.add, size: 25,
+                                                            color: Color(item.dailyTheme))
+                                                      )
+                                                    ],
+                                                  ),
+                                                if(startDay == false)
+                                                  Align(
+                                                    alignment: Alignment.topLeft,
+                                                    child: Text(
+                                                      "${texts.habitsStartDay} ${DateFormat('yyyy-MM-dd').format(item.date)}" ,
                                                       style: TextStyle(fontSize: 15, color: styles.classicFont),
                                                     ),
-                                                    GestureDetector(
-                                                        onTap: (){
-                                                          var existingHabit = habitsTodos.getAt(indexListHabitsMirror[index]) as HabitTodos;
-                                                          DateTime dtKey = existingHabit.efficiency.keys.last;
-                                                          double dtValue = existingHabit.efficiency.values.last;
-                                                          if(existingHabit.efficiency[dtKey]! < existingHabit.frequency){
-                                                            existingHabit.efficiency[dtKey] = dtValue + 1;
-                                                            setState(() {
-                                                              habitsTodos.putAt(indexListHabitsMirror[index], existingHabit);
-                                                              item.efficiency[dtKey] = dtValue + 1;
-                                                            });
-                                                          }
-                                                        },
-                                                        child: Icon(Icons.add, size: 25,
-                                                          color: Color(item.dailyTheme))
-                                                    )
-                                                  ],
-                                                )
+                                                  ),
                                               ],
                                             ),
                                           ),
                                         ],
                                       ),
                                       SizedBox(height: 10),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi
-                                          color: Colors.grey, // Kolor tła kontenera
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(20.0),
-                                          child: TweenAnimationBuilder<double>(
-                                            key: Key("2"),
-                                            duration: const Duration(milliseconds: 400),
-                                            curve: Curves.decelerate,
-                                            tween: Tween<double>(
-                                              begin: 0,
-                                              end: item.frequency.toDouble(),
+                                      if(startDay)
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi
+                                            color: Colors.grey, // Kolor tła kontenera
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(20.0),
+                                            child: TweenAnimationBuilder<double>(
+                                              key: Key("2"),
+                                              duration: const Duration(milliseconds: 400),
+                                              curve: Curves.decelerate,
+                                              tween: Tween<double>(
+                                                begin: 0,
+                                                end: item.frequency.toDouble(),
+                                              ),
+                                              builder: (context,value, _) =>
+                                                  LinearProgressIndicator(
+                                                    // Tu określ procent postępu (0.6 oznacza 60%)
+                                                    value: (week_value/item.frequency.toDouble()),
+                                                    valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
+                                                    backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
+                                                    minHeight: 4, // Ustaw wysokość paska postępu (grubość)
+                                                  ),
                                             ),
-                                            builder: (context,value, _) =>
-                                                LinearProgressIndicator(
-                                                  // Tu określ procent postępu (0.6 oznacza 60%)
-                                                  value: (week_value/item.frequency.toDouble()),
-                                                  valueColor: AlwaysStoppedAnimation<Color>(Color(item.dailyTheme)), // Tutaj możesz wybrać kolor
-                                                  backgroundColor: Colors.transparent, // Ustaw kolor tła na transparentny
-                                                  minHeight: 4, // Ustaw wysokość paska postępu (grubość)
-                                                ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(height: 15,),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          item.fullTime < 9999 ? "${texts.habitsProgress}: ${item.dayNumber} "
-                                              "${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}" :
-                                          "${texts.habitsProgress}: ${item.dayNumber} ${item.dayNumber > 1 ? texts.daysString : texts.dayString}",
-                                          style: TextStyle(fontSize: 15, color: styles.classicFont),
+                                      startDay == true ? SizedBox(height: 15,) :  SizedBox(height: 0,),
+                                      if(startDay)
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            item.fullTime < 9999 ? "${texts.habitsProgress}: ${item.dayNumber} "
+                                                "${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}" :
+                                            "${texts.habitsProgress}: ${item.dayNumber} ${item.dayNumber > 1 ? texts.daysString : texts.dayString}",
+                                            style: TextStyle(fontSize: 15, color: styles.classicFont),
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 10,),
-                                      if(item.fullTime < 9999)
+                                      startDay == true ? SizedBox(height: 10,) :  SizedBox(height: 0,),
+                                      if(item.fullTime < 9999 && startDay)
                                         Container(
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(20.0), // Ustaw zaokrąglone rogi

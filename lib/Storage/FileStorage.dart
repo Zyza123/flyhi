@@ -5,23 +5,21 @@ import 'package:permission_handler/permission_handler.dart';
 // To save the file in the device
 class FileStorage {
   static Future<String> getExternalDocumentPath() async {
-    // To check whether permission is given for this app or not.
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      // If not we will ask for permission first
-      await Permission.manageExternalStorage.request();
-    }
-    Directory _directory = Directory("");
+    Directory directory;
+
     if (Platform.isAndroid) {
-      // Redirects it to download folder in android
-      _directory = Directory("/storage/emulated/0/Download");
+      // Uprawnienia i zapis w folderze pobrania dla Androida
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.manageExternalStorage.request();
+      }
+      directory = Directory("/storage/emulated/0/Download");
     } else {
-      _directory = await getApplicationDocumentsDirectory();
+      // iOS używa katalogu dokumentów aplikacji
+      directory = await getApplicationDocumentsDirectory();
     }
 
-    print('absolutna: '+_directory.isAbsolute.toString());
-    final exPath = _directory.path;
-    print("Saved Path: $exPath");
+    final exPath = directory.path;
     await Directory(exPath).create(recursive: true);
     return exPath;
   }

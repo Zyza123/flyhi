@@ -9,8 +9,16 @@ class NotificationManager {
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
     const AndroidInitializationSettings('ic_noti');
-    InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+
+    DarwinInitializationSettings initializationSettingsIOS =
+    const DarwinInitializationSettings(requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true, );
+
+    InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings);
@@ -20,7 +28,11 @@ class NotificationManager {
     return const NotificationDetails(
       android: AndroidNotificationDetails('channelId 2', 'ChannelName',
       importance: Importance.max,
-      priority: Priority.max)
+      priority: Priority.max),
+      iOS: DarwinNotificationDetails(presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      )
     );
   }
 
