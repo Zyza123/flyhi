@@ -729,22 +729,38 @@ class _HabitPageState extends State<HabitPage> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: Row(
-                            //mainAxisSize: MainAxisSize.min, // Minimalizuje szerokość Row, dopasowując do zawartości
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              Text(texts.showFutureText,style: TextStyle(fontSize: 17, color: styles.classicFont),), // Tekst przed checkboxem
-                              Checkbox(
-                                value: futureh,
-                                onChanged: (bool? value) {
+                              GestureDetector(
+                                onTap: () {
                                   setState(() {
-                                    futureh = value!;
+                                    futureh = !futureh; // Odwraca wartość zaznaczenia
                                     setFutureToPrefs(futureh);
                                     readHabitData();
                                   });
                                 },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min, // Minimalizuje szerokość Row, dopasowując do zawartości
+                                  children: [
+                                    Text(
+                                      texts.showFutureText,
+                                      style: TextStyle(fontSize: 17, color: styles.classicFont),
+                                    ), // Tekst przed checkboxem
+                                    Checkbox(
+                                      value: futureh,
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          futureh = value!;
+                                          setFutureToPrefs(futureh);
+                                          readHabitData();
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
-                          ),
+                          )
                         )
                       ],
                     ),
