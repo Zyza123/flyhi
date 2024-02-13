@@ -30,8 +30,7 @@ class _FinishedHabitsState extends State<FinishedHabits> {
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
     final langChange = Provider.of<LanguageProvider>(context);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
 
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
@@ -44,7 +43,7 @@ class _FinishedHabitsState extends State<FinishedHabits> {
             }),
         backgroundColor: styles.elementsInBg,
         title: Text(
-          texts.finishedHabitsName,
+          texts.texts.finishedHabitsName,
           style: TextStyle(color: styles.classicFont, fontSize: 16),
         ),
       ),
@@ -129,8 +128,8 @@ class _FinishedHabitsState extends State<FinishedHabits> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "${texts.habitsProgress}: ${item.dayNumber} "
-                                "${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}",
+                            "${texts.texts.habitsProgress}: ${item.dayNumber} "
+                                "${texts.texts.habitsConn} ${item.fullTime} ${texts.texts.habitsProgressDays}",
                             style: TextStyle(fontSize: 15, color: styles.classicFont),
                           ),
                           Padding(

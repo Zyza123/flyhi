@@ -201,10 +201,9 @@ class _AddDailyState extends State<AddDaily> {
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
     final langChange = Provider.of<LanguageProvider>(context);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
     if(do_once){
-      _weightValue = texts.addDailyImpList[imp];
+      _weightValue = texts.texts.addDailyImpList[imp];
       do_once = false;
     }
     return Scaffold(
@@ -219,7 +218,7 @@ class _AddDailyState extends State<AddDaily> {
         title: Row(
           children: [
             Text(
-              widget.editMode == false ? texts.addDailyAppBar : texts.modifyDailyAppBar,
+              widget.editMode == false ? texts.texts.addDailyAppBar : texts.texts.modifyDailyAppBar,
               style: TextStyle(color: styles.classicFont,fontSize: 16),
             ),
             Spacer(), // Dodaj przerwę, aby przesunąć "Zapisz" na prawą stronę
@@ -246,7 +245,7 @@ class _AddDailyState extends State<AddDaily> {
               },
               child: Row(
                 children: [
-                  Text(texts.addSave, style: TextStyle(color: styles.classicFont,fontSize: 16)),
+                  Text(texts.texts.addSave, style: TextStyle(color: styles.classicFont,fontSize: 16)),
                   Icon(Icons.check, color: styles.classicFont,size: 18,),
                 ],
               ),
@@ -280,7 +279,7 @@ class _AddDailyState extends State<AddDaily> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addDailyName, // Lub 'Name' w zależności od języka
+                          texts.texts.addDailyName, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -314,12 +313,12 @@ class _AddDailyState extends State<AddDaily> {
                       ),
                       SizedBox(height: 10,),
                       showValidationMessage == true ?Align(
-                          alignment: Alignment.topLeft,child: Text(texts.addThingWrongName,style: TextStyle(color: Colors.red,fontSize: 14),)) : Container(),
+                          alignment: Alignment.topLeft,child: Text(texts.texts.addThingWrongName,style: TextStyle(color: Colors.red,fontSize: 14),)) : Container(),
                       SizedBox(height: 20,),
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addDailyImportance, // Lub 'Name' w zależności od języka
+                          texts.texts.addDailyImportance, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -331,7 +330,7 @@ class _AddDailyState extends State<AddDaily> {
                             Row(
                               children: [
                                 Radio<String>(
-                                  value: texts.addDailyImpList[0],
+                                  value: texts.texts.addDailyImpList[0],
                                   groupValue: _weightValue, // Ustaw stan wyboru
                                   onChanged: (value) {
                                     setState(() {
@@ -341,14 +340,14 @@ class _AddDailyState extends State<AddDaily> {
                                   activeColor: styles.classicFont,
                                   fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
                                 ),
-                                Text(texts.addDailyImpList[0], style: TextStyle(fontSize: 14,
+                                Text(texts.texts.addDailyImpList[0], style: TextStyle(fontSize: 14,
                                     color: styles.classicFont)),
                               ],
                             ),
                             Row(
                               children: [
                                 Radio<String>(
-                                  value: texts.addDailyImpList[1],
+                                  value: texts.texts.addDailyImpList[1],
                                   groupValue: _weightValue, // Ustaw stan wyboru
                                   onChanged: (value) {
                                     setState(() {
@@ -358,14 +357,14 @@ class _AddDailyState extends State<AddDaily> {
                                   activeColor: styles.classicFont,
                                   fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
                                 ),
-                                Text(texts.addDailyImpList[1], style: TextStyle(fontSize: 14,
+                                Text(texts.texts.addDailyImpList[1], style: TextStyle(fontSize: 14,
                                     color: styles.classicFont)),
                               ],
                             ),
                             Row(
                               children: [
                                 Radio<String>(
-                                  value: texts.addDailyImpList[2],
+                                  value: texts.texts.addDailyImpList[2],
                                   groupValue: _weightValue, // Ustaw stan wyboru
                                   onChanged: (value) {
                                     setState(() {
@@ -375,7 +374,7 @@ class _AddDailyState extends State<AddDaily> {
                                   activeColor: styles.classicFont,
                                   fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
                                 ),
-                                Text(texts.addDailyImpList[2], style: TextStyle(fontSize: 14,
+                                Text(texts.texts.addDailyImpList[2], style: TextStyle(fontSize: 14,
                                     color: styles.classicFont)),
                               ],
                             ),
@@ -386,7 +385,7 @@ class _AddDailyState extends State<AddDaily> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addDailyAppearDay, // Lub 'Name' w zależności od języka
+                          texts.texts.addDailyAppearDay, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -414,7 +413,7 @@ class _AddDailyState extends State<AddDaily> {
                                 _selectDate(context, themeChange.darkTheme,
                                     langChange.language);
                               } ,
-                              child: Text(texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
+                              child: Text(texts.texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
                                   fontWeight: FontWeight.w400),),
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
@@ -427,7 +426,7 @@ class _AddDailyState extends State<AddDaily> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addDailyHour, // Lub 'Name' w zależności od języka
+                          texts.texts.addDailyHour, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -453,7 +452,7 @@ class _AddDailyState extends State<AddDaily> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
                             ),
-                            child: Text(texts.addDailyHourPickOther,style: TextStyle(color: styles.classicFont,fontSize: 16,
+                            child: Text(texts.texts.addDailyHourPickOther,style: TextStyle(color: styles.classicFont,fontSize: 16,
                                 fontWeight: FontWeight.w400),),
                           ),
                         ],
@@ -462,7 +461,7 @@ class _AddDailyState extends State<AddDaily> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addDailyIcon, // Lub 'Name' w zależności od języka
+                          texts.texts.addDailyIcon, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -504,7 +503,7 @@ class _AddDailyState extends State<AddDaily> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addDailyTheme, // Lub 'Name' w zależności od języka
+                          texts.texts.addDailyTheme, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),

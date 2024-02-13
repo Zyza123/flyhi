@@ -253,8 +253,7 @@ class _AccountPageState extends State<AccountPage> {
     final langChange = Provider.of<LanguageProvider>(context);
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
 
     return FutureBuilder(
       future: Future.wait([getOffsetFromPrefs(),getRemindFromPrefs(),getAutosaveFromPrefs()]),
@@ -273,7 +272,7 @@ class _AccountPageState extends State<AccountPage> {
                       Align(
                         alignment: Alignment.center,
                         child: Container(
-                          child: Text(texts.menu[3].toUpperCase(),style: TextStyle(
+                          child: Text(texts.texts.menu[3].toUpperCase(),style: TextStyle(
                               fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
                         ),
                       ),
@@ -284,7 +283,7 @@ class _AccountPageState extends State<AccountPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              child: Text(texts.settingsDarkMode,style: TextStyle(
+                              child: Text(texts.texts.settingsDarkMode,style: TextStyle(
                                 color: styles.classicFont,fontSize: 18,),),
                             ),
                             Switch(
@@ -308,7 +307,7 @@ class _AccountPageState extends State<AccountPage> {
                           children: [
                             Container(
                               child: Text(
-                                texts.settingsLang,
+                                texts.texts.settingsLang,
                                 style: TextStyle(
                                   color: styles.classicFont,
                                   fontSize: 18,
@@ -319,7 +318,7 @@ class _AccountPageState extends State<AccountPage> {
                               child: DropdownButton<String>(
                                 value: langChange.language == "ENG" ? "english": "polski",
                                 dropdownColor: styles.menuBg,
-                                items: texts.langList.map((String language) {
+                                items: texts.texts.langList.map((String language) {
                                   return DropdownMenuItem<String>(
                                     value: language,
                                     child: Text(language,style: TextStyle(color: styles.classicFont),),
@@ -348,7 +347,7 @@ class _AccountPageState extends State<AccountPage> {
                           children: [
                             Container(
                               child: Text(
-                                texts.settingsDayOffset,
+                                texts.texts.settingsDayOffset,
                                 style: TextStyle(
                                   color: styles.classicFont,
                                   fontSize: 18,
@@ -360,16 +359,16 @@ class _AccountPageState extends State<AccountPage> {
                               builder: (context, value, child) {
                                 return DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
-                                    value: texts.timeOffsetList[value],
+                                    value: texts.texts.timeOffsetList[value],
                                     dropdownColor: styles.menuBg,
-                                    items: texts.timeOffsetList.map((String offset) {
+                                    items: texts.texts.timeOffsetList.map((String offset) {
                                       return DropdownMenuItem<String>(
                                         value: offset,
                                         child: Text(offset,style: TextStyle(color: styles.classicFont),),
                                       );
                                     }).toList(),
                                     onChanged: (String? newValue) {
-                                      int selectedIndex = texts.timeOffsetList.indexOf(newValue!);
+                                      int selectedIndex = texts.texts.timeOffsetList.indexOf(newValue!);
                                       saveOffsetToPrefs(selectedIndex);
                                     },
                                   ),
@@ -382,7 +381,7 @@ class _AccountPageState extends State<AccountPage> {
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.settingsDayOffsetNote,
+                          texts.texts.settingsDayOffsetNote,
                           style: TextStyle(
                             color: styles.fontMenuOff,
                             fontSize: 14,
@@ -397,7 +396,7 @@ class _AccountPageState extends State<AccountPage> {
                           children: [
                             Container(
                               child: Text(
-                                texts.settingsReminder,
+                                texts.texts.settingsReminder,
                                 style: TextStyle(
                                   color: styles.classicFont,
                                   fontSize: 18,
@@ -409,16 +408,16 @@ class _AccountPageState extends State<AccountPage> {
                               builder: (context, value, child) {
                                 return DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
-                                    value: texts.reminderList[value],
+                                    value: texts.texts.reminderList[value],
                                     dropdownColor: styles.menuBg,
-                                    items: texts.reminderList.map((String remind) {
+                                    items: texts.texts.reminderList.map((String remind) {
                                       return DropdownMenuItem<String>(
                                         value: remind,
                                         child: Text(remind,style: TextStyle(color: styles.classicFont),),
                                       );
                                     }).toList(),
                                     onChanged: (String? newValue) {
-                                      int selectedIndex = texts.reminderList.indexOf(newValue!);
+                                      int selectedIndex = texts.texts.reminderList.indexOf(newValue!);
                                       saveRemindToPrefs(selectedIndex);
                                       if(selectedIndex == 0){
                                         NotificationManager().flutterLocalNotificationsPlugin.cancelAll();
@@ -434,7 +433,7 @@ class _AccountPageState extends State<AccountPage> {
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.settingsReminderNote,
+                          texts.texts.settingsReminderNote,
                           style: TextStyle(
                             color: styles.fontMenuOff,
                             fontSize: 14,
@@ -445,7 +444,7 @@ class _AccountPageState extends State<AccountPage> {
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.savingBackupShort,
+                          texts.texts.savingBackupShort,
                           style: TextStyle(
                             color: styles.classicFont,
                             fontSize: 18,
@@ -456,7 +455,7 @@ class _AccountPageState extends State<AccountPage> {
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.savingBackupLong,
+                          texts.texts.savingBackupLong,
                           style: TextStyle(
                             color: styles.fontMenuOff,
                             fontSize: 14,
@@ -516,7 +515,7 @@ class _AccountPageState extends State<AccountPage> {
                               foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
                               side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
                             ),
-                            child: Text(texts.backupButton1),
+                            child: Text(texts.texts.backupButton1),
                           ),
                         ],
                       ),
@@ -524,7 +523,7 @@ class _AccountPageState extends State<AccountPage> {
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.readingBackupShort,
+                          texts.texts.readingBackupShort,
                           style: TextStyle(
                             color: styles.classicFont,
                             fontSize: 18,
@@ -535,7 +534,7 @@ class _AccountPageState extends State<AccountPage> {
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.readingBackupLong,
+                          texts.texts.readingBackupLong,
                           style: TextStyle(
                             color: styles.fontMenuOff,
                             fontSize: 14,
@@ -545,8 +544,8 @@ class _AccountPageState extends State<AccountPage> {
                       SizedBox(height: 10,),
                       ElevatedButton(
                         onPressed: () async {
-                          bool confirm = await showConfirmationDialog(context,texts.warningBackup,
-                            texts.habitsAlertCancel,texts.habitsAlertConfirm,texts.warningTitle,
+                          bool confirm = await showConfirmationDialog(context,texts.texts.warningBackup,
+                            texts.texts.habitsAlertCancel,texts.texts.habitsAlertConfirm,texts.texts.warningTitle,
                               styles.classicFont, styles.elementsInBg);
                           if (confirm) {
                             String? jsonString = await pickAndReadFile();
@@ -588,7 +587,7 @@ class _AccountPageState extends State<AccountPage> {
                           foregroundColor: styles.classicFont, backgroundColor: styles.whiteBlack, // Text color
                           side: BorderSide(color: styles.classicFont, width: 1.0), // Border color and width
                         ),
-                        child: Text(texts.backupButton2),
+                        child: Text(texts.texts.backupButton2),
                       ),
                     ],
                   ),

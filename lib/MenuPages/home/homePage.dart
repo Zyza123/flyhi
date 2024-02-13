@@ -92,8 +92,7 @@ class _HomePageState extends State<HomePage> {
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
     final langChange = Provider.of<LanguageProvider>(context);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
 
     Widget petWidget;
     if (pets.getAt(0).chosenPet == -1) {
@@ -162,7 +161,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkowanie w poziomie
             children: [
               Text(
-                "${texts.homeLevel} "+pet.level[pet.chosenPet].toString(),
+                "${texts.texts.homeLevel} "+pet.level[pet.chosenPet].toString(),
                 style: TextStyle(fontSize: 23,color: styles.classicFont),
                 textAlign: TextAlign.center, // Tekst wyśrodkowany w poziomie
               ),
@@ -205,7 +204,7 @@ class _HomePageState extends State<HomePage> {
               Container(
                 width: 130,
                 child: Text(
-                  texts.attributes1[pet.chosenPet],
+                  texts.texts.attributes1[pet.chosenPet],
                   style: TextStyle(fontSize: 20,color: styles.classicFont,fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center, // Tekst wyśrodkowany w poziomie
                   overflow: TextOverflow.ellipsis, // Use ellipsis for text overflow
@@ -242,7 +241,7 @@ class _HomePageState extends State<HomePage> {
               Container(
                 width: 130,
                 child: Text(
-                  texts.attributes2[pet.chosenPet],
+                  texts.texts.attributes2[pet.chosenPet],
                   style: TextStyle(fontSize: 20,color: styles.classicFont, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center, // Tekst wyśrodkowany w poziomie
                   overflow: TextOverflow.ellipsis, // Use ellipsis for text overflow
@@ -279,7 +278,7 @@ class _HomePageState extends State<HomePage> {
               Container(
                 width: 130,
                 child: Text(
-                  texts.attributes3[pet.chosenPet],
+                  texts.texts.attributes3[pet.chosenPet],
                   style: TextStyle(fontSize: 20,color: styles.classicFont, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center, // Tekst wyśrodkowany w poziomie
                   overflow: TextOverflow.ellipsis, // Use ellipsis for text overflow
@@ -333,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               child: Text(
-                texts.homeSelectButton,
+                texts.texts.homeSelectButton,
                 style: TextStyle(fontSize: 20, color: styles.nameColors[pet.chosenPet],fontWeight: FontWeight.bold), // Powiększenie czcionki do 28
               ),
               style: ElevatedButton.styleFrom(
@@ -355,7 +354,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Align(
                 alignment: Alignment.center,
-                child: Text(texts.menu[0].toUpperCase(),style: TextStyle(
+                child: Text(texts.texts.menu[0].toUpperCase(),style: TextStyle(
                     fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
               ),
               SizedBox(height: 10,),

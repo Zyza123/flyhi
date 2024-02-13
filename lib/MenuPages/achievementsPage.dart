@@ -156,8 +156,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
     final langChange = Provider.of<LanguageProvider>(context);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
       body: Padding(
@@ -169,7 +168,7 @@ class _AchievementsPageState extends State<AchievementsPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                texts.achievementsTitle,
+                texts.texts.achievementsTitle,
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -201,13 +200,13 @@ class _AchievementsPageState extends State<AchievementsPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(texts.achievementsTitleText[int.tryParse(achievement.name) ?? 0],
+                                  Text(texts.texts.achievementsTitleText[int.tryParse(achievement.name) ?? 0],
                                   style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: styles.classicFont),),
                                   SizedBox(height: 5.0),
-                                  Text(texts.achievementsMainText[int.tryParse(achievement.name) ?? 0],
+                                  Text(texts.texts.achievementsMainText[int.tryParse(achievement.name) ?? 0],
                                     style: TextStyle(fontSize: 14,color: styles.classicFont),),
                                   Spacer(),
-                                  Text("${texts.habitsProgress}: ${achievement.value}"+(index == 3 ? "%" : "") + "/ ${achievement.level[achievement.progress]}"+
+                                  Text("${texts.texts.habitsProgress}: ${achievement.value}"+(index == 3 ? "%" : "") + "/ ${achievement.level[achievement.progress]}"+
                                       (index == 3 ? "%" : ""),
                                     style: TextStyle(fontSize: 14,color: styles.classicFont,fontWeight: FontWeight.bold),),
                                   SizedBox(height: 10.0),

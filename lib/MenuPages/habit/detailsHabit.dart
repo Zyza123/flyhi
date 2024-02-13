@@ -64,8 +64,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
     final langChange = Provider.of<LanguageProvider>(context);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
       appBar: AppBar(
@@ -77,7 +76,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
         backgroundColor: styles.elementsInBg,
         title:
             Text(
-              texts.detailsHabitName,
+              texts.texts.detailsHabitName,
               style: TextStyle(color: styles.classicFont,fontSize: 16),
             ),
       ),
@@ -111,7 +110,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                     tooltipBehavior: _tooltipBehavior,
                     series: <LineSeries<ChartData, String>>[
                       LineSeries<ChartData,String>(
-                          name: texts.habitsFrequency,
+                          name: texts.texts.habitsFrequency,
                           dataSource: chartData,
                           xValueMapper: (ChartData chd, _) => chd.week,
                           yValueMapper: (ChartData chd, _) => chd.frequency,
@@ -126,7 +125,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                   child: Container(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        texts.addHabitDateOfAppearance,textAlign: TextAlign.start,
+                        texts.texts.addHabitDateOfAppearance,textAlign: TextAlign.start,
                         style: TextStyle(fontSize: 18, color: styles.classicFont),)
                   ),
                 ),
@@ -151,7 +150,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                   child: Container(
                     alignment: Alignment.topLeft,
                       child: Text(
-                        texts.habitsProgress ,textAlign: TextAlign.start,
+                        texts.texts.habitsProgress ,textAlign: TextAlign.start,
                         style: TextStyle(fontSize: 18, color: styles.classicFont),)
                   ),
                 ),
@@ -189,7 +188,7 @@ class _DetailsHabitState extends State<DetailsHabit> {
                                     fontSize: 16,fontWeight: FontWeight.bold),
                               ),
                             Text(
-                              '${texts.habitsProgressDays}',
+                              '${texts.texts.habitsProgressDays}',
                               style: TextStyle(color: Color(0xFF508bba),
                                   fontSize: 16,fontWeight: FontWeight.bold),
                             ),

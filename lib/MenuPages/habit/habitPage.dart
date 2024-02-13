@@ -439,8 +439,7 @@ class _HabitPageState extends State<HabitPage> {
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
     final langChange = Provider.of<LanguageProvider>(context);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
     return Scaffold(
       backgroundColor: styles.mainBackgroundColor,
       body: Padding(
@@ -452,7 +451,7 @@ class _HabitPageState extends State<HabitPage> {
             children: [
               Column(
                 children: [
-                  Text(texts.todosMain,style: TextStyle(
+                  Text(texts.texts.todosMain,style: TextStyle(
                       fontSize: 30,fontWeight: FontWeight.bold,color: styles.classicFont),),
                   SizedBox(height: 30,),
                   Align(
@@ -481,7 +480,7 @@ class _HabitPageState extends State<HabitPage> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    texts.todosPickerDaily,
+                                    texts.texts.todosPickerDaily,
                                     style: TextStyle(fontSize: 20,color: styles.classicFont),
                                   ),
                                 ),
@@ -504,7 +503,7 @@ class _HabitPageState extends State<HabitPage> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    texts.todosPickerHabits,
+                                    texts.texts.todosPickerHabits,
                                     style: TextStyle(fontSize: 20,color: styles.classicFont),
                                   ),
                                 ),
@@ -554,7 +553,7 @@ class _HabitPageState extends State<HabitPage> {
                                     ),
                                   ),
                                   Text(
-                                    '${texts.homeDays[fillweek[index]]}',
+                                    '${texts.texts.homeDays[fillweek[index]]}',
                                     style: TextStyle(
                                       fontSize: 14.0,
                                       color: styles.classicFont,
@@ -574,9 +573,9 @@ class _HabitPageState extends State<HabitPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        todo_mode == 0 ? Text("${texts.todosPlannedText} :",
+                        todo_mode == 0 ? Text("${texts.texts.todosPlannedText} :",
                           style: TextStyle(fontSize: 20,color: styles.classicFont),):
-                        Text("${texts.todosHabits} :",
+                        Text("${texts.texts.todosHabits} :",
                           style: TextStyle(fontSize: 20,color: styles.classicFont),),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -626,34 +625,34 @@ class _HabitPageState extends State<HabitPage> {
                       child: DropdownButton<String>(
                         dropdownColor: styles.elementsInBg,
                         isExpanded: true,
-                        value: texts.todosFilterList[selectedTodoFilter],
+                        value: texts.texts.todosFilterList[selectedTodoFilter],
                         underline: Container(),
                         onChanged: (String? newValue) {
                           setState(() {
                             print("filtr: $selectedTodoFilter");
-                            if(newValue == texts.todosFilterList[0]){
+                            if(newValue == texts.texts.todosFilterList[0]){
                               saveTodoFilter(0);
                               selectedTodoFilter = 0;
                               readTodoData(weekDates[selectedDay]);
                             }
-                            else if(newValue == texts.todosFilterList[1]){
+                            else if(newValue == texts.texts.todosFilterList[1]){
                               saveTodoFilter(1);
                               selectedTodoFilter = 1;
                               readTodoData(weekDates[selectedDay]);
                             }
-                            else if(newValue == texts.todosFilterList[2]){
+                            else if(newValue == texts.texts.todosFilterList[2]){
                               saveTodoFilter(2);
                               selectedTodoFilter = 2;
                               readTodoData(weekDates[selectedDay]);
                             }
-                            else if(newValue == texts.todosFilterList[3]){
+                            else if(newValue == texts.texts.todosFilterList[3]){
                               saveTodoFilter(3);
                               selectedTodoFilter = 3;
                               readTodoData(weekDates[selectedDay]);
                             }
                           });
                         },
-                        items: texts.todosFilterList
+                        items: texts.texts.todosFilterList
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -681,23 +680,23 @@ class _HabitPageState extends State<HabitPage> {
                                 child: DropdownButton<String>(
                                   dropdownColor: styles.elementsInBg,
                                   isExpanded: true,
-                                  value: texts.habitsFilterList[selectedHabitFilter],
+                                  value: texts.texts.habitsFilterList[selectedHabitFilter],
                                   underline: Container(),
                                   onChanged: (String? newValue) {
                                     setState(() {
-                                      if(newValue == texts.habitsFilterList[0]){
+                                      if(newValue == texts.texts.habitsFilterList[0]){
                                         saveHabitFilter(0);
                                         selectedHabitFilter = 0;
                                         addElementsToHabits();
                                       }
-                                      else if(newValue == texts.habitsFilterList[1]){
+                                      else if(newValue == texts.texts.habitsFilterList[1]){
                                         saveHabitFilter(1);
                                         selectedHabitFilter = 1;
                                         addElementsToHabitsByNew();
                                       }
                                     });
                                   },
-                                  items: texts.habitsFilterList
+                                  items: texts.texts.habitsFilterList
                                       .map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
@@ -743,7 +742,7 @@ class _HabitPageState extends State<HabitPage> {
                                   mainAxisSize: MainAxisSize.min, // Minimalizuje szerokość Row, dopasowując do zawartości
                                   children: [
                                     Text(
-                                      texts.showFutureText,
+                                      texts.texts.showFutureText,
                                       style: TextStyle(fontSize: 17, color: styles.classicFont),
                                     ), // Tekst przed checkboxem
                                     Checkbox(
@@ -849,8 +848,8 @@ class _HabitPageState extends State<HabitPage> {
                                                         context: context,
                                                         builder: (BuildContext context) {
                                                           return AlertDialog(
-                                                            title: Text(texts.habitsAlertTitle,style: TextStyle(color: styles.classicFont),),
-                                                            content: Text(texts.habitsAlertContent,style: TextStyle(color: styles.classicFont),),
+                                                            title: Text(texts.texts.habitsAlertTitle,style: TextStyle(color: styles.classicFont),),
+                                                            content: Text(texts.texts.habitsAlertContent,style: TextStyle(color: styles.classicFont),),
                                                             backgroundColor: styles.elementsInBg,
                                                             actionsAlignment: MainAxisAlignment.spaceAround,
                                                             actions: [
@@ -858,7 +857,7 @@ class _HabitPageState extends State<HabitPage> {
                                                                 onPressed: () {
                                                                   Navigator.pop(context); // Zamknij AlertDialog
                                                                 },
-                                                                child: Text(texts.habitsAlertCancel,style: TextStyle(color: styles.classicFont),),
+                                                                child: Text(texts.texts.habitsAlertCancel,style: TextStyle(color: styles.classicFont),),
                                                               ),
                                                               TextButton(
                                                                 onPressed: () {
@@ -871,7 +870,7 @@ class _HabitPageState extends State<HabitPage> {
                                                                   });
                                                                   Navigator.pop(context);
                                                                 },
-                                                                child: Text(texts.habitsAlertConfirm,style: TextStyle(color: styles.classicFont),),
+                                                                child: Text(texts.texts.habitsAlertConfirm,style: TextStyle(color: styles.classicFont),),
                                                               ),
                                                             ],
                                                           );
@@ -897,7 +896,7 @@ class _HabitPageState extends State<HabitPage> {
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            Text(texts.todosPopupEdit, style: TextStyle(color: styles.classicFont)),
+                                                            Text(texts.texts.todosPopupEdit, style: TextStyle(color: styles.classicFont)),
                                                             Icon(Icons.edit_outlined, color: styles.classicFont),
                                                           ],
                                                         ),
@@ -910,7 +909,7 @@ class _HabitPageState extends State<HabitPage> {
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            Text(texts.todosPopupRemove, style: TextStyle(color: styles.classicFont)),
+                                                            Text(texts.texts.todosPopupRemove, style: TextStyle(color: styles.classicFont)),
                                                             Icon(Icons.delete_outlined, color: styles.classicFont),
                                                           ],
                                                         ),
@@ -923,7 +922,7 @@ class _HabitPageState extends State<HabitPage> {
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            Text(texts.todosPopupPostpone, style: TextStyle(color: styles.classicFont)),
+                                                            Text(texts.texts.todosPopupPostpone, style: TextStyle(color: styles.classicFont)),
                                                             Icon(Icons.access_alarm, color: styles.classicFont),
                                                           ],
                                                         ),
@@ -946,7 +945,7 @@ class _HabitPageState extends State<HabitPage> {
                                                     ),
                                                     SizedBox(width: 15,),
                                                     Text(
-                                                      "${texts.addDailyImportance.toLowerCase()}: ${texts.addDailyImpList[item.importance]}",
+                                                      "${texts.texts.addDailyImportance.toLowerCase()}: ${texts.texts.addDailyImpList[item.importance]}",
                                                       style: TextStyle(fontSize: 15, color: styles.classicFont),
                                                     ),
                                                   ],
@@ -1098,8 +1097,8 @@ class _HabitPageState extends State<HabitPage> {
                                                             context: context,
                                                             builder: (BuildContext context) {
                                                               return AlertDialog(
-                                                                title: Text(texts.habitsAlertTitle,style: TextStyle(color: styles.classicFont),),
-                                                                content: Text(texts.habitsAlertContentH,style: TextStyle(color: styles.classicFont),),
+                                                                title: Text(texts.texts.habitsAlertTitle,style: TextStyle(color: styles.classicFont),),
+                                                                content: Text(texts.texts.habitsAlertContentH,style: TextStyle(color: styles.classicFont),),
                                                                 backgroundColor: styles.elementsInBg,
                                                                 actionsAlignment: MainAxisAlignment.spaceAround,
                                                                 actions: [
@@ -1107,7 +1106,7 @@ class _HabitPageState extends State<HabitPage> {
                                                                     onPressed: () {
                                                                       Navigator.pop(context); // Zamknij AlertDialog
                                                                     },
-                                                                    child: Text(texts.habitsAlertCancel,style: TextStyle(color: styles.classicFont),),
+                                                                    child: Text(texts.texts.habitsAlertCancel,style: TextStyle(color: styles.classicFont),),
                                                                   ),
                                                                   TextButton(
                                                                     onPressed: () {
@@ -1120,7 +1119,7 @@ class _HabitPageState extends State<HabitPage> {
                                                                       });
                                                                       Navigator.pop(context);
                                                                     },
-                                                                    child: Text(texts.habitsAlertConfirm,style: TextStyle(color: styles.classicFont),),
+                                                                    child: Text(texts.texts.habitsAlertConfirm,style: TextStyle(color: styles.classicFont),),
                                                                   ),
                                                                 ],
                                                               );
@@ -1154,7 +1153,7 @@ class _HabitPageState extends State<HabitPage> {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
-                                                                Text(texts.habitsPopupEdit, style: TextStyle(color: styles.classicFont)),
+                                                                Text(texts.texts.habitsPopupEdit, style: TextStyle(color: styles.classicFont)),
                                                                 Icon(Icons.edit_outlined, color: styles.classicFont),
                                                               ],
                                                             ),
@@ -1167,7 +1166,7 @@ class _HabitPageState extends State<HabitPage> {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
-                                                                Text(texts.habitsPopupRemove, style: TextStyle(color: styles.classicFont)),
+                                                                Text(texts.texts.habitsPopupRemove, style: TextStyle(color: styles.classicFont)),
                                                                 Icon(Icons.delete_outlined, color: styles.classicFont),
                                                               ],
                                                             ),
@@ -1181,7 +1180,7 @@ class _HabitPageState extends State<HabitPage> {
                                                               child: Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 children: [
-                                                                  Text(texts.habitsPopupMinus, style: TextStyle(color: styles.classicFont)),
+                                                                  Text(texts.texts.habitsPopupMinus, style: TextStyle(color: styles.classicFont)),
                                                                   Icon(Icons.remove_circle_outline, color: styles.classicFont),
                                                                 ],
                                                               ),
@@ -1211,7 +1210,7 @@ class _HabitPageState extends State<HabitPage> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                       Text(
-                                                        "${texts.habitsFrequency}: ${week_value.toInt()} ${texts.habitsConn} ${item.frequency}",
+                                                        "${texts.texts.habitsFrequency}: ${week_value.toInt()} ${texts.texts.habitsConn} ${item.frequency}",
                                                         style: TextStyle(fontSize: 15, color: styles.classicFont),
                                                       ),
                                                       GestureDetector(
@@ -1236,7 +1235,7 @@ class _HabitPageState extends State<HabitPage> {
                                                   Align(
                                                     alignment: Alignment.topLeft,
                                                     child: Text(
-                                                      "${texts.habitsStartDay} ${DateFormat('yyyy-MM-dd').format(item.date)}" ,
+                                                      "${texts.texts.habitsStartDay} ${DateFormat('yyyy-MM-dd').format(item.date)}" ,
                                                       style: TextStyle(fontSize: 15, color: styles.classicFont),
                                                     ),
                                                   ),
@@ -1278,9 +1277,9 @@ class _HabitPageState extends State<HabitPage> {
                                         Align(
                                           alignment: Alignment.topLeft,
                                           child: Text(
-                                            item.fullTime < 9999 ? "${texts.habitsProgress}: ${item.dayNumber} "
-                                                "${texts.habitsConn} ${item.fullTime} ${texts.habitsProgressDays}" :
-                                            "${texts.habitsProgress}: ${item.dayNumber} ${item.dayNumber > 1 ? texts.daysString : texts.dayString}",
+                                            item.fullTime < 9999 ? "${texts.texts.habitsProgress}: ${item.dayNumber} "
+                                                "${texts.texts.habitsConn} ${item.fullTime} ${texts.texts.habitsProgressDays}" :
+                                            "${texts.texts.habitsProgress}: ${item.dayNumber} ${item.dayNumber > 1 ? texts.texts.daysString : texts.texts.dayString}",
                                             style: TextStyle(fontSize: 15, color: styles.classicFont),
                                           ),
                                         ),

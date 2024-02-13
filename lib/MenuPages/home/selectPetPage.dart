@@ -62,8 +62,7 @@ class _SelectPetPageState extends State<SelectPetPage> {
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
     final langChange = Provider.of<LanguageProvider>(context);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
     return Scaffold(
         backgroundColor: styles.mainBackgroundColor,
         appBar: AppBar(
@@ -75,7 +74,7 @@ class _SelectPetPageState extends State<SelectPetPage> {
               }),
           backgroundColor: styles.elementsInBg,
           title: Text(
-            texts.pickPetText,
+            texts.texts.pickPetText,
             style: TextStyle(color: styles.classicFont, fontSize: 16),
           ),
         ),
@@ -116,7 +115,7 @@ class _SelectPetPageState extends State<SelectPetPage> {
                         style: TextStyle(fontSize: 22,color: styles.classicFont),
                       ),
                       Text(
-                        "${texts.homeLevel} " + pet.level[index].toString(),
+                        "${texts.texts.homeLevel} " + pet.level[index].toString(),
                         style: TextStyle(fontSize: 19,color: styles.classicFont),
                       ),
                     ],

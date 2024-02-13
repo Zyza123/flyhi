@@ -121,8 +121,7 @@ class _MainAppRouteState extends State<MainAppRoute> {
           builder: (context, themeValue,langValue,child){
             Styles styles = Styles();
             styles.setColors(themeValue.darkTheme);
-            Texts texts = Texts();
-            texts.setTextLang(langValue.language);
+            Texts texts = Texts(language: langValue.language);
             print('wartosc pod:');
             print(themeValue.darkTheme);
             return MaterialApp(
@@ -164,25 +163,25 @@ class _MainAppRouteState extends State<MainAppRoute> {
                       tabs: [
                         GButton(
                           icon: Ionicons.home_outline,
-                          text: texts.menu[0],
+                          text: texts.texts.menu[0],
                           border: currentIndex == 0?
                           Border.all(color: styles.fontMenuActive): Border(),
                         ),
                         GButton(
                           icon: Icons.event_available_outlined,
-                          text: texts.menu[1],
+                          text: texts.texts.menu[1],
                           border: currentIndex == 1?
                           Border.all(color: styles.fontMenuActive): Border(),
                         ),
                         GButton(
                           icon: Ionicons.sparkles_outline,
-                          text: texts.menu[2],
+                          text: texts.texts.menu[2],
                           border: currentIndex == 2?
                           Border.all(color:  styles.fontMenuActive): Border(),
                         ),
                         GButton(
                           icon: Ionicons.settings_outline,
-                          text: texts.menu[3],
+                          text: texts.texts.menu[3],
                           border: currentIndex == 3?
                           Border.all(color:  styles.fontMenuActive): Border(),
                         ),

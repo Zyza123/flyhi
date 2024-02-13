@@ -145,19 +145,18 @@ class _AddHabitState extends State<AddHabit> {
     Styles styles = Styles();
     styles.setColors(themeChange.darkTheme);
     final langChange = Provider.of<LanguageProvider>(context);
-    Texts texts = Texts();
-    texts.setTextLang(langChange.language);
+    Texts texts = Texts(language: langChange.language);
     if(do_once){
       if(widget.editMode == true){
         if(dailyHabits.getAt(widget.editIndex).fullTime < 9999){
-          _lengthValue = texts.addHabitDays;
+          _lengthValue = texts.texts.addHabitDays;
         }
         else{
-          _lengthValue = texts.addHabitUndefined;
+          _lengthValue = texts.texts.addHabitUndefined;
         }
       }
       else{
-        _lengthValue = texts.addHabitDays;
+        _lengthValue = texts.texts.addHabitDays;
       }
       do_once = false;
     }
@@ -173,7 +172,7 @@ class _AddHabitState extends State<AddHabit> {
         title: Row(
           children: [
             Text(
-              widget.editMode == false ? texts.addHabitAppBar : texts.modifyHabitAppBar,
+              widget.editMode == false ? texts.texts.addHabitAppBar : texts.texts.modifyHabitAppBar,
               style: TextStyle(color: styles.classicFont,fontSize: 16),
             ),
             Spacer(), // Dodaj przerwę, aby przesunąć "Zapisz" na prawą stronę
@@ -200,7 +199,7 @@ class _AddHabitState extends State<AddHabit> {
               },
               child: Row(
                 children: [
-                  Text(texts.addSave, style: TextStyle(color: styles.classicFont,fontSize: 16)),
+                  Text(texts.texts.addSave, style: TextStyle(color: styles.classicFont,fontSize: 16)),
                   Icon(Icons.check, color: styles.classicFont,size: 18,),
                 ],
               ),
@@ -234,7 +233,7 @@ class _AddHabitState extends State<AddHabit> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addHabitName, // Lub 'Name' w zależności od języka
+                          texts.texts.addHabitName, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -268,12 +267,12 @@ class _AddHabitState extends State<AddHabit> {
                       ),
                       SizedBox(height: 10,),
                       showValidationMessage == true ?Align(
-                          alignment: Alignment.topLeft,child: Text(texts.addThingWrongName,style: TextStyle(color: Colors.red,fontSize: 14),)) : Container(),
+                          alignment: Alignment.topLeft,child: Text(texts.texts.addThingWrongName,style: TextStyle(color: Colors.red,fontSize: 14),)) : Container(),
                       SizedBox(height: 20,),
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addHabitDateOfAppearance, // Lub 'Name' w zależności od języka
+                          texts.texts.addHabitDateOfAppearance, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -298,7 +297,7 @@ class _AddHabitState extends State<AddHabit> {
                               opacity: enabledDateButton == true ? 1.0 : 0.5,
                               child: ElevatedButton(
                                 onPressed: enabledDateButton == true?  () => _selectDate(context,themeChange.darkTheme, langChange.language) : null,
-                                child: Text(texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
+                                child: Text(texts.texts.addHabitPickDate,style: TextStyle(color: styles.classicFont,fontSize: 16,
                                     fontWeight: FontWeight.w400),),
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(styles.elementsInBg),
@@ -312,7 +311,7 @@ class _AddHabitState extends State<AddHabit> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addHabitFrequency, // Lub 'Name' w zależności od języka
+                          texts.texts.addHabitFrequency, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -378,19 +377,19 @@ class _AddHabitState extends State<AddHabit> {
                         ],
                       ),
                       SizedBox(height: 10,),
-                      Text(texts.addHabitFrequencyWeek, style: TextStyle(fontSize: 14,
+                      Text(texts.texts.addHabitFrequencyWeek, style: TextStyle(fontSize: 14,
                           color: styles.classicFont)),
                       SizedBox(height: 10,),
                       Align(
                         alignment: Alignment.topLeft,
                         child: Tooltip(
-                          message: texts.addHabitWarning,
+                          message: texts.texts.addHabitWarning,
                           showDuration: Duration(seconds: 3),
                           triggerMode: TooltipTriggerMode.tap,
                           child: Row(
                             children: [
                               Text(
-                                "${texts.addHabitLength} ", // Lub 'Name' w zależności od języka
+                                "${texts.texts.addHabitLength} ", // Lub 'Name' w zależności od języka
                                 style: TextStyle(fontSize: 16, color: styles.classicFont),
                               ),
                               Icon(
@@ -412,7 +411,7 @@ class _AddHabitState extends State<AddHabit> {
                               child: Row(
                                 children: [
                                   Radio<String>(
-                                    value: texts.addHabitDays,
+                                    value: texts.texts.addHabitDays,
                                     groupValue: _lengthValue, // Ustaw stan wyboru
                                     onChanged: enabledDaysButton == true ? (value) {
                                       setState(() {
@@ -429,7 +428,7 @@ class _AddHabitState extends State<AddHabit> {
                                     activeColor: styles.classicFont,
                                     fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
                                   ),
-                                  Text(texts.addHabitDays, style: TextStyle(fontSize: 14,
+                                  Text(texts.texts.addHabitDays, style: TextStyle(fontSize: 14,
                                       color: styles.classicFont)),
                                 ],
                               ),
@@ -437,7 +436,7 @@ class _AddHabitState extends State<AddHabit> {
                             Row(
                               children: [
                                 Radio<String>(
-                                  value: texts.addHabitUndefined,
+                                  value: texts.texts.addHabitUndefined,
                                   groupValue: _lengthValue, // Ustaw stan wyboru
                                   onChanged: (value) {
                                     setState(() {
@@ -447,16 +446,16 @@ class _AddHabitState extends State<AddHabit> {
                                   activeColor: styles.classicFont,
                                   fillColor: MaterialStateColor.resolveWith((states) => styles.classicFont),
                                 ),
-                                Text(texts.addHabitUndefined, style: TextStyle(fontSize: 14,
+                                Text(texts.texts.addHabitUndefined, style: TextStyle(fontSize: 14,
                                     color: styles.classicFont)),
                               ],
                             ),
                           ],
                         ),
                       ),
-                      if(_lengthValue == texts.addHabitDays)
+                      if(_lengthValue == texts.texts.addHabitDays)
                         SizedBox(height: 5,),
-                      if (_lengthValue == texts.addHabitDays)
+                      if (_lengthValue == texts.texts.addHabitDays)
                         Container(
                           width: 80,
                           height: 40,
@@ -471,7 +470,7 @@ class _AddHabitState extends State<AddHabit> {
                             style: TextStyle(color: styles.classicFont,fontSize: 18),
                           ),
                         ),
-                      if (_lengthValue == texts.addHabitDays)
+                      if (_lengthValue == texts.texts.addHabitDays)
                         Slider(
                           activeColor: styles.sliderColorsAct,
                           inactiveColor: styles.sliderColorsInact,
@@ -489,7 +488,7 @@ class _AddHabitState extends State<AddHabit> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addHabitIcon, // Lub 'Name' w zależności od języka
+                          texts.texts.addHabitIcon, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
@@ -530,7 +529,7 @@ class _AddHabitState extends State<AddHabit> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          texts.addHabitTheme, // Lub 'Name' w zależności od języka
+                          texts.texts.addHabitTheme, // Lub 'Name' w zależności od języka
                           style: TextStyle(fontSize: 16, color: styles.classicFont),
                         ),
                       ),
