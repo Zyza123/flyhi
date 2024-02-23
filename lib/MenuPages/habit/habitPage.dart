@@ -103,7 +103,6 @@ class _HabitPageState extends State<HabitPage> {
         if(sel_day == dailyTodos.getAt(j).date.day){
           if(dailyTodos.getAt(j).importance == i)
           todosCopy.add(dailyTodos.getAt(j));
-          // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
           indexListMirror.add(j);
         }
       }
@@ -120,7 +119,6 @@ class _HabitPageState extends State<HabitPage> {
         if(sel_day == dailyTodos.getAt(j).date.day){
           if(dailyTodos.getAt(j).importance == i)
             todosCopy.add(dailyTodos.getAt(j));
-          // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
           indexListMirror.add(j);
         }
       }
@@ -135,7 +133,6 @@ class _HabitPageState extends State<HabitPage> {
     for(int i = 0; i < dailyTodos.length; i++){
       if(sel_day == dailyTodos.getAt(i).date.day){
         todosCopy.add(dailyTodos.getAt(i));
-       // print("dzien: "+dailyTodos.getAt(i).date.day.toString());
         indexListMirror.add(i);
       }
     }
@@ -186,8 +183,6 @@ class _HabitPageState extends State<HabitPage> {
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         DateTime before = existingHabit.efficiency.keys.last;
         DateTime week_before = today.subtract(Duration(days: 7));
-        int days_dif = (today.difference(before).inHours/24).ceil() + 1;
-
         int habit_day_counter = (today.difference(existingHabit.date).inHours/24).ceil() + 1;
         if(existingHabit.dayNumber <= existingHabit.fullTime){
           existingHabit.dayNumber = habit_day_counter;
@@ -228,11 +223,6 @@ class _HabitPageState extends State<HabitPage> {
       DateTime today = DateTime(DateTime.now().subtract(Duration(hours: day_offset)).year,
           DateTime.now().subtract(Duration(hours: day_offset)).month,
           DateTime.now().subtract(Duration(hours: day_offset)).day);
-      //print("nazwa: "+existingHabit.name.toString());
-      //print("Dzisiaj: "+today.toString());
-      //print("Wtedy: "+existingHabit.date.toString());
-      //print("numer dnia: "+existingHabit.dayNumber.toString());
-      //print("ilosc dni: "+existingHabit.fullTime.toString());
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         if(existingHabit.dayNumber > existingHabit.fullTime){
           HabitTodos ht = habitsTodos.getAt(i);
@@ -269,7 +259,7 @@ class _HabitPageState extends State<HabitPage> {
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         DateTime before = existingHabit.efficiency.keys.last;
         DateTime week_before = today.subtract(Duration(days: 7));
-        int days_dif = (today.difference(before).inHours/24).ceil() + 1;
+        int days_dif = (today.difference(existingHabit.date).inHours/24).ceil() + 1;
         if(existingHabit.dayNumber <= existingHabit.fullTime){
           existingHabit.dayNumber = days_dif;
         }
@@ -348,7 +338,6 @@ class _HabitPageState extends State<HabitPage> {
       setState(() {
         selectedTodoFilter = prefs.getInt('filter')!;
         int days_diff = (pickedDay.difference(weekDates[0]).inHours/24).ceil();
-        print("days diff: "+days_diff.toString());
         if(selectedTodoFilter == 0){
           addElementsToTodos(days_diff);
         }
@@ -523,7 +512,6 @@ class _HabitPageState extends State<HabitPage> {
                         children: List.generate(weekDates.length, (index) {
                           return GestureDetector(
                             onTap: () {
-                              //print('Wybrano dzień: ${weekDates[index]}');
                               setState(() {
                                 selectedDay = index;
                                 readTodoData(weekDates[selectedDay]);
@@ -629,7 +617,6 @@ class _HabitPageState extends State<HabitPage> {
                         underline: Container(),
                         onChanged: (String? newValue) {
                           setState(() {
-                            print("filtr: $selectedTodoFilter");
                             if(newValue == texts.texts.todosFilterList[0]){
                               saveTodoFilter(0);
                               selectedTodoFilter = 0;

@@ -50,13 +50,6 @@ class NotificationManager {
     required DateTime scheduledNotificationDateTime,
   }) async {
     try {
-      //tz.initializeTimeZones();
-      //var warsaw = tz.getLocation('Europe/Warsaw');
-      //tz.setLocalLocation(warsaw);
-
-      print("test: " + scheduledNotificationDateTime.toString());
-      print("test id: "+ id.toString());
-
       await flutterLocalNotificationsPlugin.zonedSchedule(
         id!,
         title,

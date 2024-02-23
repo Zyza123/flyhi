@@ -85,7 +85,6 @@ class _AccountPageState extends State<AccountPage> {
       String filePath = result.files.single.path!;
       File file = File(filePath);
       String basename1 = basename(file.path);
-      print("Basename: " + basename1);
       if(basename1 == "hive_backup.json"){
         String fileContent = await file.readAsString();
         return fileContent;
@@ -549,7 +548,6 @@ class _AccountPageState extends State<AccountPage> {
                               styles.classicFont, styles.elementsInBg);
                           if (confirm) {
                             String? jsonString = await pickAndReadFile();
-                            print(jsonString);
                             if (jsonString != null) {
                               loadHiveDataFromJson(jsonString);
                               SnackBar snackBar = SnackBar(
@@ -579,7 +577,6 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                               );
                               scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-                              print('Nie wybrano pliku lub plik jest pusty');
                             }
                           }
                         },

@@ -54,9 +54,6 @@ class _AchievementsPageState extends State<AchievementsPage> {
       collected += value.toInt();
       index++;
     });
-    print("effi: "+((1.0 * collected~/full) * 100).toInt().toString());
-    print("coll: "+(collected.toString()));
-    print("full: "+(full.toString()));
     return ((1.0 * collected~/full) * 100).toInt();
   }
 
@@ -81,7 +78,6 @@ class _AchievementsPageState extends State<AchievementsPage> {
         ach.value++;
       }
     }
-    print("archiwum : "+habitsArchive.length.toString());
     while(ach.value >= ach.level[ach.progress]){
       ach.progress += 1;
       achievements.putAt(1, ach);

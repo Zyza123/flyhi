@@ -37,7 +37,6 @@ class FileStorage {
     // Create a file for the path of
     // device and file name with extension
     File file= File('$path/$name');
-    print("Save file");
 
     // Write the data in the file you have created
     return file.writeAsString(bytes);

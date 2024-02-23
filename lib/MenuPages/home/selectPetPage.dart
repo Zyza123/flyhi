@@ -19,22 +19,9 @@ class _SelectPetPageState extends State<SelectPetPage> {
 
   late Box pets;
   late Pets pet; // Dodano stan dla każdego załadowanego obrazu
-  //List<Image>theImages = [Image.asset(
-  //  'assets/pets/tiger/tiger1.png',
-  //  fit: BoxFit.scaleDown,
-  //  //width: 200,
-  //  //height: 200,
-  //),
-  //  Image.asset(
-  //    'assets/pets/bear/bear1.png',
-  //    fit: BoxFit.scaleDown,
-  //    //width: 200,
-  //    //height: 200,
-  //  )];
 
   int getPetLevel(int level){
     int petlevel = (level / 10).toInt();
-    print("poziom zwierza: "+petlevel.toString());
     return petlevel;
   }
 
@@ -45,16 +32,6 @@ class _SelectPetPageState extends State<SelectPetPage> {
     pet = pets.getAt(0);
     // Inicjalizacja stanu załadowania obrazów
   }
-
-  //@override
-  //void didChangeDependencies() {
-  //  print("w IMAGES:");
-  //  for(int i = 0; i < theImages.length; i++){
-  //    print("w IMAGES:" + i.toString());
-  //    precacheImage(theImages[i].image, context);
-  //  }
-  //  super.didChangeDependencies();
-  //}
 
   @override
   Widget build(BuildContext context) {

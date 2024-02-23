@@ -122,8 +122,6 @@ class _MainAppRouteState extends State<MainAppRoute> {
             Styles styles = Styles();
             styles.setColors(themeValue.darkTheme);
             Texts texts = Texts(language: langValue.language);
-            print('wartosc pod:');
-            print(themeValue.darkTheme);
             return MaterialApp(
               localizationsDelegates: [
                 GlobalMaterialLocalizations.delegate,
