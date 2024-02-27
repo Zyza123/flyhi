@@ -90,5 +90,11 @@ class PolishTexts extends LanguageTexts{
   late String backupButton2 = "Odczyt kopii";
   late String warningBackup = "Otwarcie pliku może spowodować utratę danych.\nNie zmieniaj nazwy pliku, aby mieć pewność, że otwierasz właściwy plik.\nDane są zapisywane w Pobranych plikach i nazywane są hive_backup.json.";
   late String warningTitle = "Uwaga";
+  late String changePetName = "Zmień nazwę zwierzaka";
+  late String insertNewName = "Wpisz nową nazwę";
+  late String fhTitle = "Usuwanie";
+  late String fhText = "Czy na pewno chcesz usunąć nawyk z historii?";
+  late String fhCancel = "Anuluj";
+  late String fhDelete = "Usuń";
 
 }

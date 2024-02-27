@@ -140,11 +140,13 @@ class _FinishedHabitsState extends State<FinishedHabits> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Deleting'),
+                                      title: Text(texts.texts.fhTitle, style: TextStyle(color: styles.classicFont),),
+                                      backgroundColor: styles.elementsInBg,
                                       content: SingleChildScrollView(
                                         child: ListBody(
                                           children: <Widget>[
-                                            Text('Are you sure u want to delete habit from history?'),
+                                            Text(texts.texts.fhText,
+                                             style: TextStyle(color: styles.classicFont),),
                                           ],
                                         ),
                                       ),
@@ -153,16 +155,18 @@ class _FinishedHabitsState extends State<FinishedHabits> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             TextButton(
-                                              child: Text('Cancel'),
+                                              child: Text(texts.texts.fhCancel, style: TextStyle(color: styles.classicFont),),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
                                             ),
                                             TextButton(
-                                              child: Text('Delete'),
+                                              child: Text(texts.texts.fhDelete, style: TextStyle(color: styles.classicFont),),
                                               onPressed: () {
-                                                habitArchive.deleteAt(index);
-                                                Navigator.of(context).pop();
+                                                setState(() {
+                                                  habitArchive.deleteAt(index);
+                                                  Navigator.of(context).pop();
+                                                });
                                               },
                                             ),
                                           ],

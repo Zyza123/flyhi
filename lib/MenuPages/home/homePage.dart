@@ -21,14 +21,14 @@ class _HomePageState extends State<HomePage> {
   late Box pets;
   late Pets pet;
 
-  Future<void> _showEditNameDialog(BuildContext context, Color bg, Color font) async {
+  Future<void> _showEditNameDialog(BuildContext context, Color bg, Color font, String change, String insert) async {
     String newName = '';
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // Użytkownik musi nacisnąć przycisk, aby zamknąć dialog
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Change pet name', style: TextStyle(color: font),),
+          title: Text(change, style: TextStyle(color: font),),
           backgroundColor: bg,
           content: SingleChildScrollView(
             child: ListBody(
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
                     newName = value;
                   },
                   decoration: InputDecoration(
-                    hintText: "Insert new name",
+                    hintText: insert,
                     suffixStyle: TextStyle(color: font),
                     labelStyle: TextStyle(color: font),
                     hintStyle: TextStyle(color: font),
@@ -146,7 +146,8 @@ class _HomePageState extends State<HomePage> {
               SizedBox(width: 30,),
               GestureDetector(
                 onTap: () {
-                    _showEditNameDialog(context,styles.elementsInBg, styles.classicFont);
+                    _showEditNameDialog(context,styles.elementsInBg, styles.classicFont, texts.texts.changePetName,
+                      texts.texts.insertNewName);
                 },
                 child: Icon(
                   Icons.drive_file_rename_outline_rounded,

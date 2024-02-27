@@ -91,6 +91,12 @@ abstract class LanguageTexts{
   late String backupButton2;
   late String warningBackup;
   late String warningTitle;
+  late String changePetName;
+  late String insertNewName;
+  late String fhTitle;
+  late String fhText;
+  late String fhCancel;
+  late String fhDelete;
 }
 
 class Texts{

@@ -226,7 +226,7 @@ class _HabitPageState extends State<HabitPage> {
       if(today.isAfter(existingHabit.date) || today.isAtSameMomentAs(existingHabit.date)){
         if(existingHabit.dayNumber > existingHabit.fullTime){
           HabitTodos ht = habitsTodos.getAt(i);
-          ht.dayNumber -= 1;
+          ht.dayNumber = existingHabit.fullTime;
           habitsArchive.add(rewriteToArchive(ht));
           toRemove.add(habitsTodos.keyAt(i));
           Pets pet = pets.getAt(0);
@@ -408,9 +408,9 @@ class _HabitPageState extends State<HabitPage> {
       readTodoData(pickedDateFormat);
       habitsTodos = Hive.box('habits');
       habitsArchive = Hive.box('habitsArchive');
-     //habitsTodos.add(HabitTodos("Testowy2", 'assets/images/ikona${3 + 1}/128x128.png',
-     //    pickedDateFormat.subtract(Duration(days: 7)), 3, 7, 8,
-     //    {pickedDateFormat : 3}, 0xFFD0312D));
+      habitsArchive.add(HabitArchive("Testowy2", 'assets/images/ikona${3 + 1}/128x128.png',
+         pickedDateFormat.subtract(Duration(days: 7)), 3, 7, 7,
+         {pickedDateFormat : 3}, 0xFFD0312D));
       if(habitsTodos.isNotEmpty){
         removeOldHabits();
       }

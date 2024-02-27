@@ -89,5 +89,10 @@ class EnglishTexts extends LanguageTexts {
   late String backupButton2 = "Read from backup file";
   late String warningBackup = "Opening file may cause losing your data. Dont change filename to make sure you are opening right file. Data are saved in Downloads and called hive_backup.json.";
   late String warningTitle = "Warning";
-
+  late String changePetName = "Change pet name";
+  late String insertNewName = "Insert new name";
+  late String fhTitle = "Deleting";
+  late String fhText = "Are you sure you want to delete habit from history?";
+  late String fhCancel = "Cancel";
+  late String fhDelete = "Delete";
 }
