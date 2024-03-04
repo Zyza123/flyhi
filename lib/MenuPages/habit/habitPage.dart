@@ -408,9 +408,9 @@ class _HabitPageState extends State<HabitPage> {
       readTodoData(pickedDateFormat);
       habitsTodos = Hive.box('habits');
       habitsArchive = Hive.box('habitsArchive');
-      habitsArchive.add(HabitArchive("Testowy2", 'assets/images/ikona${3 + 1}/128x128.png',
-         pickedDateFormat.subtract(Duration(days: 7)), 3, 7, 7,
-         {pickedDateFormat : 3}, 0xFFD0312D));
+      //habitsArchive.add(HabitArchive("Testowy2", 'assets/images/ikona${3 + 1}/128x128.png',
+      //   pickedDateFormat.subtract(Duration(days: 7)), 3, 7, 7,
+      //   {pickedDateFormat : 3}, 0xFFD0312D));
       if(habitsTodos.isNotEmpty){
         removeOldHabits();
       }
