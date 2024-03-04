@@ -1222,7 +1222,7 @@ class _HabitPageState extends State<HabitPage> {
                                                   Align(
                                                     alignment: Alignment.topLeft,
                                                     child: Text(
-                                                      "${texts.texts.habitsStartDay} ${DateFormat('yyyy-MM-dd').format(item.date)}" ,
+                                                      "${texts.texts.habitsStartDay} ${DateFormat('yyyy-MM-dd').format(item.date)}",
                                                       style: TextStyle(fontSize: 15, color: styles.classicFont),
                                                     ),
                                                   ),
@@ -1265,8 +1265,10 @@ class _HabitPageState extends State<HabitPage> {
                                           alignment: Alignment.topLeft,
                                           child: Text(
                                             item.fullTime < 9999 ? "${texts.texts.habitsProgress}: ${item.dayNumber} "
-                                                "${texts.texts.habitsConn} ${item.fullTime} ${texts.texts.habitsProgressDays}" :
-                                            "${texts.texts.habitsProgress}: ${item.dayNumber} ${item.dayNumber > 1 ? texts.texts.daysString : texts.texts.dayString}",
+                                                "${texts.texts.habitsConn} ${item.fullTime} ${texts.texts.habitsProgressDays}"
+                                                " (${texts.texts.weekDaysNames[0]} ${texts.texts.weekDaysNames[item.date.weekday]})":
+                                            "${texts.texts.habitsProgress}: ${item.dayNumber} ${item.dayNumber > 1 ? texts.texts.daysString : texts.texts.dayString}"
+                                                " (${texts.texts.weekDaysNames[0]} ${texts.texts.weekDaysNames[item.date.weekday]})",
                                             style: TextStyle(fontSize: 15, color: styles.classicFont),
                                           ),
                                         ),

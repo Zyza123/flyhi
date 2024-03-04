@@ -97,6 +97,7 @@ abstract class LanguageTexts{
   late String fhText;
   late String fhCancel;
   late String fhDelete;
+  late List<String> weekDaysNames;
 }
 
 class Texts{

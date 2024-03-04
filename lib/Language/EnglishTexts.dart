@@ -95,4 +95,5 @@ class EnglishTexts extends LanguageTexts {
   late String fhText = "Are you sure you want to delete habit from history?";
   late String fhCancel = "Cancel";
   late String fhDelete = "Delete";
+  late List<String> weekDaysNames = ["every", "monday", "tuesday", "wednesday", "thursday","friday", "saturday", "sunday"];
 }
