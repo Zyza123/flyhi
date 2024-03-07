@@ -96,6 +96,6 @@ class PolishTexts extends LanguageTexts{
   late String fhText = "Czy na pewno chcesz usunąć nawyk z historii?";
   late String fhCancel = "Anuluj";
   late String fhDelete = "Usuń";
-  late List<String> weekDaysNames = ["co", "poniedziałek", "wtorek", "środa", "czwartek","piątek", "sobotę", "niedzielę"];
+  late List<String> weekDaysNames = ["co", "poniedziałek", "wtorek", "środę", "czwartek","piątek", "sobotę", "niedzielę"];
 
 }
