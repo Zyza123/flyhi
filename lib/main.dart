@@ -64,8 +64,7 @@ class MainAppRoute extends StatefulWidget {
 
 class _MainAppRouteState extends State<MainAppRoute> {
 
-  DarkThemeProvider themeChangeProvider = DarkThemeProvider();
-  LanguageProvider languageProvider = LanguageProvider();
+
   int currentIndex = 0;
   late Box pets;
 
@@ -75,6 +74,8 @@ class _MainAppRouteState extends State<MainAppRoute> {
     AchievementsPage(),
     AccountPage(),
   ];
+  DarkThemeProvider themeChangeProvider = DarkThemeProvider();
+  LanguageProvider languageProvider = LanguageProvider();
 
   void getCurrentAppTheme() async {
     themeChangeProvider.darkTheme =

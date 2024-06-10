@@ -81,7 +81,6 @@ class _SelectPetPageState extends State<SelectPetPage> {
                   child: Column(
                     children: [
                       FadeInImage(
-                        //fadeInDuration: Duration(milliseconds: 200),
                         key: ValueKey<AssetImage>(AssetImage('assets/pets/${pet.avatars[index][petLevel]}')),
                         fit: BoxFit.scaleDown,
                         placeholder: const AssetImage('assets/empty.png'),

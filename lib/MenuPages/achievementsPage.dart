@@ -26,7 +26,6 @@ class _AchievementsPageState extends State<AchievementsPage> {
   List<String> mainImages = List.generate(5, (index) => 'assets/achievements/ach${index + 1}.png');
 
   void buildAchievements(){
-    // dla 1 osiagniecia - wytrwały
     Achievements achievement1 = Achievements("0", mainImages[0], [7,21,70,210,365]);
     Achievements achievement2 = Achievements("1", mainImages[1], [2,5,10,20,40]);
     Achievements achievement3 = Achievements("2", mainImages[2], [10,25,75,150,300]);
@@ -41,7 +40,6 @@ class _AchievementsPageState extends State<AchievementsPage> {
 
   int checkHabitEffectiveness(int index){
     HabitArchive ht = habitsArchive.getAt(index);
-    // czyli np dla 10 tygodni * 4 daje nam 40 cwiczen, w ostatnim tygodniu sprawdzamy ile bylo dni i dajemy srednia
     DateTime end = ht.efficiency.keys.first.add(Duration(days: ht.fullTime-1));
     int days_diff = (end.difference(ht.efficiency.keys.last).inHours/24).ceil();
     int weekCorrection = 0;
@@ -179,6 +177,8 @@ class _AchievementsPageState extends State<AchievementsPage> {
                     Achievements achievement = achievements.getAt(index) as Achievements;
                     // Tutaj możesz dostosować sposób wyświetlania poszczególnych osiągnięć
                     // Możesz użyć np. ListTile, Container, itp.
+                    print("progress:"+ achievement.progress.toString());
+
                     return Container(
                       width: 160,
                       height: 175,

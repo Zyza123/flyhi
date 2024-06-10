@@ -168,10 +168,6 @@ class _HabitPageState extends State<HabitPage> {
   }
 
   void addElementsToHabits(){
-    // co jeszcze brakuje
-    // dodanie usuwania starych nawyków które się już skończyły i dodanie ich danych całych do
-    // klasy z osiągnięciami gdy już będzie stworzona
-
     habitsCopy.clear();
     indexListHabitsMirror.clear();
     for(int i = 0; i < habitsTodos.length; i++)
@@ -304,11 +300,16 @@ class _HabitPageState extends State<HabitPage> {
     pets.putAt(0, pet);
     // dodawanie do osiągnieć punktów ze zdobytych obowiazkow
     Achievements ach = achievements.getAt(2);
-    ach.value += points_counter;
-    while(ach.value >= ach.level[ach.progress]){
-      ach.progress += 1;
+    //ach.progress = 4;
+    //print("zastapione");
+    if(ach.progress < 4){
+      print("w srodku");
+      ach.value += points_counter;
+      while(ach.value >= ach.level[ach.progress]){
+        ach.progress += 1;
+      }
+      achievements.putAt(2, ach);
     }
-    achievements.putAt(2, ach);
     dailyTodos.deleteAll(toRemove);
     toRemove.clear();
   }
